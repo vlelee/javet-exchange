@@ -10,7 +10,7 @@ public class Stock implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Integer id;
+    private int id;
 
     @Column(name = "ticker")
     private String ticker;
@@ -21,7 +21,7 @@ public class Stock implements Serializable {
     @JoinColumn(name = "strategy_id", referencedColumnName = "id", nullable = false)
     @ManyToOne
     @com.fasterxml.jackson.annotation.JsonIgnore
-    private Strategy strategyStockPair;
+    private StrategyConfiguration strategyStockPair;
 
     public Stock() {
     }
@@ -29,17 +29,17 @@ public class Stock implements Serializable {
         this.ticker = ticker;
         this.stockName = stockName;
     }
-    public Stock(String ticker, String stockName, Strategy strategyStockPair) {
+    public Stock(String ticker, String stockName, StrategyConfiguration strategyStockPair) {
         this.ticker = ticker;
         this.stockName = stockName;
         this.strategyStockPair = strategyStockPair;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -59,11 +59,11 @@ public class Stock implements Serializable {
         this.stockName = stockName;
     }
 
-    public Strategy getStrategyStockPair() {
+    public StrategyConfiguration getStrategyStockPair() {
         return strategyStockPair;
     }
 
-    public void setStrategyStockPair(Strategy strategyStockPair) {
+    public void setStrategyStockPair(StrategyConfiguration strategyStockPair) {
         this.strategyStockPair = strategyStockPair;
     }
 
