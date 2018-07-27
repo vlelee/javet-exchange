@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 @Service
 @Transactional (propagation = Propagation.REQUIRED)
 public class StrategyService {
@@ -17,19 +20,21 @@ public class StrategyService {
     public void addNewStrategy(StrategyConfiguration strat){
         repo.save(strat);
     }
-//    public Collection<StrategyConfiguration> getPairings() {
-//        return makeCollection(repo.findAll());
-//    }
-//
-//    public StrategyConfiguration getStrategyById(int id) {
-//        return repo.findOne();
-//    }
-//
-//    private static Collection<StrategyConfiguration> makeCollection(Iterable<StrategyConfiguration> iter) {
-//        Collection<StrategyConfiguration> list = new ArrayList<StrategyConfiguration>();
-//        for (StrategyConfiguration item : iter) {
-//            list.add(item);
-//        }
-//        return list;
-//    }
+
+
+    public Collection<StrategyConfiguration> getStrategyStockPairings() {
+        return makeCollection(repo.findAll());
+    }
+
+    public StrategyConfiguration getCompactDiscById(int id) {
+        return repo.findById(id).get();
+    }
+
+    private static Collection<StrategyConfiguration> makeCollection(Iterable<StrategyConfiguration> iter) {
+        Collection<StrategyConfiguration> list = new ArrayList<StrategyConfiguration>();
+        for (StrategyConfiguration item : iter) {
+            list.add(item);
+        }
+        return list;
+    }
 }

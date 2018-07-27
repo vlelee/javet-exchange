@@ -10,26 +10,37 @@ stock_name varchar(50) not null
 
 );
 
-create table strategies(
+create table strategy_configurations(
 id int primary key auto_increment,
 strategy_name varchar(30) not null,
 algo enum('TMA', 'BB','PB') not null,
 stock_id int not null,
-num_shares int not null,
-exit_position int not null,
 start_time timestamp not null, 
 end_time timestamp, 
 open_price double not null,
-close_price double,
+close_price double, 
+num_shares int not null,
 FOREIGN KEY (stock_id) REFERENCES stocks(id) on delete restrict
 );
 
-CREATE TABLE market_data(
+CREATE TABLE stock_prices(
 id int primary key auto_increment,
 stock_id int not null,
 time_stamp timestamp not null ,
 price double not null,
 FOREIGN KEY (stock_id) REFERENCES stocks(id) on delete restrict
+);
+
+create table trades(
+id int primary key auto_increment, 
+stock_id int not null, 
+strategy_id int not null, 
+selling boolean not null,
+num_shares int not null, 
+tradePrice double not null, 
+time_traded timestamp default current_timestamp,
+FOREIGN KEY (stock_id) REFERENCES stocks(id) on delete restrict,
+FOREIGN KEY (strategy_id) REFERENCES strategy_configurations(id) on delete restrict
 );
 
 
@@ -38,8 +49,3 @@ insert into stocks values (2, "GOOGL", "Alphabet, Inc.");
 insert into stocks values (3, "BFY", "Blackrock");
 insert into stocks values (4, "C", "Citi");
 
-/*
-insert into strategies values (0,"AAPL 3rd Q", 'TMA', 1);
-insert into strategies values (3, "BFY 3rd Q", 'BB', 3);
-insert into strategies values (6,"GOOGL 3rd Q", 'PB', 2);
-*/
