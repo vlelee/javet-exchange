@@ -15,11 +15,12 @@ id int primary key auto_increment,
 strategy_name varchar(30) not null,
 algo enum('TMA', 'BB','PB') not null,
 stock_id int not null,
+num_shares int not null,
+exit_position int not null,
 start_time timestamp not null, 
 end_time timestamp, 
 open_price double not null,
-close_price double, 
-num_shares int not null,
+close_price double,
 FOREIGN KEY (stock_id) REFERENCES stocks(id) on delete restrict
 );
 
