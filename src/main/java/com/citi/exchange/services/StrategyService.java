@@ -22,6 +22,7 @@ public class StrategyService {
     }
 
 
+
     public Collection<StrategyConfiguration> getStrategyStockPairings() {
         return makeCollection(repo.findAll());
     }
@@ -37,4 +38,5 @@ public class StrategyService {
         }
         return list;
     }
+
 }
