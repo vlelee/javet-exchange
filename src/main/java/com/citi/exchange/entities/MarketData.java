@@ -1,7 +1,12 @@
 package com.citi.exchange.entities;
 
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Array;
 import java.sql.Timestamp;
 
 
@@ -57,7 +62,21 @@ public class MarketData  implements Serializable {
     public void setPrice(Double price) {
         this.price = price;
     }
+
+    public boolean currentlySelling() {
+        // TODO: go to the database and check if the last trade was a buy or sell. If sell -> return false. If buy -> return true.
+        // TODO: determine how to determine starting position (e.g. no previous trades)
+    }
+
+
+    public double getAverageForPast(Integer stockId, Integer minutes) {
+        String sql = "SELECT SUM(price) / COUNT(*) FROM market_data WHERE time_stamp > DATE_SUB(NOW(), INTERVAL :minutes MINUTE)";
+        //TODO: Need a hibernate util class to call getSessionFactory()
+        SessionFactory sessionFactory = getSessionFactory();
+        Session session = sessionFactory.openSession();
+        TypedQuery<Double> sqlQuery = session.createQuery(sql);
+        sqlQuery.setParameter("minutes", minutes);
+        return sqlQuery.getResultList().get(0);
+    }
 }
-
-
 
