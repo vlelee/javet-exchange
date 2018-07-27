@@ -1,4 +1,4 @@
-package com.citi.exchange.stockpriceservice;
+package com.citi.exchange.services;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ public class StockPriceGetterService {
     private double price;
 
 
-    public void getMarketDataPrice(String ticker){
+    public void getStockPrice(String ticker){
 
         //First run MockYahoo server (Tomcat) before running ExchangeApplication
         try {
