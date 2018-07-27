@@ -3,8 +3,6 @@ package com.citi.exchange.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "strategy_configurations")
@@ -28,10 +26,6 @@ public class StrategyConfiguration implements Serializable {
     @Column(name = "algo")
     private Algo algo;
 
-    @Column(name = "stock_id")
-    private Integer stockId;
-
-
     @Column(name = "start_time")
     private java.sql.Timestamp startTime;
     @Column(name = "end_time")
@@ -49,14 +43,14 @@ public class StrategyConfiguration implements Serializable {
     private Integer exitPosition;
 
 
+    @JoinColumn(name = "stock_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Stock stockFromStrategy;
 
-    @OneToMany(mappedBy = "strategyStockPair", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<Stock> strategyStockPairs = new ArrayList<>();
-
-    public StrategyConfiguration(String strategyName, Algo algo, Integer stockId, Timestamp startTime, Double openPrice, Integer numShares) {
+    public StrategyConfiguration(String strategyName, Algo algo, Timestamp startTime, Double openPrice, Integer numShares) {
         this.strategyName = strategyName;
         this.algo = algo;
-        this.stockId = stockId;
         this.startTime = startTime;
         this.openPrice = openPrice;
         this.numShares = numShares;
@@ -89,20 +83,12 @@ public class StrategyConfiguration implements Serializable {
         this.algo = algo;
     }
 
-    public Integer getStockId() {
-        return stockId;
+    public Stock getStockFromStrategy() {
+        return stockFromStrategy;
     }
 
-    public void setStockId(Integer stockId) {
-        this.stockId = stockId;
-    }
-
-    public List<Stock> getStrategyStockPairs() {
-        return strategyStockPairs;
-    }
-
-    public void setStrategyStockPairs(List<Stock> strategyStockPairs) {
-        this.strategyStockPairs = strategyStockPairs;
+    public void setStockFromStrategy(Stock stockFromStrategy) {
+        this.stockFromStrategy = stockFromStrategy;
     }
 
     public Timestamp getStartTime() {

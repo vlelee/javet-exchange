@@ -1,10 +1,14 @@
 package com.citi.exchange.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "strategies")
+@Table(name = "stocks")
 public class Stock implements Serializable {
 
     @Id
@@ -18,10 +22,11 @@ public class Stock implements Serializable {
     @Column(name = "stock_name")
     private String stockName;
 
-    @JoinColumn(name = "strategy_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    private StrategyConfiguration strategyStockPair;
+
+    @OneToMany(mappedBy = "stockFromStrategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnore
+    private List<StrategyConfiguration> strategyStockPairs = new ArrayList<StrategyConfiguration>();
+
 
     public Stock() {
     }
@@ -29,11 +34,7 @@ public class Stock implements Serializable {
         this.ticker = ticker;
         this.stockName = stockName;
     }
-    public Stock(String ticker, String stockName, StrategyConfiguration strategyStockPair) {
-        this.ticker = ticker;
-        this.stockName = stockName;
-        this.strategyStockPair = strategyStockPair;
-    }
+
 
     public int getId() {
         return id;
@@ -59,12 +60,13 @@ public class Stock implements Serializable {
         this.stockName = stockName;
     }
 
-    public StrategyConfiguration getStrategyStockPair() {
-        return strategyStockPair;
+    public List<StrategyConfiguration> getStrategyStockPairs() {
+        return strategyStockPairs;
     }
 
-    public void setStrategyStockPair(StrategyConfiguration strategyStockPair) {
-        this.strategyStockPair = strategyStockPair;
+    public void setStrategyStockPairs(List<StrategyConfiguration> strategyStockPairs) {
+        this.strategyStockPairs = strategyStockPairs;
     }
+
 
 }
