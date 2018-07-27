@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table (name = "market_data")
-public class MarketData  implements Serializable {
+public class StockPrice implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,13 +22,13 @@ public class MarketData  implements Serializable {
     @Column(name = "stock_id") private Integer stockId;
     @Column(name = "price") private Double price;
 
-    public MarketData(Timestamp timestamp, Integer stockId, Double price) {
+    public StockPrice(Timestamp timestamp, Integer stockId, Double price) {
         this.timestamp = timestamp;
         this.stockId = stockId;
         this.price = price;
     }
 
-    public MarketData() {
+    public StockPrice() {
     }
 
     public int getId() {

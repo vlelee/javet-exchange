@@ -23,7 +23,6 @@ public class StrategyService {
 //
 //    public StrategyConfiguration getStrategyById(int id) {
 //        return repo.findOne();
-//    }
 //
 //    private static Collection<StrategyConfiguration> makeCollection(Iterable<StrategyConfiguration> iter) {
 //        Collection<StrategyConfiguration> list = new ArrayList<StrategyConfiguration>();
@@ -31,5 +30,6 @@ public class StrategyService {
 //            list.add(item);
 //        }
 //        return list;
+//    }
 //    }
 }
