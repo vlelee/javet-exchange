@@ -1,5 +1,6 @@
 package com.citi.exchange;
 
+import com.citi.exchange.stockpriceservice.StockPriceGetterService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 //import org.springframework.context.annotation.ComponentScan;
@@ -20,8 +21,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class ExchangeApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(ExchangeApplication.class, args);
+
 	}
 
 	@Override
