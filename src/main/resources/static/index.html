@@ -64,12 +64,12 @@
                         <tr>
                             <td>
                                 <div class="input-group mb-3">
-                                    <input type="text" placeholder="Strategy Name" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                    <input id="strategy-name-input" type="text" placeholder="Strategy Name" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                                 </div>
                             </td>
                             <!-- TODO: Change this to a searchable select dropdown -->
                             <td>
-                                <select placeholder="Strategy" class="custom-select text-center" >
+                                <select id="strategy-type-select" placeholder="Strategy" class="custom-select text-center" >
                                     <option>TMA</option>
                                     <option>BB</option>
                                     <option>PB</option>
@@ -78,16 +78,16 @@
                             <td colspan="3">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <select class="input-group-text custom-select" placeholder="Starting Position">
-                                            <option selected="selected" onClick="setNewStrategyToBuying();">Buying</option>
-                                            <option onClick="setNewStrategyToBuying();">Selling</option>
+                                        <select id="strategy-starting-position-select" class="input-group-text custom-select" placeholder="Starting Position">
+                                            <option selected="selected">Buying</option>
+                                            <option>Selling</option>
                                         </select>
                                     </div>
-                                    <input type="number" placeholder="# of Shares" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                    <input id="strategy-quantity-input" type="number" placeholder="# of Shares" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
                                     
                                     <!-- TODO: Replace with a search from predefined stock list -->
                                     <div class="input-group-append">
-                                        <select class="input-group-text custom-select" placeholder="Stock">
+                                        <select id="strategy-share-select" class="input-group-text custom-select" placeholder="Stock">
                                             <option>AAPL ($195.19)</option>
                                             <option>AMZN ($1880.15)</option>
                                             <option>C ($71.82)</option>
@@ -100,7 +100,7 @@
                                 <!--<input type="text" placeholder="Starting Investment"/> -->
                             </td>
                             <td>
-                                <button class="btn btn-lg p-2 text-success" onClick="createStrategy()" style='background-color:transparent;'>
+                                <button class="btn btn-lg p-2 text-success" onClick="confirmCreateStrategy()" style='background-color:transparent;'>
                                     <i class="material-icons">send</i>
                                 </button>
                             
@@ -130,6 +130,24 @@
         </div>
         
     </div>
+      
+      <!-- Modal -->
+<div class="modal fade" id="global-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="global-modal-title">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="global-modal-body" class="modal-body">
+      </div>
+      <div id="global-modal-footer" class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -142,4 +160,5 @@
   <script src="js/stocks.js"></script>
   <script src="js/strategies.js"></script>
   </body>
+    
 </html>
