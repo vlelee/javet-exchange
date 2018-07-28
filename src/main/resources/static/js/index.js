@@ -21,7 +21,7 @@ function loadStockPrice(stock) {
         close = response["close"]
         $("#stock-info-tbody").append(`
             <tr>
-                <td>${stock.toUpperCase()}</td>
+                <th scope="row">${stock.toUpperCase()}</th>
                 <td>${open.price}</td>
                 <td>${close.price}</td>
                 <td>${response.high}</td>

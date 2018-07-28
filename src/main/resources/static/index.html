@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-3">
+            <div class="col-md-4 m-1">
                 <h2>Your Stocks</h2>
                 <table class="table">
                     <thead>
@@ -27,7 +27,7 @@
                             <th scope="col">Open</th>
                             <th scope="col">Close</th>
                             <th scope="col">High</th>
-                            <th scope="col">Low</th>                        
+                            <th scope="col">Low</th>                   
                         </tr>
                         
                     </thead>
@@ -35,8 +35,21 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-9">
-                <h2>Your Strategies</h1>
+            <div class="col-md-6 m-1">
+                <h2>Your Strategies</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Strategy Name</th>
+                            <th scope="col">Open</th>
+                            <th scope="col">Close</th>
+                            <th scope="col">High</th>
+                            <th scope="col">Low</th>                        
+                        </tr>
+                    </thead>
+                    <tbody id="stock-info-tbody">
+                    </tbody>
+                </table>
             </div>
         </div>
         
@@ -50,7 +63,7 @@
   crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-      <script src="js/index.js"></script>
-  </script>
+  <script src="js/mustache.js"></script>
+  <script defer src="js/index.js"></script>
   </body>
 </html>
