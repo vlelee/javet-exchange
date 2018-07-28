@@ -8,6 +8,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <!-- Material IO Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet">
+
+
     <title>JAV eTrading Platform</title>
   </head>
   <body>
@@ -18,7 +23,93 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4 m-1">
+            <div class="col-lg-8">
+                <h2>Your Strategies</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Strategy Name</th>
+                            <!-- TODO: add a footnote defining algorithm abbreviations-->
+                            <th scope="col">Strategy Type</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Current Position</th>
+                            <th scope="col">Next Action</th>
+                            <th scope="col">Options</th>                        
+                        </tr>
+                    </thead>
+                    <tbody id="strategy-info-tbody">
+                        <tr>
+                            <th scope="row">AAPL 3rd Q</th>
+                            <td>TMA</td>
+                            <td>AAPL</td>
+                            <td>+2% ($5,301)</td>
+                            <td>Buying $537,231 of AAPL</td>
+                            <td>
+                                <button class="btn btn-xs m-0 p-0 text-info" onClick="viewMoreStrategy(1)" style='background-color:transparent;'>
+                                    <i class="material-icons">trending_up</i>
+                                </button>
+                                <button class="btn btn-xs m-0 p-0 text-success" onClick="editStrategy(1)" style='background-color:transparent;'>
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button class="btn btn-xs m-0 p-0 text-danger" onClick="endStrategy(1)" style='background-color:transparent;'>
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </td>                            
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="6" class="text-center">Start New Strategy</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="input-group mb-3">
+                                    <input type="text" placeholder="Strategy Name" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                </div>
+                            </td>
+                            <!-- TODO: Change this to a searchable select dropdown -->
+                            <td>
+                                <select placeholder="Strategy" class="custom-select text-center" >
+                                    <option>TMA</option>
+                                    <option>BB</option>
+                                    <option>PB</option>
+                                </select>
+                            </td>
+                            <td colspan="3">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <select class="input-group-text custom-select" placeholder="Starting Position">
+                                            <option selected="selected" onClick="setNewStrategyToBuying();">Buying</option>
+                                            <option onClick="setNewStrategyToBuying();">Selling</option>
+                                        </select>
+                                    </div>
+                                    <input type="number" placeholder="# of Shares" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                                    
+                                    <!-- TODO: Replace with a search from predefined stock list -->
+                                    <div class="input-group-append">
+                                        <select class="input-group-text custom-select" placeholder="Stock">
+                                            <option>AAPL ($195.19)</option>
+                                            <option>AMZN ($1880.15)</option>
+                                            <option>C ($71.82)</option>
+                                            <option>KO</option>
+                                            <option>MSFT</option>
+                                            <option>NFLX</option>
+                                        </select>
+                                    </div>
+                                </div>    
+                                <!--<input type="text" placeholder="Starting Investment"/> -->
+                            </td>
+                            <td>
+                                <button class="btn btn-lg p-2 text-success" onClick="createStrategy()" style='background-color:transparent;'>
+                                    <i class="material-icons">send</i>
+                                </button>
+                            
+                            </td>                            
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="col-lg-4">
                 <h2>Your Stocks</h2>
                 <table class="table">
                     <thead>
@@ -27,25 +118,10 @@
                             <th scope="col">Open</th>
                             <th scope="col">Close</th>
                             <th scope="col">High</th>
-                            <th scope="col">Low</th>                   
+                            <th scope="col">Low</th> 
+                            <th scope="col">Options</th>                   
                         </tr>
                         
-                    </thead>
-                    <tbody id="stock-info-tbody">
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-6 m-1">
-                <h2>Your Strategies</h2>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Strategy Name</th>
-                            <th scope="col">Open</th>
-                            <th scope="col">Close</th>
-                            <th scope="col">High</th>
-                            <th scope="col">Low</th>                        
-                        </tr>
                     </thead>
                     <tbody id="stock-info-tbody">
                     </tbody>
@@ -63,7 +139,7 @@
   crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  <script src="js/mustache.js"></script>
-  <script defer src="js/index.js"></script>
+  <script src="js/stocks.js"></script>
+  <script src="js/strategies.js"></script>
   </body>
 </html>
