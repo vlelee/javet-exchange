@@ -11,8 +11,9 @@ import java.sql.Timestamp;
 
 
 @Entity
-@Table (name = "market_data")
-public class MarketData  implements Serializable {
+@Table (name = "stock_prices")
+
+public class StockPrice implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,13 +23,13 @@ public class MarketData  implements Serializable {
     @Column(name = "stock_id") private Integer stockId;
     @Column(name = "price") private Double price;
 
-    public MarketData(Timestamp timestamp, Integer stockId, Double price) {
+    public StockPrice(Timestamp timestamp, Integer stockId, Double price) {
         this.timestamp = timestamp;
         this.stockId = stockId;
         this.price = price;
     }
 
-    public MarketData() {
+    public StockPrice() {
     }
 
     public int getId() {
@@ -63,20 +64,14 @@ public class MarketData  implements Serializable {
         this.price = price;
     }
 
-    public boolean currentlySelling() {
-        // TODO: go to the database and check if the last trade was a buy or sell. If sell -> return false. If buy -> return true.
-        // TODO: determine how to determine starting position (e.g. no previous trades)
-    }
-
-
-    public double getAverageForPast(Integer stockId, Integer minutes) {
-        String sql = "SELECT SUM(price) / COUNT(*) FROM market_data WHERE time_stamp > DATE_SUB(NOW(), INTERVAL :minutes MINUTE)";
-        //TODO: Need a hibernate util class to call getSessionFactory()
-        SessionFactory sessionFactory = getSessionFactory();
-        Session session = sessionFactory.openSession();
-        TypedQuery<Double> sqlQuery = session.createQuery(sql);
-        sqlQuery.setParameter("minutes", minutes);
-        return sqlQuery.getResultList().get(0);
-    }
+//    public double getAverageForPast(Integer stockId, Integer minutes) {
+//        String sql = "SELECT SUM(price) / COUNT(*) FROM market_data WHERE time_stamp > DATE_SUB(NOW(), INTERVAL :minutes MINUTE)";
+//        //TODO: Need a hibernate util class to call getSessionFactory()
+//        SessionFactory sessionFactory = getSessionFactory();
+//        Session session = sessionFactory.openSession();
+//        TypedQuery<Double> sqlQuery = session.createQuery(sql);
+//        sqlQuery.setParameter("minutes", minutes);
+//        return sqlQuery.getResultList().get(0);
+//    }
 }
 
