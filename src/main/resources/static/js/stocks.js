@@ -1,16 +1,52 @@
 $(document).ready(function() {
     findAndLoadRelevantStocks();
+    
+    var options_fullname = 
+        { 
+            url: "res/stock-list.json", 
+            getValue: "Name", 
+            list: { 
+                match: {
+                    enabled: true
+                },
+                onSelectItemEvent: function() {
+                    $("#new-share-ticker-input").val($("#new-share-name-input").getSelectedItemData().Symbol);
+                },
+                onKeyEnterEvent: function() {
+                    $("#new-share-ticker-input").val($("#new-share-name-input").getSelectedItemData().Symbol);
+                }
+            }
+        };
+    $("#new-share-name-input").easyAutocomplete(options_fullname);
+    
+    
+    var options_ticker = 
+        { 
+            url: "res/stock-list.json", 
+            getValue: "Symbol", 
+            list: { 
+                match: {
+                    enabled: true
+                },
+                onSelectItemEvent: function() {
+                    $("#new-share-name-input").val($("#new-share-ticker-input").getSelectedItemData().Name);
+                }
+            }
+        };
+    
+    $("#new-share-ticker-input").easyAutocomplete(options_ticker);
+    
+    // If one of the inputs are emptied, empty the other one.
+    $("#new-share-ticker-input").keyup(function() { $("#new-share-name-input").val("") });
+    $("#new-share-name-input").keyup(function() { $("#new-share-ticker-input").val("") });
+
 });
 
 async function findAndLoadRelevantStocks() {
     let user_stocks = await loadUserStocks();
     $.each(user_stocks, function(index, stock) {
         let relevant_stocks = findRelevantStocks(stock.toLowerCase());
-        console.log(stock);
-        console.log(relevant_stocks);
         loadStockPrice(stock, relevant_stocks);
-        console.log(stock);
-        console.log(relevant_stocks);
     });
 }
 
