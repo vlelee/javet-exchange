@@ -15,24 +15,28 @@ public class StockPriceServiceTest {
     @Test
     public void getGoogleMarketPriceFromStockPriceGetterServiceWithGoogleTicker(){
         StockPriceWebService service = new StockPriceWebService();
-        service.getStockPrice("goog");
-        double price = service.getPrice();
-        assertTrue(price > 0);
+        service.getMarketPrice("goog");
+
+        double stockPrice = service.getStockPrice();
+
+        assertTrue(stockPrice > 0);
     }
 
     @Test
     public void getMarketPriceFromStockPriceGetterServiceWithEmptySpaceTicker(){
         StockPriceWebService service = new StockPriceWebService();
-        service.getStockPrice(" ");
-        double price = service.getPrice();
-        assertEquals((int)0.0, (int)price);
+        service.getMarketPrice(" ");
+
+        double stockPrice = service.getStockPrice();
+        assertEquals((int)0.0, (int)stockPrice);
     }
 
     @Test
     public void getMarketPriceFromStockPriceGetterServiceWithNoTicker(){
         StockPriceWebService service = new StockPriceWebService();
-        service.getStockPrice("");
-        double price = service.getPrice();
-        assertEquals((int)0.0, (int)price);
+        service.getMarketPrice("");
+
+        double stockPrice = service.getStockPrice();
+        assertEquals((int)0.0, (int)stockPrice);
     }
 }
