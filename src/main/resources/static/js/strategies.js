@@ -26,8 +26,8 @@ function confirmCreateStrategy() {
     // TODO: Add input validation here.
     var strategy_long_names_dict = {
         "TMA": "Two-Moving Averages",
-        "PB": "",
-        "BB": ""
+        "PB": "Price Breakout",
+        "BB": "Bollinger Bands"
     };
     
     

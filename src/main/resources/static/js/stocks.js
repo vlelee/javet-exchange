@@ -42,11 +42,21 @@ $(document).ready(function() {
 
 });
 
-async function findAndLoadRelevantStocks() {
-    let user_stocks = await loadUserStocks();
-    $.each(user_stocks, function(index, stock) {
-        let relevant_stocks = findRelevantStocks(stock.toLowerCase());
-        loadStockPrice(stock, relevant_stocks);
+function findAndLoadRelevantStocks() {
+    $.get("http://localhost:8082/stock", function(data) {
+        let tracked_stocks = []
+        $.each(data, function(index, stock) {
+            console.log(stock.stockName);
+            if(stock.tracking) {tracked_stocks.push(stock.ticker);}
+
+        })
+        $.each(tracked_stocks, function(index, stock) {
+            let get_relevant_stocks_url = "https://api.iextrading.com/1.0/stock/" + stock + "/relevant";
+            $.get(get_relevant_stocks_url, function(relevant_stocks) {
+                loadStockPrice(stock, relevant_stocks["symbols"]);
+            });
+        }); 
+
     });
 }
 
@@ -82,7 +92,17 @@ function findRelevantStocks(stock) {
     return result;     
 }
 
-function loadUserStocks() {
-    // TODO: Once the REST API has been implemented we'll actually go to our REST API for this information, for the time being we'll return a random few stocks.
-    return ["AAPL", "AMZN", "C", "KO", "MSFT", "NFLX"];
+function startTrackingStock() {
+    let stock_name = $("#new-share-name-input").val();
+    let stock_ticker = $("#new-share-ticker-input").val();
+    let new_stock_to_track = {"ticker": stock_ticker, "stockName": stock_name, "tracking": "true"};
+    console.log(new_stock_to_track)
+    console.log(JSON.stringify(new_stock_to_track))
+    $.ajax({
+        url: "http://localhost:8082/stock", 
+        data: new_stock_to_track, 
+        success: function() {
+            window.location.reload(true);
+        }
+    });
 }

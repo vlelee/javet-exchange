@@ -21,8 +21,6 @@ public class StrategyService {
         repo.save(strat);
     }
 
-
-
     public Collection<StrategyConfiguration> getStrategyStockPairings() {
         return makeCollection(repo.findAll());
     }

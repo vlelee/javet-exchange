@@ -1,6 +1,7 @@
 package com.citi.exchange.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,38 +11,29 @@ import java.util.List;
 @Entity
 @Table(name = "stocks")
 public class Stock implements Serializable {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private int id;
-
     @Column(name = "ticker")
     private String ticker;
 
     @Column(name = "stock_name")
     private String stockName;
 
+    @Column(nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean tracking;
 
+/*
     @OneToMany(mappedBy = "stockFromStrategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JsonIgnore
     private List<StrategyConfiguration> strategyStockPairs = new ArrayList<StrategyConfiguration>();
-
+*/
 
     public Stock() {
     }
-    public Stock(String ticker, String stockName) {
+    public Stock(String ticker, String stockName, boolean tracking) {
         this.ticker = ticker;
         this.stockName = stockName;
-    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.tracking = tracking;
     }
 
     public String getTicker() {
@@ -60,13 +52,21 @@ public class Stock implements Serializable {
         this.stockName = stockName;
     }
 
+    public boolean isTracking() {
+        return tracking;
+    }
+
+    public void setTracking(boolean tracking) {
+        this.tracking = tracking;
+    }
+
+    /*
     public List<StrategyConfiguration> getStrategyStockPairs() {
         return strategyStockPairs;
     }
 
     public void setStrategyStockPairs(List<StrategyConfiguration> strategyStockPairs) {
         this.strategyStockPairs = strategyStockPairs;
-    }
-
+    }*/
 
 }

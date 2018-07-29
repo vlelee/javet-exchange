@@ -17,17 +17,25 @@ public class StockService {
     @Autowired
     private StockRepo repo;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void addNewStock(Stock aStock){
-        if(!getStocks().contains(aStock))
-            repo.save(aStock);
-    }
     public Collection<Stock> getStocks() {
         return makeCollection(repo.findAll());
     }
 
-    public Stock getStockById(int id) {
-        return repo.findById(id).get();
+    // TODO: Fix this to use a ticker instead.
+    public Stock getStockByTicker(String ticker) {
+        return repo.findById(ticker).get();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public Stock addNewStock(Stock aStock){
+        return repo.save(aStock);
+    }
+
+    @Transactional()
+    public void updateStock(Stock aStock, String ticker){
+        Stock update_stock = getStockByTicker(ticker);
+        update_stock.setStockName(aStock.getStockName());
+        repo.save(update_stock);
     }
 
     private static Collection<Stock> makeCollection(Iterable<Stock> iter) {

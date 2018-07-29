@@ -7,8 +7,6 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "strategy_configurations")
 public class StrategyConfiguration implements Serializable {
-
-
     public enum Algo {
         TMA, BB, PB
     }
@@ -43,7 +41,7 @@ public class StrategyConfiguration implements Serializable {
     private Integer exitPosition;
 
 
-    @JoinColumn(name = "stock_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "stock_id", referencedColumnName = "ticker", nullable = false)
     @ManyToOne
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Stock stockFromStrategy;

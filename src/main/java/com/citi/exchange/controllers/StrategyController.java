@@ -1,31 +1,23 @@
 package com.citi.exchange.controllers;
 
 import com.citi.exchange.entities.Stock;
+import com.citi.exchange.entities.StrategyConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
-public class DashboardController {
+@RequestMapping("/strategy")
+public class StrategyController {
 
 	@Autowired
-	private com.citi.exchange.services.StockService service;
-
+	private com.citi.exchange.services.StrategyService service;
 
 	@RequestMapping(method = RequestMethod.GET)
-	Iterable<Stock> findAll() {
-		return service.getStocks();
+	Iterable<StrategyConfiguration> findAll() {
+		return service.getStrategyStockPairings();
 	}
-	//	public String index() {
-//
-//		Stock s = new Stock("FB","Facebook, Inc." );
-//		return s.getStockName();
-//
-//
-//
-//	}
 
 
 }
