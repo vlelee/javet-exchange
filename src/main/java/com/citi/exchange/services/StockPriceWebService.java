@@ -1,44 +1,30 @@
 package com.citi.exchange.services;
 
-import java.io.BufferedReader;
+import com.citi.exchange.entities.StockPrice;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.sql.Timestamp;
+import java.util.Scanner;
 
 public class StockPriceWebService {
+    //private StockPrice stockPrice;
     private double price;
 
-
-    public void getStockPrice(String ticker){
-
+    public void getMarketPrice(String ticker){
         //First run MockYahoo server (Tomcat) before running ExchangeApplication
         try {
             if(checkTicker(ticker)){
-                URL marketFeedURL = new URL("http://localhost:8081/MockYahoo/quotes.csv?s="
-                        + ticker + "&f=p0");
-                URLConnection connection = marketFeedURL.openConnection();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                String input;
-                if((input = reader.readLine()) != null){
-                    price = Double.parseDouble(input);
-                    System.out.println("Price for " + ticker + ": " + price);
-                }
-                else {
-                    System.out.println("Stock Price Service error");
-                }
+                price = getResponseFromURL(ticker);
             } else {
-                price = 0;
-                System.out.println("Bad ticker error");
+                price = 0.0;
+                System.out.println("Invalid Ticker");
             }
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException("Market Feed network failure");
         }
+
     }
 
     private boolean checkTicker(String ticker){
@@ -47,12 +33,24 @@ public class StockPriceWebService {
         return true;
     }
 
+    private double getResponseFromURL(String ticker) throws IOException {
+        URL marketFeedUrl = new URL("http://localhost:8081/MockYahoo/quotes.csv?s="
+                + ticker + "&f=p0");
+        Scanner scanner = new Scanner(marketFeedUrl.openStream());
 
-    public double getPrice() {
+        return Double.parseDouble(scanner.next());
+    }
+
+    private Timestamp getCurrentTimeStamp(){
+        return new Timestamp(System.currentTimeMillis());
+    }
+
+
+    public double getStockPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setStockPrice(double stockPrice) {
+        this.price = stockPrice;
     }
 }
