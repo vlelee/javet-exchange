@@ -16,19 +16,25 @@ public class StrategyService {
     @Autowired
     private StrategyRepo repo;
 
+    public Collection<StrategyConfiguration> getStrategies() {
+        return makeCollection(repo.findAll());
+    }
+
+    public StrategyConfiguration getStrategyById(int id) {
+        return repo.findById(id).get();
+    }
+
     @Transactional (propagation = Propagation.REQUIRES_NEW)
     public void addNewStrategy(StrategyConfiguration strat){
         repo.save(strat);
     }
 
-    public Collection<StrategyConfiguration> getStrategyStockPairings() {
-        return makeCollection(repo.findAll());
+    @Transactional()
+    public void updateStrategy(StrategyConfiguration newStrategy, int id){
+        StrategyConfiguration updated_strategy = getStrategyById(id);
+        updated_strategy.setStrategyName(newStrategy.getStrategyName());
+        repo.save(updated_strategy);
     }
-
-    public StrategyConfiguration getCompactDiscById(int id) {
-        return repo.findById(id).get();
-    }
-
     private static Collection<StrategyConfiguration> makeCollection(Iterable<StrategyConfiguration> iter) {
         Collection<StrategyConfiguration> list = new ArrayList<StrategyConfiguration>();
         for (StrategyConfiguration item : iter) {

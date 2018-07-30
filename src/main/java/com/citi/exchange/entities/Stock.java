@@ -22,14 +22,15 @@ public class Stock implements Serializable {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean tracking;
 
-/*
+
     @OneToMany(mappedBy = "stockFromStrategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JsonIgnore
     private List<StrategyConfiguration> strategyStockPairs = new ArrayList<StrategyConfiguration>();
-*/
+
 
     public Stock() {
     }
+
     public Stock(String ticker, String stockName, boolean tracking) {
         this.ticker = ticker;
         this.stockName = stockName;
@@ -60,13 +61,12 @@ public class Stock implements Serializable {
         this.tracking = tracking;
     }
 
-    /*
     public List<StrategyConfiguration> getStrategyStockPairs() {
         return strategyStockPairs;
     }
 
     public void setStrategyStockPairs(List<StrategyConfiguration> strategyStockPairs) {
         this.strategyStockPairs = strategyStockPairs;
-    }*/
+    }
 
 }

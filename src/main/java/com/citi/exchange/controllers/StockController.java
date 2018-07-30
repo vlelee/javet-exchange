@@ -7,18 +7,16 @@ import org.springframework.web.bind.annotation.*;
 // TODO: Deccide if we'd like to remove cross-origin. This in place to connect it to the frontend at the moment.
 @CrossOrigin
 @RestController
-@RequestMapping("/stock")
+@RequestMapping("/api/stocks")
 public class StockController {
 
 	@Autowired
 	private com.citi.exchange.services.StockService service;
 
-
 	@RequestMapping(method = RequestMethod.GET)
 	Iterable<Stock> findAll() {
 		return service.getStocks();
 	}
-
 
 	@RequestMapping(method = RequestMethod.GET, value="/{ticker}")
 	Stock getStockByTicker(@PathVariable("ticker") String ticker) {
@@ -34,15 +32,5 @@ public class StockController {
 	void addStock(@RequestBody Stock stock, @PathVariable("ticker") String ticker) {
 		service.updateStock(stock, ticker);
 	}
-
-	//	public String index() {
-//
-//		Stock s = new Stock("FB","Facebook, Inc." );
-//		return s.getStockName();
-//
-//
-//
-//	}
-
 
 }
