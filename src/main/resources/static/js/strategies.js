@@ -1,5 +1,17 @@
 $(document).ready(function() {
     loadStrategies();
+    quantity_input_field = $("#strategy-quantity-input");
+    quantity_input_field.keyup(function() {
+        quantity = $("#strategy-quantity-input").val();
+        stock = $("#strategy-share-select").val();
+        let stock_price_regex = /\w+ \(\$(\d+\.\d+)\)/g
+        stock_vals = stock_price_regex.exec(stock);
+        let stock_price = parseFloat(stock_vals[1]).toFixed(2);
+        if(quantity) {
+            let investment_value = (stock_price * quantity).toFixed(2)
+            $("#new-investment-value").val(investment_value);
+        }
+    });
 });
 
 function loadStrategies() {

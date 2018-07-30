@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 // TODO: Deccide if we'd like to remove cross-origin. This in place to connect it to the frontend at the moment.
 @CrossOrigin
 @RestController
-@RequestMapping("/stock")
+@RequestMapping("/stocks")
 public class StockController {
 
 	@Autowired
