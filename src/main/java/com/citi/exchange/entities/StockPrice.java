@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 
 @Entity
 @Table (name = "stock_prices")
-
 public class StockPrice implements Serializable {
 
     @Id

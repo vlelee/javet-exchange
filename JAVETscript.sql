@@ -4,7 +4,7 @@ CREATE DATABASE IF NOT EXISTS javet;
 use javet;
 
 create table stocks (
-ticker varchar(10) primary key,
+ticker varchar(10) primary key unique,
 stock_name varchar(50) not null,
 tracking boolean not null DEFAULT true
 );
