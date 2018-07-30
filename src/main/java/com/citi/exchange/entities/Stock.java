@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "stocks")
 public class Stock implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticker", columnDefinition = "VARCHAR(10)", nullable = false, unique = true)
     private String ticker;
 
