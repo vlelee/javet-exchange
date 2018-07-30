@@ -83,8 +83,8 @@
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <select id="strategy-starting-position-select" class="input-group-text custom-select" placeholder="Starting Position">
-                                            <option selected="selected">Buying</option>
-                                            <option>Selling</option>
+                                            <option selected="selected">Buy</option>
+                                            <option>Sell</option>
                                         </select>
                                     </div>
                                     <input id="strategy-quantity-input" type="number" placeholder="# of Shares" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
@@ -92,13 +92,6 @@
                                     <!-- TODO: Replace with a search from predefined stock list -->
                                     <div class="input-group-append">
                                         <select id="strategy-share-select" class="input-group-text custom-select" placeholder="Stock">
-                                            <option>AAPL ($195.19)</option>
-                                            <option>AMZN ($1880.15)</option>
-                                            <option>C ($71.82)</option>
-                                            <option>KO</option>
-                                            <option>MSFT</option>
-                                            <option>NFLX</option>
-                                        </select>
                                     </div>
                                 </div>    
                                 <!--<input type="text" placeholder="Starting Investment"/> -->
@@ -124,7 +117,7 @@
                                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                   <strong id="new-strategy-warning-label"></strong> 
                                     <span id="new-strategy-warning-message"></span>
-                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <button type="button" class="close" onClick="$('#new-strategy-warnings').hide();">
                                     <span aria-hidden="true">&times;</span>
                                   </button>
                                 </div>
@@ -147,8 +140,8 @@
                         </tr>
                         
                     </thead>
-                    <tbody id="stock-info-tbody">
-                    </tbody>
+                    <tbody id="stock-info-tracked"></tbody>
+                    <tbody id="stock-info-untracked" style="display: none;"></tbody>
                     <tfoot>
                         <tr>
                             <td colspan="3">
@@ -166,6 +159,17 @@
                                 <button class="btn btn-lg p-2 text-success" onClick="startTrackingStock()" style='background-color:transparent;'>
                                     <i class="material-icons">add</i>
                                 </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <button id="show-untracked-stocks-btn" class="btn btn-xs p-2 btn-primary" onClick="$('#stock-info-untracked').show();$('#hide-untracked-stocks-btn').show();$(this).hide();">
+                                    Show Untracked Stocks
+                                </button>
+                                <button id="hide-untracked-stocks-btn" class="btn btn-xs p-2 btn-default" style="display: none;" onClick="$('#stock-info-untracked').hide();$('#show-untracked-stocks-btn').show();$(this).hide();">
+                                    Hide Untracked Stocks
+                                </button>
+                                
                             </td>
                         </tr>
                     </tfoot>

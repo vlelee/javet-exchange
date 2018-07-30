@@ -1,13 +1,16 @@
 $(document).ready(function() {
     loadStrategies();
     quantity_input_field = $("#strategy-quantity-input");
-    quantity_input_field.keyup(function() {
+    quantity_input_field.change(function() {
         quantity = $("#strategy-quantity-input").val();
-        stock = $("#strategy-share-select").val();
-        let stock_price_regex = /\w+ \(\$(\d+\.\d+)\)/g
+        stock = $("#strategy-share-select").text();
+        let stock_price_regex = /.+\(\$(\d+\.\d+)\)/g
         stock_vals = stock_price_regex.exec(stock);
-        let stock_price = parseFloat(stock_vals[1]).toFixed(2);
-        if(quantity) {
+        console.log(quantity);
+        console.log(stock);
+        console.log(stock_vals);
+        if(quantity && stock) {
+            let stock_price = parseFloat(stock_vals[1]).toFixed(2);
             let investment_value = (stock_price * quantity).toFixed(2)
             $("#new-investment-value").val(investment_value);
         }
@@ -54,7 +57,7 @@ function confirmCreateStrategy() {
     clearGlobalModal();
     let strategy_name = $("#strategy-name-input").val();
     let strategy_type = $("#strategy-type-select").find(":selected").text();
-    let strategy_start_position = ("Buying" == $("#strategy-starting-position-select").find(":selected").text());
+    let strategy_start_position = ("Buy" == $("#strategy-starting-position-select").find(":selected").text());
     let strategy_share_quantity = parseInt($("#strategy-quantity-input").val());
     
     // TODO: This will change from a select in the future.

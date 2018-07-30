@@ -33,4 +33,14 @@ public class StockController {
 		service.updateStock(stock, ticker);
 	}
 
+	@RequestMapping(method = RequestMethod.PUT, value="/{ticker}/hide")
+	void hideStock(@PathVariable("ticker") String ticker) {
+		service.toggleStockVisbility(ticker, false);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value="/{ticker}/show")
+	void showStock(@PathVariable("ticker") String ticker) {
+		service.toggleStockVisbility(ticker, true);
+	}
+
 }

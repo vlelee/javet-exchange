@@ -1,5 +1,7 @@
 package com.citi.exchange.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -12,7 +14,7 @@ public class StrategyConfiguration implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
@@ -43,8 +45,9 @@ public class StrategyConfiguration implements Serializable {
     @Column(name = "exit_threshold_low")
     private Integer exitThresholdLow;
 
-    @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "stock", referencedColumnName = "ticker") //, nullable = false)
+    @JsonProperty("stock")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Stock stock;
 
