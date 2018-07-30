@@ -13,7 +13,8 @@ import java.util.List;
 @Table(name = "stocks")
 public class Stock implements Serializable {
     @Id
-    @Column(name = "ticker")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ticker", columnDefinition = "VARCHAR(10)", nullable = false, unique = true)
     private String ticker;
 
     @Column(name = "stock_name")
@@ -23,9 +24,9 @@ public class Stock implements Serializable {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean tracking;
 
-    @OneToOne(mappedBy = "stock")
+    @OneToMany(mappedBy = "stock", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JsonIgnore
-    private StrategyConfiguration strategy;
+    private List<StrategyConfiguration> strategies = new ArrayList<StrategyConfiguration>();
 
     @OneToMany(mappedBy = "stock", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JsonIgnore
@@ -65,12 +66,12 @@ public class Stock implements Serializable {
         this.tracking = tracking;
     }
 
-    public StrategyConfiguration getStrategy() {
-        return strategy;
+    public List<StrategyConfiguration> getStrategies() {
+        return strategies;
     }
 
-    public void setStrategy(StrategyConfiguration strategy) {
-        this.strategy = strategy;
+    public void setStrategies(List<StrategyConfiguration> strategies) {
+        this.strategies = strategies;
     }
 
     public List<StockPrice> getStockPrices() {

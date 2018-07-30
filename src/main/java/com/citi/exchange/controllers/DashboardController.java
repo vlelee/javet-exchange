@@ -15,7 +15,7 @@ public class DashboardController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	Iterable<StrategyConfiguration> findAll() {
-		return service.getStrategyStockPairings();
+		return service.getStrategies();
 	}
 
 
