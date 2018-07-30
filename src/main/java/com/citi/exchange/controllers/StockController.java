@@ -25,7 +25,7 @@ public class StockController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	void addStock(@RequestBody Stock stock) {
-		service.addNewStock(stock);
+		service. addNewStock(stock);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value="/{ticker}")

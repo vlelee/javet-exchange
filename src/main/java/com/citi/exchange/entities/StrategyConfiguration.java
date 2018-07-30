@@ -1,10 +1,13 @@
 package com.citi.exchange.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "strategy_configurations")
@@ -40,23 +43,30 @@ public class StrategyConfiguration implements Serializable {
     private Integer numShares;
 
     @Column(name = "exit_threshold_high")
-    private Integer exitThresholdHigh;
+    private Double exitThresholdHigh;
 
     @Column(name = "exit_threshold_low")
-    private Integer exitThresholdLow;
+    private Double exitThresholdLow;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "stock", referencedColumnName = "ticker") //, nullable = false)
-    @JsonProperty("stock")
+    @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
+    @ManyToOne
     @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonProperty("stock")
     private Stock stock;
 
-    public StrategyConfiguration(String strategyName, Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares) {
+    @OneToMany(mappedBy = "strategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnore
+    private List<Trade> trades = new ArrayList<Trade>();
+
+    public StrategyConfiguration(String strategyName, Stock stock,Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares, Double exitThresholdHigh, Double exitThresholdLow) {
         this.strategyName = strategyName;
         this.algo = algo;
         this.startTime = startTime;
         this.initiationPrice = initiationPrice;
         this.numShares = numShares;
+        this.exitThresholdHigh = exitThresholdHigh;
+        this.exitThresholdLow = exitThresholdLow;
+        this.stock = stock;
     }
 
     public StrategyConfiguration() {
@@ -134,19 +144,27 @@ public class StrategyConfiguration implements Serializable {
         this.numShares = numShares;
     }
 
-    public Integer getExitThresholdHigh() {
+    public Double getExitThresholdHigh() {
         return exitThresholdHigh;
     }
 
-    public void setExitThresholdHigh(Integer exitThresholdHigh) {
+    public void setExitThresholdHigh(Double exitThresholdHigh) {
         this.exitThresholdHigh = exitThresholdHigh;
     }
 
-    public Integer getExitThresholdLow() {
+    public Double getExitThresholdLow() {
         return exitThresholdLow;
     }
 
-    public void setExitThresholdLow(Integer exitThresholdLow) {
+    public void setExitThresholdLow(Double exitThresholdLow) {
         this.exitThresholdLow = exitThresholdLow;
     }
+//
+//    public List<Trade> getTrades() {
+//        return trades;
+//    }
+//
+//    public void setTrades(List<Trade> trades) {
+//        this.trades = trades;
+//    }
 }
