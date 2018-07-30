@@ -2,6 +2,7 @@ package com.citi.exchange.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Type;
+import org.springframework.boot.autoconfigure.web.ResourceProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,10 +23,13 @@ public class Stock implements Serializable {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private boolean tracking;
 
-
-    @OneToMany(mappedBy = "stockFromStrategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(mappedBy = "stock")
     @JsonIgnore
-    private List<StrategyConfiguration> strategyStockPairs = new ArrayList<StrategyConfiguration>();
+    private StrategyConfiguration strategy;
+
+    @OneToMany(mappedBy = "stock", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnore
+    private List<StockPrice> stockPrices = new ArrayList<StockPrice>();
 
 
     public Stock() {
@@ -61,12 +65,19 @@ public class Stock implements Serializable {
         this.tracking = tracking;
     }
 
-    public List<StrategyConfiguration> getStrategyStockPairs() {
-        return strategyStockPairs;
+    public StrategyConfiguration getStrategy() {
+        return strategy;
     }
 
-    public void setStrategyStockPairs(List<StrategyConfiguration> strategyStockPairs) {
-        this.strategyStockPairs = strategyStockPairs;
+    public void setStrategy(StrategyConfiguration strategy) {
+        this.strategy = strategy;
     }
 
+    public List<StockPrice> getStockPrices() {
+        return stockPrices;
+    }
+
+    public void setStockPrices(List<StockPrice> stockPrices) {
+        this.stockPrices = stockPrices;
+    }
 }

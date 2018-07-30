@@ -6,6 +6,4 @@ import org.springframework.data.repository.query.Param;
 
 public interface StockPriceRepo extends JpaRepository<StockPrice, Integer> {
 
-    public Iterable<StockPrice> findByStockId(@Param("stock_id") int id);
-
 }

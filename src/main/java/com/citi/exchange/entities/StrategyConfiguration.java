@@ -29,27 +29,30 @@ public class StrategyConfiguration implements Serializable {
     @Column(name = "end_time")
     private java.sql.Timestamp endTime;
 
-    @Column(name = "open_price")
-    private Double openPrice;
-    @Column(name = "close_price")
-    private Double closePrice;
+    @Column(name = "initiation_price")
+    private Double initiationPrice;
+    @Column(name = "exit_price")
+    private Double exitPrice;
 
     @Column(name = "num_shares")
     private Integer numShares;
 
-    @Column(name = "exit_position")
-    private Integer exitPosition;
+    @Column(name = "exit_threshold_high")
+    private Integer exitThresholdHigh;
+
+    @Column(name = "exit_threshold_low")
+    private Integer exitThresholdLow;
 
     @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
-    @ManyToOne
+    @OneToOne
     @com.fasterxml.jackson.annotation.JsonIgnore
-    private Stock stockFromStrategy;
+    private Stock stock;
 
-    public StrategyConfiguration(String strategyName, Algo algo, Timestamp startTime, Double openPrice, Integer numShares) {
+    public StrategyConfiguration(String strategyName, Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares) {
         this.strategyName = strategyName;
         this.algo = algo;
         this.startTime = startTime;
-        this.openPrice = openPrice;
+        this.initiationPrice = initiationPrice;
         this.numShares = numShares;
     }
 
@@ -80,12 +83,12 @@ public class StrategyConfiguration implements Serializable {
         this.algo = algo;
     }
 
-    public Stock getStockFromStrategy() {
-        return stockFromStrategy;
+    public Stock getStock() {
+        return stock;
     }
 
-    public void setStockFromStrategy(Stock stockFromStrategy) {
-        this.stockFromStrategy = stockFromStrategy;
+    public void setStock(Stock stock) {
+        this.stock = stock;
     }
 
     public Timestamp getStartTime() {
@@ -104,20 +107,20 @@ public class StrategyConfiguration implements Serializable {
         this.endTime = endTime;
     }
 
-    public Double getOpenPrice() {
-        return openPrice;
+    public Double getInitiationPrice() {
+        return initiationPrice;
     }
 
-    public void setOpenPrice(Double openPrice) {
-        this.openPrice = openPrice;
+    public void setInitiationPrice(Double initiationPrice) {
+        this.initiationPrice = initiationPrice;
     }
 
-    public Double getClosePrice() {
-        return closePrice;
+    public Double getExitPrice() {
+        return exitPrice;
     }
 
-    public void setClosePrice(Double closePrice) {
-        this.closePrice = closePrice;
+    public void setExitPrice(Double exitPrice) {
+        this.exitPrice = exitPrice;
     }
 
     public Integer getNumShares() {
@@ -127,11 +130,20 @@ public class StrategyConfiguration implements Serializable {
     public void setNumShares(Integer numShares) {
         this.numShares = numShares;
     }
-    public Integer getExitPosition() {
-        return exitPosition;
+
+    public Integer getExitThresholdHigh() {
+        return exitThresholdHigh;
     }
 
-    public void setExitPosition(Integer exitPosition) {
-        this.exitPosition = exitPosition;
+    public void setExitThresholdHigh(Integer exitThresholdHigh) {
+        this.exitThresholdHigh = exitThresholdHigh;
+    }
+
+    public Integer getExitThresholdLow() {
+        return exitThresholdLow;
+    }
+
+    public void setExitThresholdLow(Integer exitThresholdLow) {
+        this.exitThresholdLow = exitThresholdLow;
     }
 }

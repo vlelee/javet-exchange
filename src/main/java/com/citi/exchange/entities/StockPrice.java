@@ -20,12 +20,16 @@ public class StockPrice implements Serializable {
     @Column(name="id") private int id;
     @Column(name = "time_stamp") private Timestamp timestamp;
 
-    @Column(name = "stock_id") private Integer stockId;
     @Column(name = "price") private Double price;
 
-    public StockPrice(Timestamp timestamp, Integer stockId, Double price) {
+    @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
+    @ManyToOne
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Stock stock;
+
+    public StockPrice(Timestamp timestamp, Stock stock, Double price) {
         this.timestamp = timestamp;
-        this.stockId = stockId;
+        this.stock = stock;
         this.price = price;
     }
 
@@ -48,13 +52,6 @@ public class StockPrice implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public Integer getStockId() {
-        return stockId;
-    }
-
-    public void setStockId(Integer stockId) {
-        this.stockId = stockId;
-    }
 
     public Double getPrice() {
         return price;
@@ -64,7 +61,15 @@ public class StockPrice implements Serializable {
         this.price = price;
     }
 
-//    public double getAverageForPast(Integer stockId, Integer minutes) {
+    public Stock getStock() {
+        return stock;
+    }
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
+    }
+
+    //    public double getAverageForPast(Integer stockId, Integer minutes) {
 //        String sql = "SELECT SUM(price) / COUNT(*) FROM market_data WHERE time_stamp > DATE_SUB(NOW(), INTERVAL :minutes MINUTE)";
 //        //TODO: Need a hibernate util class to call getSessionFactory()
 //        SessionFactory sessionFactory = getSessionFactory();

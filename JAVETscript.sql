@@ -11,15 +11,16 @@ tracking boolean not null DEFAULT true
 
 create table strategy_configurations(
 id int primary key auto_increment,
-strategy_name varchar(30) not null,
+strategy_name varchar(30) unique not null,
 algo enum('TMA', 'BB','PB') not null,
 stock varchar(10) not null,
 start_time timestamp not null,
 end_time timestamp,
-open_price double not null,
-close_price double,
+initiation_price double not null,
+exit_price double,
 num_shares int not null,
-exit_position int,
+exit_threshold_high int not null,
+exit_threshold_low int not null,
 FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict
 );
 
@@ -33,13 +34,13 @@ FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict
 
 create table trades(
 id int primary key auto_increment, 
-stock_id varchar(10) not null,
-strategy_id int not null, 
+stock varchar(10) not null,
+strategy_id int not null,
 selling boolean not null,
 num_shares int not null, 
 tradePrice double not null, 
 time_traded timestamp default current_timestamp,
-FOREIGN KEY (stock_id) REFERENCES stocks(ticker) on delete restrict,
+FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict,
 FOREIGN KEY (strategy_id) REFERENCES strategy_configurations(id) on delete restrict
 );
 
