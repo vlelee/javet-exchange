@@ -32,6 +32,10 @@ public class Stock implements Serializable {
     @JsonIgnore
     private List<StockPrice> stockPrices = new ArrayList<StockPrice>();
 
+    @OneToMany(mappedBy = "stock", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnore
+    private List<Trade> trades = new ArrayList<Trade>();
+
 
     public Stock() {
     }

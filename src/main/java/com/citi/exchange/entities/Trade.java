@@ -36,13 +36,11 @@ public class Trade implements Serializable {
     @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
     @ManyToOne
     @com.fasterxml.jackson.annotation.JsonIgnore
-    @JsonProperty("stock")
     private Stock stock;
 
     @JoinColumn(name = "strategy", referencedColumnName = "id", nullable = false)
     @ManyToOne
     @com.fasterxml.jackson.annotation.JsonIgnore
-    @JsonProperty("strategy")
     private StrategyConfiguration strategy;
 
     public Trade() {

@@ -35,13 +35,13 @@ FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict
 create table trades(
 id int primary key auto_increment, 
 stock varchar(10) not null,
-strategy_id int not null,
+strategy int not null,
 selling boolean not null,
 num_shares int not null, 
 trade_price double not null,
 time_traded timestamp default current_timestamp,
 FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict,
-FOREIGN KEY (strategy_id) REFERENCES strategy_configurations(id) on delete restrict
+FOREIGN KEY (strategy) REFERENCES strategy_configurations(id) on delete restrict
 );
 
 

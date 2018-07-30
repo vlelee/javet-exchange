@@ -58,7 +58,7 @@ public class StrategyConfiguration implements Serializable {
     @JsonIgnore
     private List<Trade> trades = new ArrayList<Trade>();
 
-    public StrategyConfiguration(String strategyName, Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares, Double exitThresholdHigh, Double exitThresholdLow) {
+    public StrategyConfiguration(String strategyName, Stock stock,Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares, Double exitThresholdHigh, Double exitThresholdLow) {
         this.strategyName = strategyName;
         this.algo = algo;
         this.startTime = startTime;
@@ -66,6 +66,7 @@ public class StrategyConfiguration implements Serializable {
         this.numShares = numShares;
         this.exitThresholdHigh = exitThresholdHigh;
         this.exitThresholdLow = exitThresholdLow;
+        this.stock = stock;
     }
 
     public StrategyConfiguration() {
@@ -158,12 +159,12 @@ public class StrategyConfiguration implements Serializable {
     public void setExitThresholdLow(Double exitThresholdLow) {
         this.exitThresholdLow = exitThresholdLow;
     }
-
-    public List<Trade> getTrades() {
-        return trades;
-    }
-
-    public void setTrades(List<Trade> trades) {
-        this.trades = trades;
-    }
+//
+//    public List<Trade> getTrades() {
+//        return trades;
+//    }
+//
+//    public void setTrades(List<Trade> trades) {
+//        this.trades = trades;
+//    }
 }
