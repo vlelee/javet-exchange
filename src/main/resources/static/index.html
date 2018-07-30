@@ -23,7 +23,7 @@
     <div class="container-fluid text-center">
         <div class="row">
             <div class="col-12">
-                <h1>JAV eTrading Platform</h1>
+                <h1>JAVeTrading Platform</h1>
             </div>
         </div>
         <div class="row">
@@ -42,93 +42,14 @@
                         </tr>
                     </thead>
                     <tbody id="strategy-info-tbody">
-                        <tr>
-                            <th scope="row">AAPL 3rd Q</th>
-                            <td>TMA</td>
-                            <td>AAPL</td>
-                            <td>+2% ($5,301)</td>
-                            <td>Buying $537,231 of AAPL</td>
-                            <td>
-                                <button class="btn btn-xs m-0 p-0 text-info" onClick="viewMoreStrategy(1)" style='background-color:transparent;'>
-                                    <i class="material-icons">trending_up</i>
-                                </button>
-                                <button class="btn btn-xs m-0 p-0 text-success" onClick="editStrategy(1)" style='background-color:transparent;'>
-                                    <i class="material-icons">edit</i>
-                                </button>
-                                <button class="btn btn-xs m-0 p-0 text-danger" onClick="endStrategy(1)" style='background-color:transparent;'>
-                                    <i class="material-icons">close</i>
-                                </button>
-                            </td>                            
-                        </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="6" class="text-center">Start New Strategy</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="input-group mb-3">
-                                    <input id="strategy-name-input" type="text" placeholder="Strategy Name" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-                                </div>
-                            </td>
-                            <!-- TODO: Change this to a searchable select dropdown -->
-                            <td>
-                                <select id="strategy-type-select" placeholder="Strategy" class="custom-select text-center" >
-                                    <option>TMA</option>
-                                    <option>BB</option>
-                                    <option>PB</option>
-                                </select>
-                            </td>
-                            <td colspan="2">
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <select id="strategy-starting-position-select" class="input-group-text custom-select" placeholder="Starting Position">
-                                            <option selected="selected">Buying</option>
-                                            <option>Selling</option>
-                                        </select>
-                                    </div>
-                                    <input id="strategy-quantity-input" type="number" placeholder="# of Shares" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-                                    
-                                    <!-- TODO: Replace with a search from predefined stock list -->
-                                    <div class="input-group-append">
-                                        <select id="strategy-share-select" class="input-group-text custom-select" placeholder="Stock">
-                                            <option>AAPL ($195.19)</option>
-                                            <option>AMZN ($1880.15)</option>
-                                            <option>C ($71.82)</option>
-                                            <option>KO</option>
-                                            <option>MSFT</option>
-                                            <option>NFLX</option>
-                                        </select>
-                                    </div>
-                                </div>    
-                                <!--<input type="text" placeholder="Starting Investment"/> -->
-                            </td>
-                            <td>
-
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                    <span class="input-group-text">$</span>
-                                    </div>
-                                    <input id="new-investment-value" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" value=0.00 disabled>
-                                </div>
-                            </td>
-                            <td>
-                                <button class="btn btn-lg p-2 text-success" onClick="confirmCreateStrategy()" style='background-color:transparent;'>
-                                    <i class="material-icons">send</i>
+                            <th colspan="6" class="text-center">
+                                <button class="btn btn-xs p-2 btn-primary" onClick="openCreateNewStrategyModal();">
+                                    Create New Strategy
                                 </button>
-                            
-                            </td>                            
-                        </tr>
-                        <tr>
-                            <td colspan="6" id="new-strategy-warnings" style="display: none;">
-                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                  <strong id="new-strategy-warning-label"></strong> 
-                                    <span id="new-strategy-warning-message"></span>
-                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                            </td>
+                            </th>
                         </tr>
                     </tfoot>
                 </table>
@@ -147,8 +68,8 @@
                         </tr>
                         
                     </thead>
-                    <tbody id="stock-info-tbody">
-                    </tbody>
+                    <tbody id="stock-info-tracked"></tbody>
+                    <tbody id="stock-info-untracked" style="display: none;"></tbody>
                     <tfoot>
                         <tr>
                             <td colspan="3">
@@ -166,6 +87,17 @@
                                 <button class="btn btn-lg p-2 text-success" onClick="startTrackingStock()" style='background-color:transparent;'>
                                     <i class="material-icons">add</i>
                                 </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <button id="show-untracked-stocks-btn" class="btn btn-xs p-2 btn-primary" onClick="$('#stock-info-untracked').show();$('#hide-untracked-stocks-btn').show();$(this).hide();">
+                                    Show Untracked Stocks
+                                </button>
+                                <button id="hide-untracked-stocks-btn" class="btn btn-xs p-2 btn-default" style="display: none;" onClick="$('#stock-info-untracked').hide();$('#show-untracked-stocks-btn').show();$(this).hide();">
+                                    Hide Untracked Stocks
+                                </button>
+                                
                             </td>
                         </tr>
                     </tfoot>
@@ -203,8 +135,12 @@
         <!-- Autocomplete Library -->
         <script src="js/jquery.easy-autocomplete.min.js"></script> 
 
+        <!-- Mustache Templating Library -->
+        <script src="js/mustache.js"></script>
+
         <script src="js/stocks.js"></script>
         <script src="js/strategies.js"></script>
+      
     </body>
     
 </html>

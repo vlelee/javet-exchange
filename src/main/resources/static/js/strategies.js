@@ -1,23 +1,77 @@
 $(document).ready(function() {
     loadStrategies();
     quantity_input_field = $("#strategy-quantity-input");
-    quantity_input_field.keyup(function() {
-        quantity = $("#strategy-quantity-input").val();
-        stock = $("#strategy-share-select").val();
-        let stock_price_regex = /\w+ \(\$(\d+\.\d+)\)/g
-        stock_vals = stock_price_regex.exec(stock);
-        let stock_price = parseFloat(stock_vals[1]).toFixed(2);
-        if(quantity) {
-            let investment_value = (stock_price * quantity).toFixed(2)
-            $("#new-investment-value").val(investment_value);
-        }
-    });
+    quantity_input_field.change(updateInvestmentValue);    
+    $("#strategy-share-select").change(updateInvestmentValue)
 });
 
-function loadStrategies() {
-    // TODO: Call the REST API once it's created.
+function updateInvestmentValue() {
+    quantity = $("#strategy-quantity-input").val();
+    stock = $("#strategy-share-select option:selected").text();
+    let stock_price_regex = /.+\(\$(\d+\.\d+)\)/g
+    stock_vals = stock_price_regex.exec(stock);
+    console.log(quantity);
+    console.log(stock);
+    console.log(stock_vals);
+    if(quantity && stock) {
+        let stock_price = parseFloat(stock_vals[1]).toFixed(2);
+        let investment_value = (stock_price * quantity).toFixed(2)
+        $("#new-investment-value").val(investment_value);
+    }
 }
 
+function loadStrategies() {
+    $.get("http://localhost:8082/api/strategies", function(data) {
+        $("#strategy-info-tbody").html("");
+        $.each(data, function(index, strategy) {
+            $("#strategy-info-tbody").append(`
+                        <tr class="m-0">
+                            <th scope="row">${strategy.strategyName}</th>
+                            <td>${strategy.algo}</td>
+                            <td>${strategy.stock.ticker}</td>
+                            <td>TBD</td>
+                            <td>TBD</td>
+                            <td nowrap>
+                                <button class="btn btn-xs m-0 p-0 text-info" onClick="viewMoreStrategy(${strategy.id})" style='background-color:transparent;'>
+                                    <i class="material-icons">trending_up</i>
+                                </button>
+                                <button class="btn btn-xs m-0 p-0 text-success" onClick="editStrategy(${strategy.id})" style='background-color:transparent;'>
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button class="btn btn-xs m-0 p-0 text-danger" onClick="endStrategy(${strategy.id})" style='background-color:transparent;'>
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </td>                            
+                        </tr>
+            `);
+            console.log(strategy);
+        });
+    });
+}
+
+function openCreateNewStrategyModal() {
+
+    $.get("templates/strategy-form.mustache", function(template) {
+        Mustache.parse(template);   // optional, speeds up future uses
+        var rendered = Mustache.render(template, {name: "Luke"});
+        clearGlobalModal();
+        let strategy_name = $("#strategy-name-input").val();
+        let strategy_type = $("#strategy-type-select").find(":selected").text();
+        let strategy_start_position = ("Buy" == $("#strategy-starting-position-select").find(":selected").text());
+        let strategy_share_quantity = parseInt($("#strategy-quantity-input").val());
+
+        // TODO: This will change from a select in the future.
+        let strategy_share = $("#strategy-share-select").find(":selected").text();
+        $("#global-modal-title").text("Create New Strategy")
+        $('#global-modal-body').html(rendered);
+        $("#global-modal-footer").html(`
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-success" onClick="createStrategy(${strategy_name}, ${strategy_type}, ${strategy_start_position}, ${strategy_share}, ${strategy_share_quantity}">Create Strategy</button>
+        `);
+        $("#global-modal").modal();                
+
+    });
+}
 
 function viewMoreStrategy(strategy_id) {
     // TODO: Create view more details modal.    
@@ -52,13 +106,6 @@ function confirmCreateStrategy() {
     
     
     clearGlobalModal();
-    let strategy_name = $("#strategy-name-input").val();
-    let strategy_type = $("#strategy-type-select").find(":selected").text();
-    let strategy_start_position = ("Buying" == $("#strategy-starting-position-select").find(":selected").text());
-    let strategy_share_quantity = parseInt($("#strategy-quantity-input").val());
-    
-    // TODO: This will change from a select in the future.
-    let strategy_share = $("#strategy-share-select").find(":selected").text();
     
     
     
