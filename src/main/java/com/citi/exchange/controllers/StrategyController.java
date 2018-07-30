@@ -3,12 +3,10 @@ package com.citi.exchange.controllers;
 import com.citi.exchange.entities.Stock;
 import com.citi.exchange.entities.StrategyConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/strategy")
+@RequestMapping("/api/strategies")
 public class StrategyController {
 
 	@Autowired
@@ -16,8 +14,23 @@ public class StrategyController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	Iterable<StrategyConfiguration> findAll() {
-		return service.getStrategyStockPairings();
+		return service.getStrategies();
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value="/{id}")
+	StrategyConfiguration getStrategyById(@PathVariable("id") int id) {
+		return service.getStrategyById(id);
+	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	void addStrategy(@RequestBody StrategyConfiguration strat) {
+		service.addNewStrategy(strat);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value="/{id}")
+	void addStrategy(@RequestBody StrategyConfiguration strat, @PathVariable("id") int id) {
+		service.updateStrategy(strat, id);
+	}
 
 }
+

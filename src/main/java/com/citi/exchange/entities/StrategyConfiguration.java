@@ -40,8 +40,7 @@ public class StrategyConfiguration implements Serializable {
     @Column(name = "exit_position")
     private Integer exitPosition;
 
-
-    @JoinColumn(name = "stock_id", referencedColumnName = "ticker", nullable = false)
+    @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
     @ManyToOne
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Stock stockFromStrategy;

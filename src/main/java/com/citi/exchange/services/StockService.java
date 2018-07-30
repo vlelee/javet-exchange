@@ -21,7 +21,6 @@ public class StockService {
         return makeCollection(repo.findAll());
     }
 
-    // TODO: Fix this to use a ticker instead.
     public Stock getStockByTicker(String ticker) {
         return repo.findById(ticker).get();
     }
