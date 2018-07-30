@@ -1,5 +1,17 @@
 $(document).ready(function() {
     loadStrategies();
+    quantity_input_field = $("#strategy-quantity-input");
+    quantity_input_field.keyup(function() {
+        quantity = $("#strategy-quantity-input").val();
+        stock = $("#strategy-share-select").val();
+        let stock_price_regex = /\w+ \(\$(\d+\.\d+)\)/g
+        stock_vals = stock_price_regex.exec(stock);
+        let stock_price = parseFloat(stock_vals[1]).toFixed(2);
+        if(quantity) {
+            let investment_value = (stock_price * quantity).toFixed(2)
+            $("#new-investment-value").val(investment_value);
+        }
+    });
 });
 
 function loadStrategies() {
@@ -20,8 +32,16 @@ function endStrategy(strategy_id) {
     // TODO: Call the REST API once it's created.        
 }
 
+
+function createStrategyWarning(label, message) {
+    $("#new-strategy-warning-label").text(label);
+    $("#new-strategy-warning-message").text(message);
+    $("#new-strategy-warnings").show();
+}
+
 // This is called once a user clicks the 'Create Strategy' button which appears as a send icon on the dashboard. This function creates a modal to confirm the details. A button in the footer of the modal which says 'Create Strategy' will call createStrategy() which will actually call the REST service to create the strategy.
 function confirmCreateStrategy() {
+    $("#new-strategy-warnings").hide();
     
     // TODO: Add input validation here.
     var strategy_long_names_dict = {
@@ -35,10 +55,24 @@ function confirmCreateStrategy() {
     let strategy_name = $("#strategy-name-input").val();
     let strategy_type = $("#strategy-type-select").find(":selected").text();
     let strategy_start_position = ("Buying" == $("#strategy-starting-position-select").find(":selected").text());
-    let strategy_share_quantity = $("#strategy-quantity-input").val();
+    let strategy_share_quantity = parseInt($("#strategy-quantity-input").val());
     
     // TODO: This will change from a select in the future.
     let strategy_share = $("#strategy-share-select").find(":selected").text();
+    
+    
+    
+    if(!strategy_name) {
+        createStrategyWarning("Missing Name!", "Please enter a name to identify your strategy!")
+        return
+    } else if(!strategy_share_quantity) {
+        createStrategyWarning("Missing Quantity!", "Please enter a quantity of stock you'd like to begin your investment with!")
+        return
+    } else if(strategy_share_quantity < 1) {
+        createStrategyWarning("Invalid Share Quantity!", "Please enter a quantity of stock you'd like to begin your investment with!")
+        return
+    }
+    
     
     $("#global-modal-title").text("Confirm Strategy Details")
     $("#global-modal-body").html(`

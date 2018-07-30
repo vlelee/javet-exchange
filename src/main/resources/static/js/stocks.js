@@ -43,7 +43,7 @@ $(document).ready(function() {
 });
 
 function findAndLoadRelevantStocks() {
-    $.get("http://localhost:8082/stock", function(data) {
+    $.get("http://localhost:8082/stocks", function(data) {
         let tracked_stocks = []
         $.each(data, function(index, stock) {
             console.log(stock.stockName);
@@ -99,8 +99,14 @@ function startTrackingStock() {
     console.log(new_stock_to_track)
     console.log(JSON.stringify(new_stock_to_track))
     $.ajax({
-        url: "http://localhost:8082/stock", 
-        data: new_stock_to_track, 
+        
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        url: "http://localhost:8082/stocks", 
+        method: "POST",
+        data: JSON.stringify(new_stock_to_track), 
         success: function() {
             window.location.reload(true);
         }
