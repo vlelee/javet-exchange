@@ -32,7 +32,7 @@ public class StockService {
 
     @Transactional()
     public void updateStock(Stock aStock, String ticker){
-        Stock update_stock = getStockByTicker(ticker);
+        Stock update_stock = getStockByTicker(ticker.trim());
         update_stock.setStockName(aStock.getStockName());
         update_stock.setTracking(aStock.isTracking());
         repo.save(update_stock);

@@ -68,14 +68,5 @@ public class StockPrice implements Serializable {
         this.stock = stock;
     }
 
-    //    public double getAverageForPast(Integer stockId, Integer minutes) {
-//        String sql = "SELECT SUM(price) / COUNT(*) FROM market_data WHERE time_stamp > DATE_SUB(NOW(), INTERVAL :minutes MINUTE)";
-//        //TODO: Need a hibernate util class to call getSessionFactory()
-//        SessionFactory sessionFactory = getSessionFactory();
-//        Session session = sessionFactory.openSession();
-//        TypedQuery<Double> sqlQuery = session.createQuery(sql);
-//        sqlQuery.setParameter("minutes", minutes);
-//        return sqlQuery.getResultList().get(0);
-//    }
 }
 

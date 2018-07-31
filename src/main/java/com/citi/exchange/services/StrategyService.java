@@ -20,6 +20,10 @@ public class StrategyService {
         return makeCollection(repo.findAll());
     }
 
+    public Collection<StrategyConfiguration> getActiveStrategies() {
+        return makeCollection(repo.findAllActive());
+    }
+
     public StrategyConfiguration getStrategyById(int id) {
         return repo.findById(id).get();
     }

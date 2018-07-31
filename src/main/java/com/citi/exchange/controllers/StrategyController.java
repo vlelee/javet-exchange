@@ -19,6 +19,11 @@ public class StrategyController {
 		return service.getStrategies();
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value="/active")
+	Iterable<StrategyConfiguration> findAllActive() {
+		return service.getActiveStrategies();
+	}
+
 	@RequestMapping(method = RequestMethod.GET, value="/{id}")
 	StrategyConfiguration getStrategyById(@PathVariable("id") int id) {
 		return service.getStrategyById(id);

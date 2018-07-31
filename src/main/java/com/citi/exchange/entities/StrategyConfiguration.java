@@ -2,6 +2,7 @@ package com.citi.exchange.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -42,6 +43,14 @@ public class StrategyConfiguration implements Serializable {
     @Column(name = "num_shares")
     private Integer numShares;
 
+    @Column(nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean buying;
+
+    @Column(nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean active;
+
     @Column(name = "exit_threshold_high")
     private Double exitThresholdHigh;
 
@@ -58,12 +67,14 @@ public class StrategyConfiguration implements Serializable {
     @JsonIgnore
     private List<Trade> trades = new ArrayList<Trade>();
 
-    public StrategyConfiguration(String strategyName, Stock stock,Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares, Double exitThresholdHigh, Double exitThresholdLow) {
+    public StrategyConfiguration(String strategyName, Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares, boolean buying, boolean active, Double exitThresholdHigh, Double exitThresholdLow, Stock stock) {
         this.strategyName = strategyName;
         this.algo = algo;
         this.startTime = startTime;
         this.initiationPrice = initiationPrice;
         this.numShares = numShares;
+        this.buying = buying;
+        this.active = active;
         this.exitThresholdHigh = exitThresholdHigh;
         this.exitThresholdLow = exitThresholdLow;
         this.stock = stock;
@@ -144,6 +155,30 @@ public class StrategyConfiguration implements Serializable {
         this.numShares = numShares;
     }
 
+    public boolean isBuying() {
+        return buying;
+    }
+
+    public void setBuying(boolean buying) {
+        this.buying = buying;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public List<Trade> getTrades() {
+        return trades;
+    }
+
+    public void setTrades(List<Trade> trades) {
+        this.trades = trades;
+    }
+
     public Double getExitThresholdHigh() {
         return exitThresholdHigh;
     }
@@ -159,12 +194,5 @@ public class StrategyConfiguration implements Serializable {
     public void setExitThresholdLow(Double exitThresholdLow) {
         this.exitThresholdLow = exitThresholdLow;
     }
-//
-//    public List<Trade> getTrades() {
-//        return trades;
-//    }
-//
-//    public void setTrades(List<Trade> trades) {
-//        this.trades = trades;
-//    }
+
 }

@@ -9,14 +9,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/")
 public class DashboardController {
-
-	@Autowired
-	private com.citi.exchange.services.StrategyService service;
-
-	@RequestMapping(method = RequestMethod.GET)
-	Iterable<StrategyConfiguration> findAll() {
-		return service.getStrategies();
-	}
-
-
 }

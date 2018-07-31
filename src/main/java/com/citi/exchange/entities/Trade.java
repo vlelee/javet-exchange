@@ -1,15 +1,10 @@
 package com.citi.exchange.entities;
 
-import com.citi.exchange.algorithms.StrategyExecution;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "trades")
@@ -21,7 +16,7 @@ public class Trade implements Serializable {
 
     @Column(nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private boolean selling;
+    private boolean buying;
 
     @Column(name = "num_shares")
     private Integer numShares;
@@ -46,8 +41,8 @@ public class Trade implements Serializable {
     public Trade() {
     }
 
-    public Trade(boolean selling, Integer numShares, Timestamp timeTraded, Double tradePrice, Stock stock, StrategyConfiguration strategy) {
-        this.selling = selling;
+    public Trade(boolean buying, Integer numShares, Timestamp timeTraded, Double tradePrice, Stock stock, StrategyConfiguration strategy) {
+        this.buying = buying;
         this.numShares = numShares;
         this.timeTraded = timeTraded;
         this.tradePrice = tradePrice;
@@ -63,12 +58,12 @@ public class Trade implements Serializable {
         this.id = id;
     }
 
-    public boolean isSelling() {
-        return selling;
+    public boolean isBuying() {
+        return buying;
     }
 
-    public void setSelling(boolean selling) {
-        this.selling = selling;
+    public void setBuying(boolean buying) {
+        this.buying = buying;
     }
 
     public Integer getNumShares() {

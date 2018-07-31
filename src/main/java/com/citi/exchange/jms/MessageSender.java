@@ -11,7 +11,6 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
-import javax.jms.Session;
 
 @Service
 public class MessageSender {
@@ -20,33 +19,18 @@ public class MessageSender {
     private JmsTemplate jmsTemplate;
 
 
-    public void send(final String text) {
-
-        this.jmsTemplate.send(new MessageCreator() {
+    public void send(final String orderMessage) {
+        System.out.println("sending message: " + orderMessage);
+        this.jmsTemplate.convertAndSend("OrderBroker", orderMessage);
+        MessageCreator message = new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
-                Message message = session.createTextMessage(text);
+                Message message = session.createTextMessage(orderMessage);
                 return message;
             }
-        });
+        };
+        System.out.println(message);
+//        this.jmsTemplate.send("OrderBroker", message);
     }
-
-
-    public void sendText(final String text) {
-        this.jmsTemplate.convertAndSend(text);
-    }
-
-
-    public void send(final Destination dest,final String text) {
-
-        this.jmsTemplate.send(dest,new MessageCreator() {
-            @Override
-            public Message createMessage(Session session) throws JMSException {
-                Message message = session.createTextMessage(text);
-                return message;
-            }
-        });
-    }
-
 
 }

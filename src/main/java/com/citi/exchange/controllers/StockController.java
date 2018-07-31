@@ -30,17 +30,17 @@ public class StockController {
 
 	@RequestMapping(method = RequestMethod.PUT, value="/{ticker}")
 	void addStock(@RequestBody Stock stock, @PathVariable("ticker") String ticker) {
-		service.updateStock(stock, ticker);
+		service.updateStock(stock, ticker.trim());
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value="/{ticker}/hide")
 	void hideStock(@PathVariable("ticker") String ticker) {
-		service.toggleStockVisbility(ticker, false);
+		service.toggleStockVisbility(ticker.trim(), false);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value="/{ticker}/show")
 	void showStock(@PathVariable("ticker") String ticker) {
-		service.toggleStockVisbility(ticker, true);
+		service.toggleStockVisbility(ticker.trim(), true);
 	}
 
 }

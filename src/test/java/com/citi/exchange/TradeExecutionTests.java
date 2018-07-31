@@ -1,14 +1,12 @@
 package com.citi.exchange;
 
-import com.citi.exchange.algorithms.TradeExecution;
-import com.citi.exchange.services.StockPriceWebService;
+import com.citi.exchange.jms.TradeExecution;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -18,9 +16,9 @@ import static org.junit.Assert.assertTrue;
 public class TradeExecutionTests {
     @Test
     public void getMessageConversion(){
-        TradeExecution servce = new TradeExecution();
+        TradeExecution service = new TradeExecution();
         java.sql.Timestamp time = new java.sql.Timestamp(System.currentTimeMillis());
-        String message = servce.createMessage(true, 123, 11.50, 200, "GOOGL", time );
+        String message = service.createOrderMessage(true, 123, 11.50, 200, "GOOGL", time );
 
         String expected = "<trade>\n" +
                 "<buy>true</buy>\n" +
@@ -36,21 +34,14 @@ public class TradeExecutionTests {
 
     }
 
-//    @Test
-//    public void getMarketPriceFromStockPriceGetterServiceWithEmptySpaceTicker(){
-//        StockPriceWebService service = new StockPriceWebService();
-//        service.getMarketPrice(" ");
-//
-//        double stockPrice = service.getStockPrice();
-//        assertEquals((int)0.0, (int)stockPrice);
-//    }
-//
-//    @Test
-//    public void getMarketPriceFromStockPriceGetterServiceWithNoTicker(){
-//        StockPriceWebService service = new StockPriceWebService();
-//        service.getMarketPrice("");
-//
-//        double stockPrice = service.getStockPrice();
-//        assertEquals((int)0.0, (int)stockPrice);
-//    }
+    @Test
+    public void testMessageSend(){
+
+        TradeExecution service = new TradeExecution();
+        java.sql.Timestamp time = new java.sql.Timestamp(System.currentTimeMillis());
+        String message = service.createOrderMessage(true, 123, 11.50, 200, "GOOGL", time);
+
+        service.sendMessage(message);
+    }
+
 }
