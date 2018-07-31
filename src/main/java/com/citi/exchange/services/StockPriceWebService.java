@@ -34,6 +34,7 @@ public class StockPriceWebService {
     //First run MockYahoo server (Tomcat) before running ExchangeApplication
     public Map<String, Double> getMarketPrice(){
         Map<String, Double> prices = new HashMap<>();
+
         try {
             Collection<Stock> stocks = stockService.getStocks();
             for(Stock stock : stocks) {

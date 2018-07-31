@@ -35,12 +35,14 @@ import java.util.List;
 //@ComponentScan("com.citi.exchange.jms")
 @EnableScheduling
 @SpringBootApplication
+@Configuration
 @EnableJms
 public class ExchangeApplication extends WebMvcConfigurerAdapter {
     public static void main(String[] args) {
         SpringApplication.run(com.citi.exchange.ExchangeApplication.class, args);
 //        ConfigurableApplicationContext context = SpringApplication.run(ExchangeApplication.class, args);
     }
+
 
     @Bean
         // Strictly speaking this bean is not necessary as boot creates a default

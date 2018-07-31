@@ -49,4 +49,5 @@ public class StockService {
         Stock update_stock = getStockByTicker(ticker);
         repo.save(update_stock);
     }
+
 }

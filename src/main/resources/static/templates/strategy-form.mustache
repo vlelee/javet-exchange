@@ -26,11 +26,8 @@
                 <option>Sell</option>
             </select>
         </div>
-        <div class="input-group col-sm-5">
-            <select id="strategy-share-select" class="input-group-text custom-select" placeholder="Stock" />
-        </div>
-        <div class="input-group col-sm-3">
-            <button type="button" class="btn btn-primary" onClick="openTrackNewStockModal()">Missing Stock?</button>
+        <div class="input-group col-sm-9">
+            <input id="strategy-stock-input" class="text-center form-control" aria-label="default" placeholder="Stock" />
         </div>
     </div>
     <div class="form-group row">
@@ -46,19 +43,10 @@
     </div>
     <div class="form-group row">
         <div class="input-group col-sm-6">
-            <input id="gain-exit-threshold-input" type="number" placeholder="Gain % Exit" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+            <input id="gain-exit-threshold-input" type="number" placeholder="Gain % Exit" step="0.01" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
         </div>
         <div class="input-group col-sm-6">
-            <input id="loss-exit-threshold-input" type="number" placeholder="Loss % Exit" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-        </div>
-    </div>
-    <div class="form-group" style="display: none;">
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong id="new-strategy-warning-label"></strong> 
-            <span id="new-strategy-warning-message"></span>
-            <button type="button" class="close" onClick="$('#new-strategy-warnings').hide();">
-            <span aria-hidden="true">&times;</span>
-            </button>
+            <input id="loss-exit-threshold-input" type="number" placeholder="Loss % Exit" step="0.01" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
         </div>
     </div>
 </form>
