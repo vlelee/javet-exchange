@@ -1,6 +1,6 @@
 package com.citi.exchange;
 
-import com.citi.exchange.entities.Stock;
+
 import com.citi.exchange.services.StockPriceWebService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +23,10 @@ public class StockPriceServiceTest {
         service.getMarketPrice();
 
         double stockPrice = service.getStockPrice();
-        System.out.println("The price for " + service.getTicker() + " " + stockPrice);
 
         assertTrue(stockPrice > 0);
     }
+    
 //TODO: ADD mockito and mock runtime error
 //    @Test
 //    public void getMarketPriceFromStockPriceGetterServiceWithEmptySpaceTicker(){

@@ -6,6 +6,7 @@ import com.citi.exchange.entities.StockPrice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 
@@ -13,12 +14,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Scanner;
 
 @Component
 public class StockPriceWebService {
     private double price;
-
+    private String marketFeedUrl;
     private String ticker;
 
     private Stock stock;
@@ -30,43 +32,29 @@ public class StockPriceWebService {
     @Autowired
     private StockService stockService;
 
-    //private String marketFeedUrl="http://localhost:8081/MockYahoo/quotes.csv";
-
-    private String marketFeedUrl;
-
     @Autowired
     public StockPriceWebService(@Value("${market.feed.url}") String marketFeedUrl){
         this.marketFeedUrl = marketFeedUrl;
     }
 
-
     public StockPriceWebService() {}
 
-    //@Scheduled(fixedRate = 1000)
+    //First run MockYahoo server (Tomcat) before running ExchangeApplication
+    @Scheduled(fixedRate = 1000)
     public void getMarketPrice(){
-        //ticker = ticker.replaceAll("\\s","");
-
-        //First run MockYahoo server (Tomcat) before running ExchangeApplication
         try {
-            if(isValidTicker(ticker)) {
-                setStockPrice(getResponseFromURL(ticker));
+            Collection<Stock> stocks = stockService.getStocks();
+            for(Stock stock : stocks) {
+                String ticker = stock.getTicker().replaceAll("\\s", "");
 
-                java.sql.Timestamp currentTime = getCurrentTimeStamp();
-                stock = new Stock(ticker, "tempName", true);
-
-                stockService.addNewStock(stock);
-
-                stockPrice = new StockPrice(currentTime, stock, price);
-
-                stockPriceService.addNewStockPrice(stockPrice);
-
-                System.out.println(ticker + " " + price + " time: " + getCurrentTimeStamp());
+                if(isValidTicker(ticker)){
+                    setStockPrice(getResponseFromURL(ticker));
+                    java.sql.Timestamp currentTime = getCurrentTimeStamp();
+                    stockPrice = new StockPrice(currentTime, stock, price);
+                    stockPriceService.addNewStockPrice(stockPrice);
+                } else
+                    throw new RuntimeException("Invalid ticker - cannot get market price");
             }
-            else
-                throw new RuntimeException("Invalid ticker");
-
-            //stockService = new StockService();
-            //stockPriceService = new StockPriceService();
 
 
         } catch (MalformedURLException e) {
@@ -90,7 +78,7 @@ public class StockPriceWebService {
         return Double.parseDouble(scanner.next());
     }
 
-    private Timestamp getCurrentTimeStamp(){
+    public Timestamp getCurrentTimeStamp(){
         return new Timestamp(System.currentTimeMillis());
     }
 
