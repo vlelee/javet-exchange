@@ -21,7 +21,7 @@ public class StockPrice implements Serializable {
 
     @Column(name = "price") private Double price;
 
-    @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
+    @JoinColumn(name = "stock_ticker", referencedColumnName = "ticker", nullable = false)
     @ManyToOne
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Stock stock;

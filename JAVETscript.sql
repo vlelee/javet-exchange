@@ -41,23 +41,15 @@ buying boolean not null,
 num_shares int not null, 
 trade_price double not null,
 time_traded timestamp default current_timestamp,
+response_message varchar(200),
 FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict,
 FOREIGN KEY (strategy) REFERENCES strategy_configurations(id) on delete restrict
 );
 
 
-insert into stocks values ("AAPL", "Apple Inc.", true);
-insert into stocks values ("GOOGL", "Alphabet Inc.", true);
-insert into stocks values ("C ", "Citi", true);
-insert into stocks values ("BFY ", "Blackrock", false);
+insert into stocks values ("AAPL", "Apple Inc.");
+insert into stocks values ("GOOGL", "Alphabet Inc.");
+insert into stocks values ("C ", "Citi");
+insert into stocks values ("BFY ", "Blackrock");
 insert into strategy_configurations values (1, "MyStrat", 'TMA', "GOOGL", current_timestamp, null, 100.50, null, 100,  true, true, 10.5, 5.5);
 insert into strategy_configurations values (2, "2ndStrat", 'BB', "GOOGL", current_timestamp, null, 100.50, null, 100,  true, false, 10.5, 5.5);
-
-/*
-insert into stocks values ("BFY", "Blackrock", true);
-insert into stocks values ("C", "Citi", true);
-insert into stocks values ("C", "Citi", true);
-insert into stocks values ("C", "Citi", true);
-insert into stocks values ("C", "Citi", true);
- ["AAPL", "AMZN", "C", "KO", "MSFT", "NFLX"];
-*/

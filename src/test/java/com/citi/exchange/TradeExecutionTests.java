@@ -1,47 +1,44 @@
 package com.citi.exchange;
 
+import com.citi.exchange.entities.Stock;
+import com.citi.exchange.entities.StrategyConfiguration;
+import com.citi.exchange.entities.Trade;
 import com.citi.exchange.jms.TradeExecution;
+import com.citi.exchange.services.StockService;
+import com.citi.exchange.services.StrategyService;
+import com.citi.exchange.services.TradeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.text.SimpleDateFormat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ContextConfiguration(classes = {com.citi.exchange.ExchangeApplication.class})
+
 public class TradeExecutionTests {
-    @Test
-    public void getMessageConversion(){
-        TradeExecution service = new TradeExecution();
-        java.sql.Timestamp time = new java.sql.Timestamp(System.currentTimeMillis());
-        String message = service.createOrderMessage(true, 123, 11.50, 200, "GOOGL", time );
 
-        String expected = "<trade>\n" +
-                "<buy>true</buy>\n" +
-                "<id>123</id>\n" +
-                "<price>11.5</price>\n" +
-                "<size>200</size>\n" +
-                "<stock>GOOGL</stock>\n" +
-                "<whenAsDate>" + (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(time) +"</whenAsDate>\n" +
-                "</trade>";
-
-        assertEquals(message, expected );
-
-
-    }
+    @Autowired
+    private TradeExecution tradeExecutionService;
+    @Autowired
+    private TradeService tradeService;
+    @Autowired
+    private StockService stockService;
+    @Autowired
+    private StrategyService strategyService;
 
     @Test
-    public void testMessageSend(){
-
-        TradeExecution service = new TradeExecution();
+    public void testMessageSend() {
         java.sql.Timestamp time = new java.sql.Timestamp(System.currentTimeMillis());
-        String message = service.createOrderMessage(true, 123, 11.50, 200, "GOOGL", time);
-
-        service.sendMessage(message);
+        Stock stock = stockService.getStockByTicker("GOOGL");
+        StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(1);
+        Trade newTrade =tradeService.addNewTrade(new Trade(true, 20, 100.50, time, stock, strategyConfiguration));
+        tradeExecutionService.send(newTrade);
     }
 
 }

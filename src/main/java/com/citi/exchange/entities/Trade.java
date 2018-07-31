@@ -21,12 +21,14 @@ public class Trade implements Serializable {
     @Column(name = "num_shares")
     private Integer numShares;
 
+    @Column(name = "trade_price")
+    private Double tradePrice;
 
     @Column(name = "time_traded")
     private java.sql.Timestamp timeTraded;
 
-    @Column(name = "trade_price")
-    private Double tradePrice;
+    @Column(name = "response_message")
+    private String responseMessage;
 
     @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
     @ManyToOne
@@ -41,11 +43,11 @@ public class Trade implements Serializable {
     public Trade() {
     }
 
-    public Trade(boolean buying, Integer numShares, Timestamp timeTraded, Double tradePrice, Stock stock, StrategyConfiguration strategy) {
+    public Trade(boolean buying, Integer numShares, Double tradePrice, Timestamp timeTraded, Stock stock, StrategyConfiguration strategy) {
         this.buying = buying;
         this.numShares = numShares;
-        this.timeTraded = timeTraded;
         this.tradePrice = tradePrice;
+        this.timeTraded = timeTraded;
         this.stock = stock;
         this.strategy = strategy;
     }
@@ -104,5 +106,13 @@ public class Trade implements Serializable {
 
     public void setStrategy(StrategyConfiguration strategy) {
         this.strategy = strategy;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
     }
 }

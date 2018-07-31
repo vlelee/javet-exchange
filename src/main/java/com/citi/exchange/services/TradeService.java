@@ -1,6 +1,7 @@
 package com.citi.exchange.services;
 
 import com.citi.exchange.entities.Stock;
+import com.citi.exchange.entities.StrategyConfiguration;
 import com.citi.exchange.entities.Trade;
 import com.citi.exchange.repos.StockRepo;
 import com.citi.exchange.repos.TradeRepo;
@@ -29,6 +30,20 @@ public class TradeService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Trade addNewTrade(Trade aTrade){
         return repo.save(aTrade);
+    }
+
+
+    @Transactional()
+    public void updateTradeResponse(String message, int id){
+        Trade updated_strategy = getTradeById(id);
+        updated_strategy.setResponseMessage(message);
+        repo.save(updated_strategy);
+    }
+    @Transactional()
+    public void updateTrade(Trade newTrade, int id){
+        Trade updated_strategy = getTradeById(id);
+        updated_strategy.setResponseMessage(newTrade.getResponseMessage());
+        repo.save(updated_strategy);
     }
 
     private static Collection<Trade> makeCollection(Iterable<Trade> iter) {
