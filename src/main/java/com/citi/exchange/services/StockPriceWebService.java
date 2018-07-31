@@ -2,19 +2,17 @@ package com.citi.exchange.services;
 
 
 import com.citi.exchange.entities.Stock;
-import com.citi.exchange.entities.StockPrice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 @Component
@@ -22,12 +20,6 @@ public class StockPriceWebService {
     private double price;
     private String marketFeedUrl;
     private String ticker;
-
-    private Stock stock;
-    private StockPrice stockPrice;
-
-    @Autowired
-    private StockPriceService stockPriceService;
 
     @Autowired
     private StockService stockService;
@@ -40,28 +32,23 @@ public class StockPriceWebService {
     public StockPriceWebService() {}
 
     //First run MockYahoo server (Tomcat) before running ExchangeApplication
-    @Scheduled(fixedRate = 1000)
-    public void getMarketPrice(){
+    public Map<String, Double> getMarketPrice(){
+        Map<String, Double> prices = new HashMap<>();
         try {
             Collection<Stock> stocks = stockService.getStocks();
             for(Stock stock : stocks) {
-                String ticker = stock.getTicker().replaceAll("\\s", "");
-
+                ticker = stock.getTicker().trim();
                 if(isValidTicker(ticker)){
-                    setStockPrice(getResponseFromURL(ticker));
-                    java.sql.Timestamp currentTime = getCurrentTimeStamp();
-                    stockPrice = new StockPrice(currentTime, stock, price);
-                    stockPriceService.addNewStockPrice(stockPrice);
-                } else
-                    throw new RuntimeException("Invalid ticker - cannot get market price");
+                    prices.put(ticker, getResponseFromURL(ticker));
+                }
             }
-
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return prices;
     }
 
 
@@ -76,10 +63,6 @@ public class StockPriceWebService {
         Scanner scanner = new Scanner(url.openStream());
 
         return Double.parseDouble(scanner.next());
-    }
-
-    public Timestamp getCurrentTimeStamp(){
-        return new Timestamp(System.currentTimeMillis());
     }
 
 
