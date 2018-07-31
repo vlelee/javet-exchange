@@ -1,38 +1,52 @@
  <form>
     <div class="form-group row">
-        <div class="input-group col-sm-9">
+        <label for="strategy-name-input" class="col-sm-5 col-form-label">Strategy Name</label>
+        <div class="col-sm-7">
             <input id="strategy-name-input" type="text" placeholder="Strategy Name" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{strategyName}}">
         </div>
-        <div class="input-group col-sm-3">
+    </div>
+    <div class="form-group row">
+        <label for="strategy-type-input" class="col-sm-5 col-form-label">Strategy Type</label>
+        <div class="col-sm-7">
             <input id="strategy-type-input" type="text" placeholder="Strategy Type" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{strategyType}}" disabled>
         </div>
     </div>
     <div class="form-group row">
-        <div class="input-group col-sm-4">
+        <label for="strategy-starting-position-input" class="col-sm-5 col-form-label">Starting Position</label>
+        <div class="col-sm-7">
             <input id="strategy-starting-position-input" type="text" placeholder="Starting Position" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{startingPosition}}" disabled>
-        </div>
-        <div class="input-group col-sm-4">
-            <input id="strategy-share-input" type="text" placeholder="Strategy Type" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{strategyStock}}" disabled>
-        </div>
-        <div class="input-group col-sm-4">
-            <input id="strategy-quantity-input" type="number" placeholder="# of Shares" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{stockQuantity}}" disabled>
         </div>
     </div>
     <div class="form-group row">
-        <div class="input-group col-sm-6">
-            <input id="gain-exit-threshold-input" type="number" placeholder="Gain % Exit" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-        </div>
-        <div class="input-group col-sm-6">
-            <input id="loss-exit-threshold-input" type="number" placeholder="Loss % Exit" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        <label for="strategy-share-input" class="col-sm-5 col-form-label">Strategy Stock</label>
+        <div class="col-sm-7">
+            <input id="strategy-share-input" type="text" placeholder="Strategy Stock" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{strategyStock}}" disabled>
         </div>
     </div>
-    <div class="form-group" style="display: none;">
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong id="new-strategy-warning-label"></strong> 
-            <span id="new-strategy-warning-message"></span>
-            <button type="button" class="close" onClick="$('#new-strategy-warnings').hide();">
-            <span aria-hidden="true">&times;</span>
-            </button>
+    <div class="form-group row">
+        <label for="initial-share-quantity-input" class="col-sm-5 col-form-label">Initial Share Quantity</label>
+        <div class="col-sm-7">
+            <input id="initial-share-quantity-input" type="number" placeholder="# of Shares" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{stockQuantity}}" disabled>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="gain-exit-threshold-input" class="col-sm-5 col-form-label">Gain Exit Threshold</label>
+        <div class="col-sm-7 input-group mb-3">
+            <input id="gain-exit-threshold-input" type="number" step="0.01" placeholder="Gain Exit Threshold" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{gainExitThreshold}}">
+            
+          <div class="input-group-append">
+            <span class="input-group-text">%</span>
+          </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="loss-exit-threshold-input" class="col-sm-5 col-form-label">Loss Exit Threshold</label>
+        <div class="col-sm-7 input-group mb-3">
+            <input id="loss-exit-threshold-input" type="number" step="0.01" placeholder="Loss Exit Threshold" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{lossExitThreshold}}">
+            
+          <div class="input-group-append">
+            <span class="input-group-text">%</span>
+          </div>
         </div>
     </div>
 </form>

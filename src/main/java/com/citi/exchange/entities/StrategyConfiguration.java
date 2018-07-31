@@ -58,7 +58,7 @@ public class StrategyConfiguration implements Serializable {
     private Double exitThresholdLow;
 
     @JoinColumn(name = "stock", referencedColumnName = "ticker", nullable = false)
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @com.fasterxml.jackson.annotation.JsonIgnore
     @JsonProperty("stock")
     private Stock stock;

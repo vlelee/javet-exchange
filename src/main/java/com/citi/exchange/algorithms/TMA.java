@@ -1,57 +1,80 @@
 package com.citi.exchange.algorithms;
 
+
 import com.citi.exchange.entities.StrategyConfiguration;
 
-public class TMA implements StrategyExecution {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TMA implements Strategy {
     boolean previousSAExceedsLA = false; // previous short average exceeds long average
 
-    private static final int longAveragePeriod = 240; // Default: 4 hours
-    private static final int shortAveragePeriod = 30; // Default: 30 minutes
+    private static final int longAveragePeriod = 24; // Default: 4 hours
+    private static final int shortAveragePeriod = 3; // Default: 30 minutes
 
-    @Override
-    public void initiate(StrategyConfiguration s) {
-        // TODO: set previousSAExceedsLA somehow...
+    private List<Double> windowQueue = new ArrayList<>();
+
+    public StrategyConfiguration getStrategyConfiguration() {
+        return strategyConfiguration;
+    }
+
+    public void setStrategyConfiguration(StrategyConfiguration strategyConfiguration) {
+        this.strategyConfiguration = strategyConfiguration;
+    }
+
+    private StrategyConfiguration strategyConfiguration;
+
+    public TMA(StrategyConfiguration strategyConfiguration){
+        this.strategyConfiguration = strategyConfiguration;
     }
 
     @Override
-    public void exit(StrategyConfiguration s) {
+    public void run(double newPrice) {
+        windowQueue.add(0, newPrice);
+        if(windowQueue.size() >= longAveragePeriod){
 
-    }
+            double newShortAverage = getAverage(windowQueue, shortAveragePeriod);
+            double newLongAverage = getAverage(windowQueue, longAveragePeriod);
+            System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Short: " + newShortAverage + " Long: " + newLongAverage);
 
-
-
-    /*
-    public double runTMA() {
-        double newShortAverage = super.getAverageForPast(shortAveragePeriod);
-        double newLongAverage = super.getAverageForPast(longAveragePeriod);
-
-        boolean buying = ??;
-        if(buying) {
-            // If we're buying and the last SA < last LA and current SA > current LA -> buy
-            if(!previousSAExceedsLA && newShortAverage > newLongAverage) {
-                buy();
+            boolean buying = strategyConfiguration.isBuying();
+            if(buying){
+                // If we're buying and the last SA < last LA and current SA > current LA -> buy
+                if(!previousSAExceedsLA && newShortAverage > newLongAverage) {
+                    //buy();
+                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Buying @ " + newPrice);
+                    strategyConfiguration.setBuying(false);
+                }
+            } else {
+                // If we're buying and the last SA > last LA and current SA < current LA -> buy
+                if(previousSAExceedsLA && newShortAverage < newLongAverage) {
+                    //sell();
+                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Selling @ " + newPrice);
+                    strategyConfiguration.setBuying(true);
+                }
             }
-        } else {
-            // If we're buying and the last SA > last LA and current SA < current LA -> buy
-            if(previousSAExceedsLA && newShortAverage < newLongAverage) {
-                sell();
-            }
+
+            previousSAExceedsLA = newShortAverage > newLongAverage;
+
         }
-
-        previousSAExceedsLA = newShortAverage > newLongAverage;
     }
 
-    */
+    @Override
+    public void exit() {
 
-//    public double getAverageForPast(Integer stockId, Integer minutes) {
-//        String sql = "SELECT SUM(price) / COUNT(*) FROM market_data WHERE time_stamp > DATE_SUB(NOW(), INTERVAL :minutes MINUTE)";
-//        //TODO: Need a hibernate util class to call getSessionFactory()
-//        SessionFactory sessionFactory = getSessionFactory();
-//        Session session = sessionFactory.openSession();
-//        TypedQuery<Double> sqlQuery = session.createQuery(sql);
-//        sqlQuery.setParameter("minutes", minutes);
-//        return sqlQuery.getResultList().get(0);
-//    }
+    }
+
+    public double getAverage(List<Double> windowQueque, int windowSize) {
+
+        return windowQueque.stream()
+                .limit(windowSize)
+                .mapToDouble(a -> a)
+                .average()
+                .orElse(0.0);
+    }
+
+
+
 }
 
 

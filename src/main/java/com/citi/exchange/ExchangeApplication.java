@@ -4,28 +4,30 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.config.SimpleJmsListenerContainerFactory;
 
+
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.jms.ConnectionFactory;
 
-
 @EntityScan("com.citi.exchange.entities")
-//@ComponentScan("com.citi.exchange.jms")
+
+@EnableScheduling
 @SpringBootApplication
+@Configuration
 @EnableJms
 public class ExchangeApplication extends WebMvcConfigurerAdapter {
-
-
     public static void main(String[] args) {
         SpringApplication.run(com.citi.exchange.ExchangeApplication.class, args);
-
     }
+
 
     @Bean
         // Strictly speaking this bean is not necessary as boot creates a default

@@ -63,44 +63,11 @@
                             <th scope="col">Open</th>
                             <th scope="col">Close</th>
                             <th scope="col">High</th>
-                            <th scope="col">Low</th> 
-                            <th scope="col">Options</th>                   
+                            <th scope="col">Low</th>                   
                         </tr>
                         
                     </thead>
-                    <tbody id="stock-info-tracked"></tbody>
-                    <tbody id="stock-info-untracked" style="display: none;"></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3">
-                                <div class="input-group mb-3">
-                                    <input id="new-share-name-input" type="text" placeholder="Share Full Name" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-                                </div>
-                                
-                            </td>
-                            <td colspan="2">
-                                <div class="input-group mb-3">
-                                    <input id="new-share-ticker-input" type="text" placeholder="Share Ticker" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">                              
-                                </div>
-                            </td>
-                            <td>
-                                <button class="btn btn-lg p-2 text-success" onClick="startTrackingStock()" style='background-color:transparent;'>
-                                    <i class="material-icons">add</i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="6">
-                                <button id="show-untracked-stocks-btn" class="btn btn-xs p-2 btn-primary" onClick="$('#stock-info-untracked').show();$('#hide-untracked-stocks-btn').show();$(this).hide();">
-                                    Show Untracked Stocks
-                                </button>
-                                <button id="hide-untracked-stocks-btn" class="btn btn-xs p-2 btn-default" style="display: none;" onClick="$('#stock-info-untracked').hide();$('#show-untracked-stocks-btn').show();$(this).hide();">
-                                    Hide Untracked Stocks
-                                </button>
-                                
-                            </td>
-                        </tr>
-                    </tfoot>
+                    <tbody id="stock-info-tbody"></tbody>
                 </table>
             </div>
         </div>
@@ -110,18 +77,18 @@
         <!-- Modal -->
         <div class="modal fade" id="global-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="global-modal-title">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div id="global-modal-body" class="modal-body">
-            </div>
-            <div id="global-modal-footer" class="modal-footer">
-            </div>
-            </div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="global-modal-title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="global-modal-body" class="modal-body">
+                    </div>
+                    <div id="global-modal-footer" class="modal-footer">
+                    </div>
+                </div>
             </div>
         </div>
 
