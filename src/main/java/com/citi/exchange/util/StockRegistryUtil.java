@@ -1,10 +1,10 @@
 package com.citi.exchange.util;
 
-import jdk.nashorn.internal.parser.JSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import sun.misc.IOUtils;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import java.util.Scanner;
 import static java.lang.System.out;
 
 public class StockRegistryUtil {
-    private final static String fileName = "/res/stock-list.json";
+    private final static String fileName = "static/res/stock-list.json";
     private JSONArray registryArray;
 
     public StockRegistryUtil() {
@@ -36,4 +36,6 @@ public class StockRegistryUtil {
         }
         return "";
     }
+
+
 }

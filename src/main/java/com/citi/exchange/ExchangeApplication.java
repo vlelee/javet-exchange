@@ -14,6 +14,7 @@ import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.config.SimpleJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
@@ -29,6 +30,7 @@ import java.io.File;
 @EntityScan("com.citi.exchange.entities")
 @Configuration
 @EnableWebMvc
+@EnableScheduling
 @SpringBootApplication
 //@EnableJms
 public class ExchangeApplication extends WebMvcConfigurerAdapter {
