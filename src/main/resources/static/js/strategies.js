@@ -1,8 +1,5 @@
 $(document).ready(function() {
     loadStrategies();
-    quantity_input_field = $("#strategy-quantity-input");
-    quantity_input_field.change(updateInvestmentValue);    
-    $("#strategy-share-select").change(updateInvestmentValue)
 });
 
 function updateInvestmentValue() {
@@ -32,14 +29,11 @@ function loadStrategies() {
                             <td>TBD</td>
                             <td>TBD</td>
                             <td nowrap>
-                                <button class="btn btn-xs m-0 p-0 text-info" onClick="viewMoreStrategy(${strategy.id})" style='background-color:transparent;'>
-                                    <i class="material-icons">trending_up</i>
-                                </button>
-                                <button class="btn btn-xs m-0 p-0 text-success" onClick="editStrategy(${strategy.id})" style='background-color:transparent;'>
+                                <button class="btn btn-xs m-0 p-0 text-success" onClick="openEditStrategyModal(${strategy.id})" style='background-color:transparent;'>
                                     <i class="material-icons">edit</i>
                                 </button>
-                                <button class="btn btn-xs m-0 p-0 text-danger" onClick="endStrategy(${strategy.id})" style='background-color:transparent;'>
-                                    <i class="material-icons">close</i>
+                                <button class="btn btn-xs m-0 p-0 text-danger" onClick="openEndStrategyModal(${strategy.id})" style='background-color:transparent;'>
+                                    <i class="material-icons">call_end</i>
                                 </button>
                             </td>                            
                         </tr>
@@ -53,21 +47,32 @@ function openCreateNewStrategyModal() {
 
     $.get("templates/strategy-form.mustache", function(template) {
         Mustache.parse(template);   // optional, speeds up future uses
-        var rendered = Mustache.render(template, {name: "Luke"});
+        var rendered = Mustache.render(template);
         clearGlobalModal();
-        let strategy_name = $("#strategy-name-input").val();
-        let strategy_type = $("#strategy-type-select").find(":selected").text();
-        let strategy_start_position = ("Buy" == $("#strategy-starting-position-select").find(":selected").text());
-        let strategy_share_quantity = parseInt($("#strategy-quantity-input").val());
-
-        // TODO: This will change from a select in the future.
-        let strategy_share = $("#strategy-share-select").find(":selected").text();
         $("#global-modal-title").text("Create New Strategy")
         $('#global-modal-body').html(rendered);
+        
+        
+        $.get("http://localhost:8082/api/stocks", function(stocks) {
+            $.each(stocks, function(index, stock) {
+                
+                let get_stock_price_url = "https://api.iextrading.com/1.0/stock/" + stock.ticker.trim() + "/ohlc";
+                $.get(get_stock_price_url, function(response) {
+                    stock_avg = ((response["high"] + response["low"]) / 2).toFixed(2)
+                    $("#strategy-share-select").append(`<option value="${stock.ticker}">${stock.stockName} (\$${stock_avg})</option>`)
+                });
+            });
+            $("#strategy-quantity-input").change(updateInvestmentValue);    
+            $("#strategy-share-select").change(updateInvestmentValue);
+            $("#strategy-share-select").val($("#strategy-share-select option:first").val());
+        });
+        
         $("#global-modal-footer").html(`
+            <p>For more about strategies (e.g. Two-Moving Averages) click <a href="http://neueda.conygre.com/citi/nyc/project/Trading%20Strategies.pdf">here</a>.</p>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-success" onClick="createStrategy(${strategy_name}, ${strategy_type}, ${strategy_start_position}, ${strategy_share}, ${strategy_share_quantity}">Create Strategy</button>
+            <button type="button" class="btn btn-success" onClick="createStrategy()">Create Strategy</button>
         `);
+        $("#new-strategy-warnings").hide();
         $("#global-modal").modal();                
 
     });
@@ -77,9 +82,41 @@ function viewMoreStrategy(strategy_id) {
     // TODO: Create view more details modal.    
 }
 
+function openEditStrategyModal(strategy_id) {
+    $.get("templates/strategy-edit-form.mustache", function(template) {
+        Mustache.parse(template);   // optional, speeds up future uses
+        clearGlobalModal();
+        $("#global-modal-title").text("Edit Active Strategy")
+        $.get("http://localhost:8082/api/strategies/" + strategy_id, function(strategy) {
+            var rendered = Mustache.render(template, {
+                strategyName: strategy.strategyName, strategyType: strategy.algo,
+                startingPosition: strategy.startingPosition, strategyStock: strategy.stock.ticker,
+                stockQuantity: strategy.numShares});
+            $('#global-modal-body').html(rendered);
+            $("#new-strategy-warnings").hide();
+            $("#global-modal-footer").html(`
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onClick="updateStrategy(${strategy_id})">Update Strategy</button>
+            `);
+            $("#global-modal").modal();  
+        });              
+    });    
+}
+
 function editStrategy(strategy_id) {
     // TODO: Create an edit strategy modal.
     // TODO: Call the REST API once it's created.        
+}
+
+function openEndStrategyModal(strategy_id) {
+    clearGlobalModal();
+    $("#global-modal-title").text("End Active Strategy")
+    $('#global-modal-body').html("Are you sure you would like to end this strategy now?");
+    $("#global-modal-footer").html(`
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" onClick="endStrategy(${strategy_id})">End Strategy</button>
+    `);
+    $("#global-modal").modal();      
 }
 
 function endStrategy(strategy_id) {
@@ -93,21 +130,27 @@ function createStrategyWarning(label, message) {
     $("#new-strategy-warnings").show();
 }
 
-// This is called once a user clicks the 'Create Strategy' button which appears as a send icon on the dashboard. This function creates a modal to confirm the details. A button in the footer of the modal which says 'Create Strategy' will call createStrategy() which will actually call the REST service to create the strategy.
-function confirmCreateStrategy() {
+// This is called once a user clicks the 'Create Strategy' button. This function which will actually call the REST service to create the strategy.
+function createStrategy() {
     $("#new-strategy-warnings").hide();
+    let strategy_name = $("#strategy-name-input").val();
+    let strategy_algo = $("#strategy-type-select").val();
+    let strategy_share_quantity = $("#strategy-name-input").val();
     
-    // TODO: Add input validation here.
-    var strategy_long_names_dict = {
-        "TMA": "Two-Moving Averages",
-        "PB": "Price Breakout",
-        "BB": "Bollinger Bands"
-    };
+    //let date = new Date();
+    //let strategy_start = formatDate(d, "yyyy-mm-dd hh:mm:ss.sssz");
     
+    let strategy_start = new Date().toISOString(); // Taken from https://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetime
+    console.log(strategy_start)
     
-    clearGlobalModal();
+    let strategy_share = $("#strategy-share-select").val();
+    stock = $("#strategy-share-select option:selected").text();
+    let stock_price_regex = /.+\(\$(\d+\.\d+)\)/g
+    stock_vals = stock_price_regex.exec(stock);
+    let stock_price = parseFloat(stock_vals[1]).toFixed(2);
     
-    
+    let gain_threshold_exit = $("#gain-exit-threshold-input").val();
+    let loss_threshold_exit = $("#loss-exit-threshold-input").val();
     
     if(!strategy_name) {
         createStrategyWarning("Missing Name!", "Please enter a name to identify your strategy!")
@@ -120,40 +163,28 @@ function confirmCreateStrategy() {
         return
     }
     
-    
-    $("#global-modal-title").text("Confirm Strategy Details")
-    $("#global-modal-body").html(`
-    <div class="row">
-        <div class="col-4">Strategy Name: </div>
-        <div class="col-8">${strategy_name}</div>
-    </div>
-    <div class="row">
-        <div class="col-4">Strategy Type: </div>
-        <div class="col-8">${strategy_long_names_dict[strategy_type]}</div>
-    </div>
-    <div class="row">
-        <div class="col-4">Starting Position: </div>
-        <div class="col-8">${strategy_start_position ? 'Buying' : 'Selling'}</div>
-    </div>
-    <div class="row">
-        <div class="col-4">Share: </div>
-        <div class="col-8">${strategy_share}</div>
-    </div>    
-    <div class="row">
-        <div class="col-4">Share Quantity: </div>
-        <div class="col-8">${strategy_share_quantity}</div>
-    </div>    
-    `);
-    $("#global-modal-footer").html(`
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success" onClick="createStrategy(${strategy_name}, ${strategy_type}, ${strategy_start_position}, ${strategy_share}, ${strategy_share_quantity}">Create Strategy</button>
-    `);
-    $("#global-modal").modal();
-}
-
-// This function is called from the strategy confirmation modal (refer to confirmCreateStrategy()) and will call the REST API to create a strategy.
-function createStrategy(strategy_name, strategy_type, strategy_start_position, strategy_share, strategy_share_quantity) {
-    // TODO: Call the REST API once it's created.    
+    // TODO: Resolve Stock Name TBD
+    // TODO: Fixed threshold rounding issue
+    let new_stock = {"ticker": strategy_share, "stockName": "TBD", "tracked": true};
+    let new_strategy = {"strategyName": strategy_name, "algo": strategy_algo, 
+                        "stock": new_stock,
+                        "startTime": strategy_start, "initiationPrice": stock_price, 
+                        "numShares": parseInt($("#strategy-quantity-input").val()), 
+                        "exitThresholdHigh": parseFloat(gain_threshold_exit).toFixed(2), 
+                       "exitThresholdLow": parseFloat(loss_threshold_exit).toFixed(2)};
+    console.log(new_strategy)
+    $.ajax({        
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        url: "http://localhost:8082/api/strategies",
+        method: "POST",
+        data: JSON.stringify(new_strategy), 
+        success: function() {
+            window.location.reload(true);
+        }
+    });
 }
 
 // This function is meant to clear the global modal before a function uses it so that information from a previous usage of the modal doesn't leak into the newly displayed information.

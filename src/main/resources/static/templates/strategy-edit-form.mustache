@@ -1,0 +1,38 @@
+ <form>
+    <div class="form-group row">
+        <div class="input-group col-sm-9">
+            <input id="strategy-name-input" type="text" placeholder="Strategy Name" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{strategyName}}">
+        </div>
+        <div class="input-group col-sm-3">
+            <input id="strategy-type-input" type="text" placeholder="Strategy Type" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{strategyType}}" disabled>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="input-group col-sm-4">
+            <input id="strategy-starting-position-input" type="text" placeholder="Starting Position" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{startingPosition}}" disabled>
+        </div>
+        <div class="input-group col-sm-4">
+            <input id="strategy-share-input" type="text" placeholder="Strategy Type" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"  value="{{strategyStock}}" disabled>
+        </div>
+        <div class="input-group col-sm-4">
+            <input id="strategy-quantity-input" type="number" placeholder="# of Shares" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" value="{{stockQuantity}}" disabled>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="input-group col-sm-6">
+            <input id="gain-exit-threshold-input" type="number" placeholder="Gain % Exit" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        </div>
+        <div class="input-group col-sm-6">
+            <input id="loss-exit-threshold-input" type="number" placeholder="Loss % Exit" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        </div>
+    </div>
+    <div class="form-group" style="display: none;">
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong id="new-strategy-warning-label"></strong> 
+            <span id="new-strategy-warning-message"></span>
+            <button type="button" class="close" onClick="$('#new-strategy-warnings').hide();">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</form>

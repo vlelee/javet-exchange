@@ -1,13 +1,21 @@
  <form>
+    <div class="form-group row text-center">
+        <div id="new-strategy-warnings" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong id="new-strategy-warning-label"></strong> <span id="new-strategy-warning-message"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
     <div class="form-group row">
-        <div class="input-group col-sm-9">
+        <div class="input-group col-sm-7">
             <input id="strategy-name-input" type="text" placeholder="Strategy Name" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
         </div>
-        <div class="input-group col-sm-3">
-            <select id="strategy-type-select" placeholder="Strategy" class="custom-select text-center" >
-                <option>TMA</option>
-                <option>BB</option>
-                <option>PB</option>
+        <div class="input-group col-sm-5">
+            <select id="strategy-type-select" placeholder="Strategy" class="custom-select text-center">
+                <option value="TMA">Two-Moving Averages</option>
+                <option value="BB" disabled>Bollinger Bands</option>
+                <option value="PB" disabled>Price Breakout</option>
             </select>
         </div>
     </div>
@@ -18,8 +26,11 @@
                 <option>Sell</option>
             </select>
         </div>
-        <div class="input-group col-sm-9">
+        <div class="input-group col-sm-5">
             <select id="strategy-share-select" class="input-group-text custom-select" placeholder="Stock" />
+        </div>
+        <div class="input-group col-sm-3">
+            <button type="button" class="btn btn-primary" onClick="openTrackNewStockModal()">Missing Stock?</button>
         </div>
     </div>
     <div class="form-group row">
@@ -28,9 +39,17 @@
         </div>
         <div class="input-group col-sm-6">
             <div class="input-group-prepend">
-            <span class="input-group-text">$</span>
+                <span class="input-group-text">$</span>
             </div>
             <input id="new-investment-value" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" value=0.00 disabled>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="input-group col-sm-6">
+            <input id="gain-exit-threshold-input" type="number" placeholder="Gain % Exit" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        </div>
+        <div class="input-group col-sm-6">
+            <input id="loss-exit-threshold-input" type="number" placeholder="Loss % Exit" class="text-center form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
         </div>
     </div>
     <div class="form-group" style="display: none;">
