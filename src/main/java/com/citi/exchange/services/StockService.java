@@ -34,7 +34,6 @@ public class StockService {
     public void updateStock(Stock aStock, String ticker){
         Stock update_stock = getStockByTicker(ticker.trim());
         update_stock.setStockName(aStock.getStockName());
-        update_stock.setTracking(aStock.isTracking());
         repo.save(update_stock);
     }
 
@@ -44,11 +43,5 @@ public class StockService {
             list.add(item);
         }
         return list;
-    }
-
-    public void toggleStockVisbility(String ticker, boolean visibility) {
-        Stock update_stock = getStockByTicker(ticker);
-        update_stock.setTracking(visibility);
-        repo.save(update_stock);
     }
 }

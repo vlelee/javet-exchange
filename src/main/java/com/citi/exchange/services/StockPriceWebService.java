@@ -40,7 +40,7 @@ public class StockPriceWebService {
     public StockPriceWebService() {}
 
     //First run MockYahoo server (Tomcat) before running ExchangeApplication
-    @Scheduled(fixedRate = 1000)
+    //@Scheduled(fixedRate = 1000)
     public void getMarketPrice(){
         try {
             Collection<Stock> stocks = stockService.getStocks();

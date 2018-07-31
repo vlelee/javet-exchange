@@ -1,119 +1,71 @@
-$(document).ready(function() {
-    findAndLoadRelevantStocks();
-    
-    var options_fullname = 
-        { 
-            url: "res/stock-list.json", 
-            getValue: "Name", 
-            list: { 
-                match: {
-                    enabled: true
-                },
-                onSelectItemEvent: function() {
-                    $("#new-share-ticker-input").val($("#new-share-name-input").getSelectedItemData().Symbol);
-                },
-                onKeyEnterEvent: function() {
-                    $("#new-share-ticker-input").val($("#new-share-name-input").getSelectedItemData().Symbol);
-                }
-            }
-        };
-    $("#new-share-name-input").easyAutocomplete(options_fullname);
-    
-    
-    var options_ticker = 
-        { 
-            url: "res/stock-list.json", 
-            getValue: "Symbol", 
-            list: { 
-                match: {
-                    enabled: true
-                },
-                onSelectItemEvent: function() {
-                    $("#new-share-name-input").val($("#new-share-ticker-input").getSelectedItemData().Name);
-                }
-            }
-        };
-    
-    $("#new-share-ticker-input").easyAutocomplete(options_ticker);
-    
-    // If one of the inputs are emptied, empty the other one.
-    $("#new-share-ticker-input").keyup(function() { $("#new-share-name-input").val("") });
-    $("#new-share-name-input").keyup(function() { $("#new-share-ticker-input").val("") });
+var add_new_stock_template;
 
+$(document).ready(function() {
+    loadStocksWithPrices();
+    
+    $.get("templates/track-stock-modal.mustache", function(template) {
+        Mustache.parse(template);   // optional, speeds up future uses
+        add_new_stock_template = Mustache.render(template);
+    });
+    
 });
 
-function getPrice(ticker) {
-    // TODO: Speak to the messenger service instead for this price.
-    
-}
 
-function findAndLoadRelevantStocks() {
+// This function populates the  a modal to allow users to search for stocks to begin tracking. This can either be opened by clicking 'Track New Stock' at the 
+// bottom of the stock list on the right-hand side of the page or by clicking 'Missing Stock?' within the strategy creation modal.
+// This function uses an autocomplete library in conjunction with the res/stock-list.json file to help identify what stock the user would like to begin tracking.
+// Dependencies: AutoComplete Library, Mustache Library, res/stock-list.json
+function loadStocksWithPrices() {
     $.get("http://localhost:8082/api/stocks", function(data) {
         $.each(data, function(index, stock) {
-            loadStockPrice(stock.ticker, stock.tracking);
+            let get_stock_price_url = "https://api.iextrading.com/1.0/stock/" + stock.ticker.trim() + "/ohlc";
+            $.get(get_stock_price_url, function(response) {
+                open = response["open"];
+                close = response["close"]
+                $("#stock-info-tbody").append(`
+                    <tr>
+                        <th scope="row">${stock.ticker.toUpperCase()}</th>
+                        <td>${response.open.price}</td>
+                        <td>${response.close.price}</td>
+                        <td>${response.high}</td>
+                        <td>${response.low}</td>
+                    </tr>
+                `);
+            });
         });
     });
 }
 
 
-function toggleStockVisibility(ticker, visibility) {
+// This function opens a modal to allow users to search for stocks to begin tracking. This can either be opened by clicking 'Track New Stock' at the 
+// bottom of the stock list on the right-hand side of the page or by clicking 'Missing Stock?' within the strategy creation modal.
+// This function uses an autocomplete library in conjunction with the res/stock-list.json file to help identify what stock the user would like to begin tracking.
+// Dependencies: AutoComplete Library, Mustache Library, res/stock-list.json
+function openTrackNewStockModal() {
+    clearGlobalModal();
+    $("#global-modal-title").text("Track New Stock");
+    $('#global-modal-body').html(add_new_stock_template);
+
+    // If one of the inputs are emptied, empty the other one.
+    $("#new-share-ticker-input").keyup(function() { $("#new-share-name-input").val("") });
+    $("#new-share-name-input").keyup(function() { $("#new-share-ticker-input").val("") });
+    $("#global-modal-footer").html(`
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onClick="startTrackingStock()">Track Stock</button>
+    `);
+    $("#global-modal").modal(); 
     
-    $.ajax({
-        url: `http://localhost:8082/api/stocks/${ticker}/${visibility ? 'show' : 'hide'}`,
-        method: "PUT",
-        success: function() {
-            window.location.reload(true);
-        }
-    });
     
 }
 
-function loadStockPrice(stock, tracked = false) {
-    let get_stock_price_url = "https://api.iextrading.com/1.0/stock/" + stock.trim() + "/ohlc";
-    $.get(get_stock_price_url, function(response) {
-        open = response["open"];
-        close = response["close"]
-        stock_response = tracked ? "#stock-info-tracked" : "#stock-info-untracked" 
-        
-        toggle_stock_visibility_button = ""
-        
-        if(tracked) {
-            toggle_stock_visibility_button = 
-                `<button class="btn btn-xs m-0 p-0 text-warning" onClick="toggleStockVisibility('${stock.trim()}', false)" style='background-color:transparent;'>
-                    <i class="material-icons">remove</i>
-                </button>`;            
-        } else {
-            toggle_stock_visibility_button = 
-                `<button class="btn btn-xs m-0 p-0 text-success" onClick="toggleStockVisibility('${stock.trim()}', true)" style='background-color:transparent;'>
-                    <i class="material-icons">add</i>
-                </button>`;            
-        }
-        
-        
-        $(stock_response).append(`
-            <tr>
-                <th scope="row">${stock.toUpperCase()}</th>
-                <td>${open.price}</td>
-                <td>${close.price}</td>
-                <td>${response.high}</td>
-                <td>${response.low}</td>
-                <td>
-                    ${toggle_stock_visibility_button}
-                </td>
-            </tr>
-        `);
-    });
-}
-
-
-function startTrackingStock() {
+// This function is called from the modal created by openTrackNewStockModal(). This function calls the REST API and added a stock to the database.
+// Tracked stocks can be used in strategies and will appear on the right-hand side of the page (unless hidden via toggleStockVisibility()).
+// Dependencies: Local Stocks API, openTrackNewStockModal()
+function startTrackingStock() { 
     let stock_name = $("#new-share-name-input").val();
     let stock_ticker = $("#new-share-ticker-input").val();
     let new_stock_to_track = {"ticker": stock_ticker, "stockName": stock_name, "tracking": "true"};
-    console.log(new_stock_to_track)
-    console.log(JSON.stringify(new_stock_to_track))
-    $.ajax({
-        
+    $.ajax({       
         headers: { 
             'Accept': 'application/json',
             'Content-Type': 'application/json' 
@@ -125,21 +77,4 @@ function startTrackingStock() {
             window.location.reload(true);
         }
     });
-}
-
-function openTrackNewStockModal() {
-    clearGlobalModal();
-    $("#global-modal-title").text("Track New Stock")
-    
-    $.get("templates/track-stock-modal.mustache", function(template) {
-        Mustache.parse(template);   // optional, speeds up future uses
-        var rendered = Mustache.render(template);
-        $('#global-modal-body').html(rendered);
-    });
-    $("#global-modal-footer").html(`
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onClick="trackStockFromModal()">Track Stock</button>
-    `);
-    $("#global-modal").modal(); 
-    
 }

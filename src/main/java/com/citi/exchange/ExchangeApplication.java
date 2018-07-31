@@ -21,8 +21,8 @@ import javax.jms.ConnectionFactory;
 
 
 @EntityScan("com.citi.exchange.entities")
-@ComponentScan("com.citi.exchange.jms")
 @SpringBootApplication
+@Configuration
 @EnableJms
 public class ExchangeApplication extends WebMvcConfigurerAdapter {
 
@@ -32,6 +32,7 @@ public class ExchangeApplication extends WebMvcConfigurerAdapter {
 //        ConfigurableApplicationContext context = SpringApplication.run(ExchangeApplication.class, args);
 
     }
+
 
     @Bean
         // Strictly speaking this bean is not necessary as boot creates a default
