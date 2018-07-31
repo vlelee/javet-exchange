@@ -49,25 +49,9 @@ function getPrice(ticker) {
 
 function findAndLoadRelevantStocks() {
     $.get("http://localhost:8082/api/stocks", function(data) {
-        let tracked_stocks = []
-        $("#strategy-share-select").children('option').remove();
         $.each(data, function(index, stock) {
-            console.log(stock.stockName);
-            let get_relevant_stocks_url = "https://api.iextrading.com/1.0/stock/" + stock.ticker + "/relevant";
-            
-            let get_stock_price_url = "https://api.iextrading.com/1.0/stock/" + stock.ticker.trim() + "/ohlc";
-            $.get(get_stock_price_url, function(response) {
-                stock_avg = ((response["high"] + response["low"]) / 2).toFixed(2)
-                $("#strategy-share-select").append(`<option value="${stock.ticker}">${stock.stockName} (\$${stock_avg})</option>`)
-            });
-            
-            
-            $.get(get_relevant_stocks_url, function(relevant_stocks) {
-                loadStockPrice(stock.ticker, relevant_stocks["symbols"], stock.tracking);
-            });
+            loadStockPrice(stock.ticker, stock.tracking);
         });
-        
-        $("#strategy-share-select").val($("#strategy-share-select option:first").val());
     });
 }
 
@@ -84,7 +68,7 @@ function toggleStockVisibility(ticker, visibility) {
     
 }
 
-function loadStockPrice(stock, relevant_stocks, tracked = false) {
+function loadStockPrice(stock, tracked = false) {
     let get_stock_price_url = "https://api.iextrading.com/1.0/stock/" + stock.trim() + "/ohlc";
     $.get(get_stock_price_url, function(response) {
         open = response["open"];
@@ -114,9 +98,6 @@ function loadStockPrice(stock, relevant_stocks, tracked = false) {
                 <td>${response.high}</td>
                 <td>${response.low}</td>
                 <td>
-                    <button class="btn btn-xs m-0 p-0 text-info" onClick="showRelevant(${relevant_stocks})" style='background-color:transparent;'>
-                        <i class="material-icons">more_horiz</i>
-                    </button>
                     ${toggle_stock_visibility_button}
                 </td>
             </tr>
@@ -124,12 +105,6 @@ function loadStockPrice(stock, relevant_stocks, tracked = false) {
     });
 }
 
-
-function findRelevantStocks(stock) {
-    let get_relevant_stocks_url = "https://api.iextrading.com/1.0/stock/" + stock + "/relevant";
-    const result = $.get(get_relevant_stocks_url);
-    return result;     
-}
 
 function startTrackingStock() {
     let stock_name = $("#new-share-name-input").val();
@@ -150,4 +125,21 @@ function startTrackingStock() {
             window.location.reload(true);
         }
     });
+}
+
+function openTrackNewStockModal() {
+    clearGlobalModal();
+    $("#global-modal-title").text("Track New Stock")
+    
+    $.get("templates/track-stock-modal.mustache", function(template) {
+        Mustache.parse(template);   // optional, speeds up future uses
+        var rendered = Mustache.render(template);
+        $('#global-modal-body').html(rendered);
+    });
+    $("#global-modal-footer").html(`
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onClick="trackStockFromModal()">Track Stock</button>
+    `);
+    $("#global-modal").modal(); 
+    
 }
