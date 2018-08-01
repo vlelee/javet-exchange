@@ -2,6 +2,7 @@ package com.citi.exchange.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -63,7 +64,7 @@ public class StrategyConfiguration implements Serializable {
     @JsonProperty("stock")
     private Stock stock;
 
-    @OneToMany(mappedBy = "strategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "strategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Trade> trades = new ArrayList<Trade>();
 
@@ -160,7 +161,7 @@ public class StrategyConfiguration implements Serializable {
     }
 
     public boolean isBuyingAdvanced() {
-        if (trades.size() == 0) {
+        if (getTrades().size() == 0) {
             return buying;
         } else {
             int noSharesHeld = (buying) ? 0 : numShares;
@@ -208,15 +209,21 @@ public class StrategyConfiguration implements Serializable {
         this.exitThresholdLow = exitThresholdLow;
     }
 
-    public double currentInvestmentValue() {
-        double investmentValue = numShares * initiationPrice;
-        for(Trade trade : trades) {
-            investmentValue += (trade.isBuying() == buying ? 1 : -1) * trade.getTradePrice() * trade.getNumShares();
-        }
-        return investmentValue;
-    }
+//    public double currentInvestmentValue() {
+//        double cash = getNumShares() * getInitiationPrice();
+//        double investmentValue = 0;
+//        double lastTrade = cash;
+//        for(Trade trade : getTrades()) {
+//            if(trade. != getInitiationPrice())
+//            cash = (cash - lastTrade) + (trade.getTradePrice() * trade.getNumShares());
+//
+//            investmentValue += (trade.isBuying() ? -1 : 1) * trade.getTradePrice() * trade.getNumShares();
+//        }
+//        return investmentValue;
+//    }
 
-    public double currentPnL() {
-        return currentInvestmentValue() - (numShares * initiationPrice);
-    }
+//    public double currentPnL() {
+//        return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
+//    }
+
 }
