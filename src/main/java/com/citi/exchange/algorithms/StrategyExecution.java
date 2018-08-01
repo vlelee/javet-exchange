@@ -1,6 +1,7 @@
 package com.citi.exchange.algorithms;
 
 import com.citi.exchange.entities.StrategyConfiguration;
+import com.citi.exchange.entities.Trade;
 import com.citi.exchange.services.StockPriceWebService;
 import com.citi.exchange.services.StrategyService;
 import org.springframework.beans.factory.BeanFactory;
@@ -45,13 +46,13 @@ public class StrategyExecution {
                         TMA tma = beanFactory.getBean(TMA.class);
                         tma.setStrategyConfiguration(strategy);
                         activeTMAStrategies.put(strategy.getId(), tma);
+                        //System.out.println("New Strategy '" + strategy.getStrategyName() + "' with investment value: " + strategy.currentInvestmentValue());
                     }
             }
 
         }
 
     }
-
 
 
 }

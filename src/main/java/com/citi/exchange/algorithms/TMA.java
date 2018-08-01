@@ -49,6 +49,7 @@ public class TMA implements Strategy {
             double newShortAverage = getAverage(windowQueue, shortAveragePeriod);
             double newLongAverage = getAverage(windowQueue, longAveragePeriod);
             //System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Short: " + newShortAverage + " Long: " + newLongAverage);
+            strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
 
             boolean buying = strategyConfiguration.isBuying();
             if(buying){
@@ -57,7 +58,8 @@ public class TMA implements Strategy {
                     Trade buyTrade = tradeService.addNewTrade(new Trade(true, strategyConfiguration.getNumShares(), newPrice, strategyConfiguration.getStock(), strategyConfiguration));
                     tradeExecution.send(buyTrade);
 
-                    System.out.println("trategy name: " + strategyConfiguration.getStrategyName() + " Buying @ " + newPrice);
+                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Buying @ " + newPrice);
+                    //System.out.println("Strategy buying: " + strategyConfiguration.isBuyingAdvanced() + " Investment Value: " + strategyConfiguration.currentInvestmentValue());
                     strategyConfiguration.setBuying(false);
                 }
             } else {
@@ -68,6 +70,7 @@ public class TMA implements Strategy {
                     tradeExecution.send(sellTrade);
 
                     System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Selling @ " + newPrice);
+                    //System.out.println("Strategy buying: " + strategyConfiguration.isBuyingAdvanced() + " Investment Value: " + currentInvestmentValue());
                     strategyConfiguration.setBuying(true);
                 }
             }
@@ -98,6 +101,8 @@ public class TMA implements Strategy {
     public void setStrategyConfiguration(StrategyConfiguration strategyConfiguration) {
         this.strategyConfiguration = strategyConfiguration;
     }
+
+
 
 }
 
