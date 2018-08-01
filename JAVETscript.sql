@@ -38,10 +38,10 @@ id int primary key auto_increment,
 stock varchar(10) not null,
 strategy int not null,
 buying boolean not null,
-num_shares int not null, 
+num_shares int not null,
 trade_price double not null,
 time_traded timestamp default current_timestamp,
-response_message varchar(200),
+response_message varchar(1000),
 FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict,
 FOREIGN KEY (strategy) REFERENCES strategy_configurations(id) on delete restrict
 );

@@ -38,6 +38,7 @@ public class TradeExecutionTests {
         Stock stock = stockService.getStockByTicker("GOOGL");
         StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(1);
         Trade newTrade =tradeService.addNewTrade(new Trade(true, 20, 100.50, time, stock, strategyConfiguration));
+
         tradeExecutionService.send(newTrade);
     }
 

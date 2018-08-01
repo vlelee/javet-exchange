@@ -50,11 +50,9 @@ public class TradeExecution {
 
     @JmsListener(destination = "OrderBroker_Reply", containerFactory = "myJmsContainerFactory")
     public void receiveMessage(javax.jms.Message message) throws JMSException {
-//        context.close();
         String responseMessage = ((TextMessage) message).getText();
         int tradeId = Integer.parseInt(message.getJMSCorrelationID().split("JAVET")[1]);
-        System.out.println(responseMessage +"   "+tradeId);
-
+//        System.out.println(responseMessage +"   "+tradeId);
         tradeService.updateTradeResponse(responseMessage, tradeId);
         FileSystemUtils.deleteRecursively(new File("activemq-data"));
     }
