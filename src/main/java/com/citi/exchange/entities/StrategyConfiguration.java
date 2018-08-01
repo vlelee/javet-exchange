@@ -209,21 +209,35 @@ public class StrategyConfiguration implements Serializable {
         this.exitThresholdLow = exitThresholdLow;
     }
 
-//    public double currentInvestmentValue() {
-//        double cash = getNumShares() * getInitiationPrice();
-//        double investmentValue = 0;
-//        double lastTrade = cash;
-//        for(Trade trade : getTrades()) {
-//            if(trade. != getInitiationPrice())
-//            cash = (cash - lastTrade) + (trade.getTradePrice() * trade.getNumShares());
-//
-//            investmentValue += (trade.isBuying() ? -1 : 1) * trade.getTradePrice() * trade.getNumShares();
-//        }
-//        return investmentValue;
-//    }
+    public double currentInvestmentValue() {
+        double investmentValue = getNumShares() * getInitiationPrice();
+        double initialCash = (isBuying()) ? investmentValue : 0;
+        double currentCash = initialCash;
+        double lastTrade = 0;
 
-//    public double currentPnL() {
-//        return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
-//    }
+        for(Trade trade : getTrades()) {
+            double currentTrade = trade.getTradePrice() * trade.getNumShares();
+            currentCash += (trade.isBuying() ? -1 : 1) * currentTrade;
+
+            if(trade.isBuying() != isBuying()){
+                if(trade.isBuying())
+                    investmentValue += (currentCash - initialCash);
+                else
+                    investmentValue += (lastTrade - currentTrade);
+
+
+            } else {
+                lastTrade = trade.getTradePrice() * trade.getNumShares();
+            }
+
+        }
+        System.out.println("Current cash: " + currentCash);
+        System.out.println("Profit: " + (currentCash - initialCash));
+        return investmentValue;
+    }
+
+    public double currentPnL() {
+        return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
+    }
 
 }

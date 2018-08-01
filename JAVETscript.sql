@@ -51,7 +51,7 @@ insert into stocks values ("AAPL", "Apple Inc.");
 insert into stocks values ("GOOGL", "Alphabet Inc.");
 insert into stocks values ("C ", "Citi");
 insert into stocks values ("BFY ", "Blackrock");
-insert into strategy_configurations values (1, "MyStrat", 'TMA', "GOOGL", current_timestamp, null, 100.50, null, 100,  true, true, 10.5, 5.5);
+insert into strategy_configurations values (1, "MyStrat", 'TMA', "GOOGL", current_timestamp, null, 44, null, 100,  true, true, 10.5, 5.5);
 insert into strategy_configurations values (2, "2ndStrat", 'BB', "GOOGL", current_timestamp, null, 100.50, null, 100,  true, false, 10.5, 5.5);
 
 insert into strategy_configurations values (1, "AbesStrat", 'TMA', "GOOGL", current_timestamp, null, 100.50, null, 100,  true, true, 10.5, 5.5);
