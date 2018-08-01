@@ -28,7 +28,7 @@ public class TradeExecution {
                 "<price>" + trade.getTradePrice() + "</price>\n" +
                 "<size>" + trade.getNumShares() + "</size>\n" +
                 "<stock>" + trade.getStock().getTicker().trim() + "</stock>\n" +
-                "<whenAsDate>" + (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(trade.getTimeTraded()) + "</whenAsDate>\n" +
+                "<whenAsDate>" + (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(System.currentTimeMillis()) + "</whenAsDate>\n" +
                 "</trade>";
 
        MessageCreator orderMessage = new MessageCreator() {
@@ -50,11 +50,9 @@ public class TradeExecution {
 
     @JmsListener(destination = "OrderBroker_Reply", containerFactory = "myJmsContainerFactory")
     public void receiveMessage(javax.jms.Message message) throws JMSException {
-//        context.close();
         String responseMessage = ((TextMessage) message).getText();
         int tradeId = Integer.parseInt(message.getJMSCorrelationID().split("JAVET")[1]);
-        System.out.println(responseMessage +"   "+tradeId);
-
+//        System.out.println(responseMessage +"   "+tradeId);
         tradeService.updateTradeResponse(responseMessage, tradeId);
         FileSystemUtils.deleteRecursively(new File("activemq-data"));
     }
