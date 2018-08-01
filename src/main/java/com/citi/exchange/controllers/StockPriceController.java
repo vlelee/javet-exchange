@@ -1,7 +1,6 @@
 package com.citi.exchange.controllers;
 
 import com.citi.exchange.entities.StockPrice;
-import com.citi.exchange.entities.StrategyConfiguration;
 import com.citi.exchange.services.StockPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
