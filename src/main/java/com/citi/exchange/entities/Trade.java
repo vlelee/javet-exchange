@@ -43,11 +43,10 @@ public class Trade implements Serializable {
     public Trade() {
     }
 
-    public Trade(boolean buying, Integer numShares, Double tradePrice, Timestamp timeTraded, Stock stock, StrategyConfiguration strategy) {
+    public Trade(boolean buying, Integer numShares, Double tradePrice, Stock stock, StrategyConfiguration strategy) {
         this.buying = buying;
         this.numShares = numShares;
         this.tradePrice = tradePrice;
-        this.timeTraded = timeTraded;
         this.stock = stock;
         this.strategy = strategy;
     }

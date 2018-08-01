@@ -24,11 +24,11 @@ public class TradeExecution {
     public void send(Trade trade) {
        String msg = "<trade>\n" +
                 "<buy>" + trade.isBuying() + "</buy>\n" +
-                "<id>JAVET" + trade.getId() + "</id>\n" +
+                "<id>" + trade.getId() + "</id>\n" +
                 "<price>" + trade.getTradePrice() + "</price>\n" +
                 "<size>" + trade.getNumShares() + "</size>\n" +
                 "<stock>" + trade.getStock().getTicker().trim() + "</stock>\n" +
-                "<whenAsDate>" + (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(trade.getTimeTraded()) + "</whenAsDate>\n" +
+                "<whenAsDate>" + (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")).format(System.currentTimeMillis()) + "</whenAsDate>\n" +
                 "</trade>";
 
        MessageCreator orderMessage = new MessageCreator() {
