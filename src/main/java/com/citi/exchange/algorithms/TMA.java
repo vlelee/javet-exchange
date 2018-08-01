@@ -2,10 +2,21 @@ package com.citi.exchange.algorithms;
 
 
 import com.citi.exchange.entities.StrategyConfiguration;
+import com.citi.exchange.entities.Trade;
+import com.citi.exchange.jms.TradeExecution;
+import com.citi.exchange.services.StrategyService;
+import com.citi.exchange.services.TradeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
+@Scope("prototype")
 public class TMA implements Strategy {
     boolean previousSAExceedsLA = false; // previous short average exceeds long average
 
@@ -14,19 +25,21 @@ public class TMA implements Strategy {
 
     private List<Double> windowQueue = new ArrayList<>();
 
-    public StrategyConfiguration getStrategyConfiguration() {
-        return strategyConfiguration;
-    }
+    @Autowired
+    TradeService tradeService;
 
-    public void setStrategyConfiguration(StrategyConfiguration strategyConfiguration) {
-        this.strategyConfiguration = strategyConfiguration;
-    }
+    @Autowired
+    TradeExecution tradeExecution;
+
+    @Autowired
+    StrategyService strategyService;
+
 
     private StrategyConfiguration strategyConfiguration;
-
-    public TMA(StrategyConfiguration strategyConfiguration){
-        this.strategyConfiguration = strategyConfiguration;
-    }
+//
+//    public TMA(StrategyConfiguration strategyConfiguration){
+//        this.strategyConfiguration = strategyConfiguration;
+//    }
 
     @Override
     public void run(double newPrice) {
@@ -35,20 +48,25 @@ public class TMA implements Strategy {
 
             double newShortAverage = getAverage(windowQueue, shortAveragePeriod);
             double newLongAverage = getAverage(windowQueue, longAveragePeriod);
-            System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Short: " + newShortAverage + " Long: " + newLongAverage);
+            //System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Short: " + newShortAverage + " Long: " + newLongAverage);
 
             boolean buying = strategyConfiguration.isBuying();
             if(buying){
                 // If we're buying and the last SA < last LA and current SA > current LA -> buy
                 if(!previousSAExceedsLA && newShortAverage > newLongAverage) {
-                    //buy();
-                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Buying @ " + newPrice);
+                    Trade buyTrade = tradeService.addNewTrade(new Trade(true, strategyConfiguration.getNumShares(), newPrice, strategyConfiguration.getStock(), strategyConfiguration));
+                    tradeExecution.send(buyTrade);
+
+                    System.out.println("trategy name: " + strategyConfiguration.getStrategyName() + " Buying @ " + newPrice);
                     strategyConfiguration.setBuying(false);
                 }
             } else {
                 // If we're buying and the last SA > last LA and current SA < current LA -> buy
                 if(previousSAExceedsLA && newShortAverage < newLongAverage) {
-                    //sell();
+
+                    Trade sellTrade = tradeService.addNewTrade(new Trade(false, strategyConfiguration.getNumShares(), newPrice, strategyConfiguration.getStock(), strategyConfiguration));
+                    tradeExecution.send(sellTrade);
+
                     System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Selling @ " + newPrice);
                     strategyConfiguration.setBuying(true);
                 }
@@ -73,7 +91,13 @@ public class TMA implements Strategy {
                 .orElse(0.0);
     }
 
+    public StrategyConfiguration getStrategyConfiguration() {
+        return strategyConfiguration;
+    }
 
+    public void setStrategyConfiguration(StrategyConfiguration strategyConfiguration) {
+        this.strategyConfiguration = strategyConfiguration;
+    }
 
 }
 

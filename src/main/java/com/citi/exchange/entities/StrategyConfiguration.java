@@ -159,6 +159,19 @@ public class StrategyConfiguration implements Serializable {
         return buying;
     }
 
+    public boolean isBuyingAdvanced() {
+        if (trades.size() == 0) {
+            return buying;
+        } else {
+            int noSharesHeld = (buying) ? 0 : numShares;
+            for(Trade trade : trades) {
+                noSharesHeld += (trade.isBuying() ? 1 : -1) * trade.getNumShares();
+            }
+
+            return (noSharesHeld == 0);
+        }
+    }
+
     public void setBuying(boolean buying) {
         this.buying = buying;
     }
@@ -195,4 +208,15 @@ public class StrategyConfiguration implements Serializable {
         this.exitThresholdLow = exitThresholdLow;
     }
 
+    public double currentInvestmentValue() {
+        double investmentValue = numShares * initiationPrice;
+        for(Trade trade : trades) {
+            investmentValue += (trade.isBuying() == buying ? 1 : -1) * trade.getTradePrice() * trade.getNumShares();
+        }
+        return investmentValue;
+    }
+
+    public double currentPnL() {
+        return currentInvestmentValue() - (numShares * initiationPrice);
+    }
 }
