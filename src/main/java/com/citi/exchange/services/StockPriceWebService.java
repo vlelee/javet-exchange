@@ -3,6 +3,7 @@ package com.citi.exchange.services;
 
 import com.citi.exchange.entities.Stock;
 
+import com.citi.exchange.entities.StockPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,9 @@ public class StockPriceWebService {
 
     @Autowired
     private StockService stockService;
+
+    @Autowired
+    private StockPriceService stockPriceService;
 
     @Autowired
     public StockPriceWebService(@Value("${market.feed.url}") String marketFeedUrl){
@@ -40,7 +45,12 @@ public class StockPriceWebService {
             for(Stock stock : stocks) {
                 ticker = stock.getTicker().trim();
                 if(isValidTicker(ticker)){
-                    prices.put(ticker, getResponseFromURL(ticker));
+
+                    Double price = getResponseFromURL(ticker);
+                    prices.put(ticker, price);
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    StockPrice stockPrice = new StockPrice(timestamp, stock, price);
+                    stockPriceService.addNewStockPrice(stockPrice);
                 }
             }
         } catch (MalformedURLException e) {

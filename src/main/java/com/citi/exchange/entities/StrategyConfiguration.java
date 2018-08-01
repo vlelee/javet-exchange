@@ -164,13 +164,17 @@ public class StrategyConfiguration implements Serializable {
         if (getTrades().size() == 0) {
             return buying;
         } else {
-            int noSharesHeld = (buying) ? 0 : numShares;
-            for(Trade trade : trades) {
-                noSharesHeld += (trade.isBuying() ? 1 : -1) * trade.getNumShares();
-            }
-
-            return (noSharesHeld == 0);
+            return (getStockHeld() == 0);
         }
+    }
+
+    public int getStockHeld() {
+        int noSharesHeld = 0;
+        for(Trade trade : trades) {
+            noSharesHeld += (trade.isBuying() ? 1 : -1) * trade.getNumShares();
+        }
+
+        return Math.abs(noSharesHeld);
     }
 
     public void setBuying(boolean buying) {
@@ -224,19 +228,34 @@ public class StrategyConfiguration implements Serializable {
                     investmentValue += (currentCash - initialCash);
                 else
                     investmentValue += (lastTrade - currentTrade);
-
-
             } else {
                 lastTrade = trade.getTradePrice() * trade.getNumShares();
             }
-
         }
-        System.out.println("Current cash: " + currentCash);
-        System.out.println("Profit: " + (currentCash - initialCash));
         return investmentValue;
     }
 
     public double currentPnL() {
+/*
+        double investmentValue = getNumShares() * getInitiationPrice();
+        double initialCash = (isBuying()) ? investmentValue : 0;
+        double currentCash = initialCash;
+        double lastTrade = 0;
+
+        for(Trade trade : getTrades()) {
+            double currentTrade = trade.getTradePrice() * trade.getNumShares();
+            currentCash += (trade.isBuying() ? -1 : 1) * currentTrade;
+
+            if(trade.isBuying() != isBuying()){
+                if(trade.isBuying())
+                    investmentValue += (currentCash - initialCash);
+                else
+                    investmentValue += (lastTrade - currentTrade);
+            } else {
+                lastTrade = trade.getTradePrice() * trade.getNumShares();
+            }
+        }
+        return investmentValue; */
         return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
     }
 
