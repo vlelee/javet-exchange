@@ -3,11 +3,14 @@ package com.citi.exchange.algorithms;
 import com.citi.exchange.entities.StrategyConfiguration;
 import com.citi.exchange.services.StockPriceWebService;
 import com.citi.exchange.services.StrategyService;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+
 
 @Component
 public class StrategyExecution {
@@ -18,6 +21,9 @@ public class StrategyExecution {
 
     @Autowired
     private StrategyService strategyService;
+
+    @Autowired
+    private BeanFactory beanFactory;
 
     @Scheduled(fixedRate = 200)
     public void execute(){
@@ -33,11 +39,12 @@ public class StrategyExecution {
     public void searchForConfigurations(){
         Collection<StrategyConfiguration> strategies = strategyService.getActiveStrategies();
         for(StrategyConfiguration strategy: strategies){
-
             switch(strategy.getAlgo()){
                 case TMA: default:
                     if(!activeTMAStrategies.containsKey(strategy.getId())){
-                        activeTMAStrategies.put(strategy.getId(), new TMA(strategy));
+                        TMA tma = beanFactory.getBean(TMA.class);
+                        tma.setStrategyConfiguration(strategy);
+                        activeTMAStrategies.put(strategy.getId(), tma);
                     }
             }
 

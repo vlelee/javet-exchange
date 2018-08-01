@@ -37,7 +37,7 @@ public class TradeExecutionTests {
         java.sql.Timestamp time = new java.sql.Timestamp(System.currentTimeMillis());
         Stock stock = stockService.getStockByTicker("GOOGL");
         StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(1);
-        Trade newTrade =tradeService.addNewTrade(new Trade(true, 20, 100.50, time, stock, strategyConfiguration));
+        Trade newTrade =tradeService.addNewTrade(new Trade(true, 20, 100.50, stock, strategyConfiguration));
 
         tradeExecutionService.send(newTrade);
     }
