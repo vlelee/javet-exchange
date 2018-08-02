@@ -1,5 +1,6 @@
 package com.citi.exchange.services;
 
+import com.citi.exchange.algorithms.Strategy;
 import com.citi.exchange.entities.StrategyConfiguration;
 import com.citi.exchange.repos.StrategyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,13 @@ public class StrategyService {
         updated_strategy.setStrategyName(newStrategy.getStrategyName());
         repo.save(updated_strategy);
     }
+    @Transactional()
+    public void deactivateStrategy(int id ){
+        StrategyConfiguration strat = getStrategyById(id);
+        strat.setActive(false);
+        repo.saveAndFlush(strat);
+    }
+
     private static Collection<StrategyConfiguration> makeCollection(Iterable<StrategyConfiguration> iter) {
         Collection<StrategyConfiguration> list = new ArrayList<StrategyConfiguration>();
         for (StrategyConfiguration item : iter) {
