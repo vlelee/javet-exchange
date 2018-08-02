@@ -16,10 +16,12 @@ import java.util.Collection;
 import static jdk.nashorn.internal.objects.NativeMath.round;
 
 @Service
-@Transactional (propagation = Propagation.REQUIRED)
+@Transactional(propagation = Propagation.REQUIRED)
 public class StrategyService {
     @Autowired
     private StrategyRepo repo;
+    @Autowired
+    private StockService stockService;
 
     public Collection<StrategyConfiguration> getStrategies() {
         return makeCollection(repo.findAll());
@@ -33,20 +35,27 @@ public class StrategyService {
         return repo.findById(id).get();
     }
 
-    @Transactional (propagation = Propagation.REQUIRES_NEW)
-    public void addNewStrategy(StrategyConfiguration strat){
-        repo.save(strat);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void addNewStrategy(StrategyConfiguration strat) {
+        String stockTicker = strat.getStock().getTicker();
+        if (stockService.getStockByTicker(stockTicker) != null) {
+            strat.setStock(stockService.getStockByTicker(stockTicker));
+            repo.save(strat);
+
+        } else {
+            repo.save(strat);
+        }
     }
 
     @Transactional()
-    public void updateStrategy(StrategyConfiguration newStrategy, int id){
+    public void updateStrategy(StrategyConfiguration newStrategy, int id) {
         StrategyConfiguration updated_strategy = getStrategyById(id);
         updated_strategy.setStrategyName(newStrategy.getStrategyName());
         repo.save(updated_strategy);
     }
 
     @Transactional()
-    public void deactivateStrategy(int id ){
+    public void deactivateStrategy(int id) {
         StrategyConfiguration strat = getStrategyById(id);
         strat.setActive(false);
         repo.saveAndFlush(strat);
@@ -71,7 +80,7 @@ public class StrategyService {
 
     public String getStrategyNextPositionString(int id) {
         StrategyConfiguration strategy = getStrategyById(id);
-        if(strategy.isBuyingAdvanced()) {
+        if (strategy.isBuyingAdvanced()) {
             int approximate_share_count = (int) Math.floor(strategy.currentInvestmentValue() / strategy.getInitiationPrice());
             return "Buying ~" + approximate_share_count + " shares";
         } else {
