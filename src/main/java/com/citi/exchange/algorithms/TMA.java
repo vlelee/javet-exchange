@@ -57,8 +57,8 @@ public class TMA implements Strategy {
                     tradeExecution.send(buyTrade);
 
                     strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
-                    System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL() + " GOL: "
-                            + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
+                    //System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL() + " GOL: "
+                    //        + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
 
                 }
             } else {
@@ -70,8 +70,8 @@ public class TMA implements Strategy {
                     tradeExecution.send(sellTrade);
 
                     strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
-                    System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL() + " GOL: "
-                            + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
+                    //System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL() + " GOL: "
+                    //        + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
 
                 }
             }
@@ -88,6 +88,7 @@ public class TMA implements Strategy {
 
     }
 
+    //Computes the average of a list of prices in windowQueue
     public double getAverage(List<Double> windowQueque, int windowSize) {
 
         return windowQueque.stream()

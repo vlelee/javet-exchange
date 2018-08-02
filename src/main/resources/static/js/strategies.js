@@ -24,7 +24,7 @@ function loadStrategies() {
             
             $(strategy_location).append(`
                         <tr class="m-0 ${(strategy.active) ? "" : 'text-info'}">
-                            <th scope="row">${strategy.strategyName} ${(strategy.active) ? "" : '(Inactive)'}</th>
+                            <th scope="row">${strategy.strategyName}</th>
                             <td>${strategy.algo}</td>
                             <td>${strategy.stock.ticker == 'C' ? '<img src="https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/112011/city_bank_logo.png?itok=dFZm2BBW" width="30px" height="30px" />' : strategy.stock.ticker}</td>
                             <td id='strategy${strategy.id}-profit'>-</td>
@@ -51,7 +51,7 @@ function loadStrategies() {
                 $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
             });
             $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
-                $(`#strategy${strategy.id}-next-position`).text(strategy_position)
+                $(`#strategy${strategy.id}-next-position`).text(strategy.active ? strategy_position : "Inactive")
             });
             if(strategy.active) {
                 setInterval(function() {

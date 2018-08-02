@@ -257,12 +257,16 @@ public class StrategyConfiguration implements Serializable {
     }
 
 
-    public double currentPnL() {
-        return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
+    public double currentPnL(double currentInvestVal, double initialPrice) {
+        //return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
+        return currentInvestVal - initialPrice;
     }
 
     //Compute the percentage of profit or loss from current investment value
     public double getGainOrLossFromPNL(double currentPnL, double currentInvVal){
+        if(currentInvVal == 0.0)
+            return 0.0;
+
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
 

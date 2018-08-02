@@ -32,5 +32,10 @@ public class StockPriceServiceTest {
         assertTrue(stockPrice > 0);
     }
 
+    @Test
+    public void isGoogAValidTicker(){
+        assertTrue(service.isValidTicker("Goog"));
+    }
+
 
 }

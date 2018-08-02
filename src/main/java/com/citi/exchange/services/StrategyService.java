@@ -80,8 +80,9 @@ public class StrategyService {
 
     public String getStrategyProfitString(int id) {
         StrategyConfiguration strategy = getStrategyById(id);
-        double profit = strategy.currentPnL();
         double investmentValue = strategy.currentInvestmentValue();
+        double initialPrice = strategy.getNumShares() * strategy.getInitiationPrice();
+        double profit = strategy.currentPnL(investmentValue, initialPrice);
         double profitPerc = (profit / investmentValue * 100);
         return ((profitPerc > 0) ? "+" : "") + ((double) Math.round(profitPerc * 100) / 100) + "% ($" + ((double) Math.round(profit * 100) / 100) + ")";
     }

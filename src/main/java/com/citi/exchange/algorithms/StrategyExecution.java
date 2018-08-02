@@ -72,7 +72,8 @@ public class StrategyExecution {
     public void isAnActiveStrategy(int strategyId){
         StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(strategyId);
         double investmentVal = strategyConfiguration.currentInvestmentValue();
-        double currentPNL = strategyConfiguration.currentPnL();
+        double initialPrice = strategyConfiguration.getNumShares() * strategyConfiguration.getInitiationPrice();
+        double currentPNL = strategyConfiguration.currentPnL(investmentVal, initialPrice);
         double percentageGoL = strategyConfiguration.getGainOrLossFromPNL(currentPNL, investmentVal); //determines the percentage of gain or loss on an investment
 
         if(!strategyConfiguration.isActive()){

@@ -63,7 +63,7 @@ public class StockPriceWebService {
     }
 
 
-    private boolean isValidTicker(String ticker){
+    public boolean isValidTicker(String ticker){
         if(ticker.equals("") || ticker.equals(" "))
             return false;
         return true;
