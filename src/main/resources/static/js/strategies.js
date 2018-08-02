@@ -52,7 +52,7 @@ function loadStrategies() {
                     $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
                         $(`#strategy${strategy.id}-next-position`).text(strategy_position)
                     });
-                }, 2000);                
+                }, 5000);                
             }
         });
     });

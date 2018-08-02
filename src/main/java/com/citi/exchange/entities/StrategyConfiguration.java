@@ -256,26 +256,6 @@ public class StrategyConfiguration implements Serializable {
 
 
     public double currentPnL() {
-/*
-        double investmentValue = getNumShares() * getInitiationPrice();
-        double initialCash = (isBuying()) ? investmentValue : 0;
-        double currentCash = initialCash;
-        double lastTrade = 0;
-
-        for(Trade trade : getTrades()) {
-            double currentTrade = trade.getTradePrice() * trade.getNumShares();
-            currentCash += (trade.isBuying() ? -1 : 1) * currentTrade;
-
-            if(trade.isBuying() != isBuying()){
-                if(trade.isBuying())
-                    investmentValue += (currentCash - initialCash);
-                else
-                    investmentValue += (lastTrade - currentTrade);
-            } else {
-                lastTrade = trade.getTradePrice() * trade.getNumShares();
-            }
-        }
-        return investmentValue; */
         return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
     }
 
