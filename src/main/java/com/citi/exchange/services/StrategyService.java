@@ -1,19 +1,16 @@
 package com.citi.exchange.services;
 
-import com.citi.exchange.algorithms.Strategy;
 import com.citi.exchange.entities.StrategyConfiguration;
+import com.citi.exchange.entities.Trade;
+import com.citi.exchange.jms.TradeExecution;
 import com.citi.exchange.repos.StrategyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import static jdk.nashorn.internal.objects.NativeMath.round;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -22,6 +19,18 @@ public class StrategyService {
     private StrategyRepo repo;
     @Autowired
     private StockService stockService;
+    @Autowired
+    private TradeService tradeService;
+    @Autowired
+    private TradeExecution tradeExecution;
+
+    private static Collection<StrategyConfiguration> makeCollection(Iterable<StrategyConfiguration> iter) {
+        Collection<StrategyConfiguration> list = new ArrayList<StrategyConfiguration>();
+        for (StrategyConfiguration item : iter) {
+            list.add(item);
+        }
+        return list;
+    }
 
     public Collection<StrategyConfiguration> getStrategies() {
         return makeCollection(repo.findAll());
@@ -40,11 +49,15 @@ public class StrategyService {
         String stockTicker = strat.getStock().getTicker();
         if (stockService.getStockByTicker(stockTicker) != null) {
             strat.setStock(stockService.getStockByTicker(stockTicker));
-            repo.save(strat);
-
-        } else {
-            repo.save(strat);
         }
+        Trade newTrade = tradeService.addNewTrade(
+                new Trade(
+                        strat.isBuying(),
+                        strat.getNumShares(),
+                        strat.getInitiationPrice(),
+                        strat.getStock(), strat));
+        tradeExecution.send(newTrade);
+        repo.save(strat);
     }
 
     @Transactional()
@@ -59,14 +72,6 @@ public class StrategyService {
         StrategyConfiguration strat = getStrategyById(id);
         strat.setActive(false);
         repo.saveAndFlush(strat);
-    }
-
-    private static Collection<StrategyConfiguration> makeCollection(Iterable<StrategyConfiguration> iter) {
-        Collection<StrategyConfiguration> list = new ArrayList<StrategyConfiguration>();
-        for (StrategyConfiguration item : iter) {
-            list.add(item);
-        }
-        return list;
     }
 
     public String getStrategyProfitString(int id) {
