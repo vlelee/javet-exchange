@@ -1,4 +1,5 @@
 var refreshStockPrice;
+var tradeHistoryInterval;
 $(document).ready(function() {
     loadStrategies();
 });
@@ -25,10 +26,13 @@ function loadStrategies() {
                         <tr class="m-0 ${(strategy.active) ? "" : 'text-info'}">
                             <th scope="row">${strategy.strategyName} ${(strategy.active) ? "" : '(Inactive)'}</th>
                             <td>${strategy.algo}</td>
-                            <td>${strategy.stock.ticker}</td>
+                            <td>${strategy.stock.ticker == 'C' ? '<img src="https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/112011/city_bank_logo.png?itok=dFZm2BBW" width="30px" height="30px" />' : strategy.stock.ticker}</td>
                             <td id='strategy${strategy.id}-profit'>-</td>
                             <td id='strategy${strategy.id}-next-position'>-</td>
                             <td nowrap>
+                                <button class="btn btn-xs m-0 p-0 text-primary" onClick="openStrategyHistoryModal(${strategy.id})" style='background-color:transparent;'>
+                                    <i class="material-icons">history</i>
+                                </button>
                                 <button class="btn btn-xs m-0 p-0 text-success" onClick="openEditStrategyModal(${strategy.id})" style='background-color:transparent;'>
                                     <i class="material-icons">edit</i>
                                 </button>
@@ -38,19 +42,52 @@ function loadStrategies() {
                             </td>                            
                         </tr>
             `);
-            setInterval(function() {
-                $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
-                    let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" : 
-                        ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
-                    $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
-                });
-                $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
-                    $(`#strategy${strategy.id}-next-position`).text(strategy_position)
-                });
-                
-            }, 2000);
+            if(strategy.active) {
+                setInterval(function() {
+                    $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
+                        let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" : 
+                            ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
+                        $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
+                    });
+                    $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
+                        $(`#strategy${strategy.id}-next-position`).text(strategy_position)
+                    });
+                }, 2000);                
+            }
         });
     });
+}
+
+function openStrategyHistoryModal(strategy_id) {
+    clearGlobalModal();
+    $("#global-modal-title").text("End Active Strategy")
+    $('#global-modal-body').html(`
+                <table class="table m-1">
+                    <thead>
+                        <tr>
+                            <th scope="col">Trade Timestamp</th>
+                            <th scope="col">Buy/Sell?</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Stock Price</th>
+                            <th scope="col">Trade Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trades-tbody">
+                    </tbody>
+                </table>`);
+    $("#global-modal-footer").html(`
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="clearInterval(tradeHistoryInterval)">Dismiss</button>
+    `);
+    
+    tradeHistoryInterval = setInterval(function() {
+        $("#trades-tbody").html("");
+        $.get(`http://localhost:8082/api/strategies/${strategy_id}/trades`, function(trades) {
+            $.each(trades, function(index, trade) { 
+                $("#trades-tbody").append(`<tr><td>${trade.timeTraded}</td><td>${trade.buying ? 'Buy' : 'Sell'}</td><td>${trade.numShares}</td><td>${trade.tradePrice}</td><td>${trade.numShares * trade.tradePrice}</td></tr>`)
+            });
+        });
+    }, 5000);
+    $("#global-modal").modal();   
 }
 
 function openCreateNewStrategyModal() {
@@ -133,9 +170,6 @@ function newStrategySelectStock(ticker, name) {
 }
 
 
-function viewMoreStrategy(strategy_id) {
-    // TODO: Create view more details modal.    
-}
 
 function openEditStrategyModal(strategy_id) {
     $.get("templates/strategy-edit-form.mustache", function(template) {
