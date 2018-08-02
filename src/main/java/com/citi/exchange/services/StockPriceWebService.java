@@ -69,7 +69,7 @@ public class StockPriceWebService {
         return true;
     }
 
-    private double getResponseFromURL(String ticker) throws IOException {
+    public double getResponseFromURL(String ticker) throws IOException {
         URL url = new URL(marketFeedUrl + "?s="+ ticker + "&f=p0");
         Scanner scanner = new Scanner(url.openStream());
 
