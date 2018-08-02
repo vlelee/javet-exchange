@@ -1,5 +1,6 @@
 package com.citi.exchange.services;
 
+import com.citi.exchange.entities.Stock;
 import com.citi.exchange.entities.StrategyConfiguration;
 import com.citi.exchange.entities.Trade;
 import com.citi.exchange.jms.TradeExecution;
@@ -44,20 +45,23 @@ public class StrategyService {
         return repo.findById(id).get();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    //@Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addNewStrategy(StrategyConfiguration strat) {
         String stockTicker = strat.getStock().getTicker();
-        if (stockService.getStockByTicker(stockTicker) != null) {
-            strat.setStock(stockService.getStockByTicker(stockTicker));
+        if (stockService.isTickerPresent(stockTicker)) {
+            Stock stock = stockService.getStockByTicker(stockTicker);
+            strat.setStock(stock);
         }
+
+        strat = repo.save(strat);
+        Stock stock = stockService.getStockByTicker(stockTicker);
         Trade newTrade = tradeService.addNewTrade(
                 new Trade(
                         strat.isBuying(),
                         strat.getNumShares(),
                         strat.getInitiationPrice(),
-                        strat.getStock(), strat));
+                        stock, strat));
         tradeExecution.send(newTrade);
-        repo.save(strat);
     }
 
     @Transactional()

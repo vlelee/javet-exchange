@@ -66,7 +66,7 @@ public class StrategyConfiguration implements Serializable {
     @JsonProperty("stock")
     private Stock stock;
 
-    @OneToMany(mappedBy = "strategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "strategy", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Trade> trades = new ArrayList<Trade>();
 

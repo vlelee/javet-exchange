@@ -50,4 +50,8 @@ public class StockService {
         repo.save(update_stock);
     }
 
+    public boolean isTickerPresent(String stockTicker) {
+        return repo.findById(stockTicker).isPresent();
+    }
+
 }
