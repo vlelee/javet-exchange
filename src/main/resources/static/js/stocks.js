@@ -11,10 +11,9 @@ $(document).ready(function() {
 });
 
 
-// This function populates the  a modal to allow users to search for stocks to begin tracking. This can either be opened by clicking 'Track New Stock' at the 
-// bottom of the stock list on the right-hand side of the page or by clicking 'Missing Stock?' within the strategy creation modal.
-// This function uses an autocomplete library in conjunction with the res/stock-list.json file to help identify what stock the user would like to begin tracking.
-// Dependencies: AutoComplete Library, Mustache Library, res/stock-list.json
+// This function is called on page initialization and calls the JAVET REST API to fetch all of the stocks in the DB which are all the stocks that the user has ever 
+// created or used a strategy on. This data is populated into the right/bottom pane of the page.
+// Dependencies: JAVET REST Services
 function loadStocksWithPrices() {
     $.get("http://localhost:8082/api/stocks", function(data) {
         $.each(data, function(index, stock) {

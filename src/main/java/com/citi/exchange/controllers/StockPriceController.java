@@ -6,6 +6,7 @@ import com.citi.exchange.services.StockPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/stockprices")
 public class StockPriceController {
@@ -17,7 +18,7 @@ public class StockPriceController {
         return service.getStockPrices();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="/last/{ticker}")
+    @RequestMapping(method = RequestMethod.GET, value="/{ticker}/latest")
     String getLastStockPriceByTicker(@PathVariable("ticker") String ticker){ return service.getLastStockPriceByTicker(ticker);}
 
     @RequestMapping(method = RequestMethod.GET, value="/{id}")

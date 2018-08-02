@@ -1,3 +1,4 @@
+var refreshStockPrice;
 $(document).ready(function() {
     loadStrategies();
 });
@@ -18,11 +19,11 @@ function loadStrategies() {
     $.get("http://localhost:8082/api/strategies", function(data) {
         $("#strategy-info-tbody").html("");
         $.each(data, function(index, strategy) {
+            strategy_location = (strategy.active) ? "#active-strategy-info-tbody" : "#inactive-strategy-info-tbody"
             
-            
-            $("#strategy-info-tbody").append(`
-                        <tr class="m-0">
-                            <th scope="row">${strategy.strategyName}</th>
+            $(strategy_location).append(`
+                        <tr class="m-0 ${(strategy.active) ? "" : 'text-info'}">
+                            <th scope="row">${strategy.strategyName} ${(strategy.active) ? "" : '(Inactive)'}</th>
                             <td>${strategy.algo}</td>
                             <td>${strategy.stock.ticker}</td>
                             <td id='strategy${strategy.id}-profit'>-</td>
@@ -76,24 +77,36 @@ function openCreateNewStrategyModal() {
             $("#strategy-share-select").val($("#strategy-share-select option:first").val());
             
             
-            
+            // TODO: remove extraneous stock-list.json fields and create a combined field for symbol and name to allow searching for name and symbol.
             var options_fullname = 
                 { 
                     url: "res/stock-list.json", getValue: "Symbol", 
                     list: { 
-                        match: { enabled: true },
+                        maxNumberOfElements: 10,
+                        match: {enabled: true },
                         onSelectItemEvent: function() { 
-                            $("#strategy-stock-input").data("Symbol", $("#strategy-stock-input").getSelectedItemData().Symbol); 
-                            $("#strategy-stock-input").val($("#strategy-stock-input").getSelectedItemData().Name); 
+                            newStrategySelectStock($("#strategy-stock-input").getSelectedItemData().Symbol, $("#strategy-stock-input").getSelectedItemData().Name)
                         },
                         onKeyEnterEvent: function() {
-                            $("#strategy-stock-input").data("Symbol", $("#strategy-stock-input").getSelectedItemData().Symbol); 
-                            $("#strategy-stock-input").val($("#strategy-stock-input").getSelectedItemData().Name); 
+                            newStrategySelectStock($("#strategy-stock-input").getSelectedItemData().Symbol, $("#strategy-stock-input").getSelectedItemData().Name)
+                        }
+                    },
+                    
+                    template: {
+                        type: "description",
+                        fields: {
+                            description: "Name"
                         }
                     }
                 };
+            $("#new-investment-value").data("stock-base-price", 0)
             $("#strategy-stock-input").easyAutocomplete(options_fullname).css("min-width","300px");
             $(".easy-autocomplete-container").css("min-width","300px");
+            $("#strategy-quantity-input").on('input', function() {
+                let stock_base_price = $("#new-investment-value").data("stock-base-price")
+                if(stock_base_price)
+                    $("#new-investment-value").val($("#strategy-quantity-input").val() * stock_base_price.toFixed(2));
+            });
         });
         
         $("#global-modal-footer").html(`
@@ -105,6 +118,20 @@ function openCreateNewStrategyModal() {
 
     });
 }
+
+function newStrategySelectStock(ticker, name) {
+    clearInterval(refreshStockPrice);
+    $("#strategy-stock-input").data("Symbol", ticker); 
+    $("#strategy-stock-input").val(name); 
+    refreshStockPrice = setInterval(function() {
+        $.get(`http://localhost:8082/api/stockprices/${ticker}/latest`, function(price) {
+            $("#new-investment-value").data("stock-base-price", parseFloat(price));
+            $("#new-investment-value").val($("#strategy-quantity-input").val() * parseFloat(price).toFixed(2));
+        });
+        
+    }, 3000);
+}
+
 
 function viewMoreStrategy(strategy_id) {
     // TODO: Create view more details modal.    
@@ -187,11 +214,12 @@ function createStrategy() {
     // TODO: Fixed threshold rounding issue
     // TODO: Fix initiation price
     let new_stock = {"ticker": $("#strategy-stock-input").data("Symbol"), "stockName": $("#strategy-stock-input").val()};
-    let new_strategy = {"strategyName": strategy_name, "algo": strategy_algo, 
-                        "stock": new_stock, "startTime": strategy_start, "initiationPrice": 0.00, 
+    let new_strategy = {"strategyName": strategy_name, "algo": strategy_algo, "buying": ($("#strategy-starting-position-select").val() == "Buying"),
+                        "stock": new_stock, "startTime": strategy_start, "initiationPrice": $("#new-investment-value").data("stock-base-price"), 
                         "numShares": parseInt($("#strategy-quantity-input").val()), 
                         "exitThresholdHigh": parseFloat(gain_threshold_exit).toFixed(2), 
-                       "exitThresholdLow": parseFloat(loss_threshold_exit).toFixed(2)};
+                       "exitThresholdLow": parseFloat(loss_threshold_exit).toFixed(2),
+                       "active": true};
     $.ajax({        
         headers: { 
             'Accept': 'application/json',
