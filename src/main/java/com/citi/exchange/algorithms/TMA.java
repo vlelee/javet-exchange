@@ -7,12 +7,10 @@ import com.citi.exchange.jms.TradeExecution;
 import com.citi.exchange.services.StrategyService;
 import com.citi.exchange.services.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,14 +33,9 @@ public class TMA implements Strategy {
     @Autowired
     StrategyService strategyService;
 
-
-    int index = 0;
     private StrategyConfiguration strategyConfiguration;
-//
-//    public TMA(StrategyConfiguration strategyConfiguration){
-//        this.strategyConfiguration = strategyConfiguration;
-//    }
 
+    //Two Moving Averages algorithm
     @Override
     public void run(double newPrice) {
         windowQueue.add(0, newPrice);
@@ -50,10 +43,7 @@ public class TMA implements Strategy {
 
             double newShortAverage = getAverage(windowQueue, shortAveragePeriod);
             double newLongAverage = getAverage(windowQueue, longAveragePeriod);
-//            index += 1;
-//            if(index % 40 == 0) {
-//                System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Short: " + newShortAverage + " Long: " + newLongAverage);
-//            }
+
             strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
 
             boolean buying = strategyConfiguration.isBuyingAdvanced();
@@ -62,26 +52,27 @@ public class TMA implements Strategy {
                 // If we're buying and the last SA > last LA and current SA < current LA -> buy
                 if(previousSAExceedsLA && newShortAverage < newLongAverage) {
                     System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Buying " + stockQuantity +  " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isBuyingAdvanced());
+
                     Trade buyTrade = tradeService.addNewTrade(new Trade(true, stockQuantity, newPrice, strategyConfiguration.getStock(), strategyConfiguration));
                     tradeExecution.send(buyTrade);
 
                     strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
                     System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL() + " GOL: "
                             + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
-                    //strategyConfiguration.setBuying(false);
+
                 }
             } else {
-                // If we're buying and the last SA < last LA and current SA > current LA -> buy
+                // If we're selling and the last SA < last LA and current SA > current LA -> buy
                 if(!previousSAExceedsLA && newShortAverage > newLongAverage) {
-
                     System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Selling " + stockQuantity + " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isBuyingAdvanced());
+
                     Trade sellTrade = tradeService.addNewTrade(new Trade(false, strategyConfiguration.getStockHeld(), newPrice, strategyConfiguration.getStock(), strategyConfiguration));
                     tradeExecution.send(sellTrade);
 
                     strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
                     System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL() + " GOL: "
                             + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
-                    //strategyConfiguration.setBuying(true);
+
                 }
             }
 

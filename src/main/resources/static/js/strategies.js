@@ -29,19 +29,30 @@ function loadStrategies() {
                             <td>${strategy.stock.ticker == 'C' ? '<img src="https://botw-pd.s3.amazonaws.com/styles/logo-thumbnail/s3/112011/city_bank_logo.png?itok=dFZm2BBW" width="30px" height="30px" />' : strategy.stock.ticker}</td>
                             <td id='strategy${strategy.id}-profit'>-</td>
                             <td id='strategy${strategy.id}-next-position'>-</td>
-                            <td nowrap>
+                            <td id='strategy${strategy.id}-options' nowrap>
                                 <button class="btn btn-xs m-0 p-0 text-primary" onClick="openStrategyHistoryModal(${strategy.id})" style='background-color:transparent;'>
                                     <i class="material-icons">history</i>
                                 </button>
+                            </td>                            
+                        </tr>
+            `);
+            if(strategy.active) {
+                $(`#strategy${strategy.id}-options`).append(`
                                 <button class="btn btn-xs m-0 p-0 text-success" onClick="openEditStrategyModal(${strategy.id})" style='background-color:transparent;'>
                                     <i class="material-icons">edit</i>
                                 </button>
                                 <button class="btn btn-xs m-0 p-0 text-danger" onClick="openEndStrategyModal(${strategy.id})" style='background-color:transparent;'>
                                     <i class="material-icons">remove_circle_outline</i>
-                                </button>
-                            </td>                            
-                        </tr>
-            `);
+                                </button>`);
+            }
+            $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
+                let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" :
+                    ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
+                $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
+            });
+            $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
+                $(`#strategy${strategy.id}-next-position`).text(strategy_position)
+            });
             if(strategy.active) {
                 setInterval(function() {
                     $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {

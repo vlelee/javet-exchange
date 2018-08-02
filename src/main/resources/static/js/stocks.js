@@ -14,7 +14,7 @@ $(document).ready(function() {
 // This function is called on page initialization and calls the JAVET REST API to fetch all of the stocks in the DB which are all the stocks that the user has ever 
 // created or used a strategy on. This data is populated into the right/bottom pane of the page.
 // Dependencies: JAVET REST Services
-function loadStocksWithPrices() {
+function loadStocksWithPrices() {/*
     $.get("http://localhost:8082/api/stocks", function(data) {
         $.each(data, function(index, stock) {
             let get_stock_price_url = "https://api.iextrading.com/1.0/stock/" + stock.ticker.trim() + "/ohlc";
@@ -32,7 +32,7 @@ function loadStocksWithPrices() {
                 `);
             });
         });
-    });
+    }); */
 }
 
 
