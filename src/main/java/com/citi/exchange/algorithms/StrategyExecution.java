@@ -53,7 +53,7 @@ public class StrategyExecution {
             }
         }
         if(activeTMAStrategies.isEmpty() && !printedOnce){
-            System.out.println("No more active strategies");
+            System.out.println("No active strategies currently");
             printedOnce = true;
         }
 
