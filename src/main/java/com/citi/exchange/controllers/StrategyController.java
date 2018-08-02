@@ -45,7 +45,6 @@ public class StrategyController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	void addStrategy(@RequestBody StrategyConfiguration strat) {
-		//strat.setStock(stockService.getStockByTicker(strat));
 		service.addNewStrategy(strat);
 	}
 

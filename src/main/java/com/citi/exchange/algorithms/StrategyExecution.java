@@ -26,14 +26,16 @@ public class StrategyExecution {
     @Autowired
     private BeanFactory beanFactory;
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 30)
     public void execute(){
         Map<String, Double> marketPrice = stockPriceWebService.getMarketPrice();
         searchForConfigurations();
         for(TMA strategy : activeTMAStrategies.values()){
-            double currentPrice = marketPrice.get(strategy.getStrategyConfiguration().getStock().getTicker());
-            //System.out.println("ticker: " + strategy.getStrategyConfiguration().getStock().getTicker() + " current price: " + currentPrice);
-            strategy.run(currentPrice);
+            String ticker = strategy.getStrategyConfiguration().getStock().getTicker();
+            if(ticker != null && marketPrice.containsKey(ticker)) {
+                double currentPrice = marketPrice.get(ticker);
+                strategy.run(currentPrice);
+            }
         }
     }
 
@@ -46,7 +48,6 @@ public class StrategyExecution {
                         TMA tma = beanFactory.getBean(TMA.class);
                         tma.setStrategyConfiguration(strategy);
                         activeTMAStrategies.put(strategy.getId(), tma);
-                        //System.out.println("New Strategy '" + strategy.getStrategyName() + "' with investment value: " + strategy.currentInvestmentValue());
                     }
             }
 

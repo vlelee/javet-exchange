@@ -41,13 +41,21 @@
                             <th scope="col">Options</th>                        
                         </tr>
                     </thead>
-                    <tbody id="strategy-info-tbody">
+                    <tbody id="active-strategy-info-tbody">
+                    </tbody>
+                    <tbody id="inactive-strategy-info-tbody" style="display: none;">
                     </tbody>
                     <tfoot>
                         <tr>
                             <th colspan="6" class="text-center">
                                 <button class="btn btn-xs p-2 btn-primary" onClick="openCreateNewStrategyModal();">
                                     Create New Strategy
+                                </button>
+                                <button id="show-inactive-strat-btn" class="btn btn-xs p-2 btn-warning" onClick="$('#hide-inactive-strat-btn').show(); $('#inactive-strategy-info-tbody').show(); $(this).hide();">
+                                    Show Inactive Strategies
+                                </button>
+                                <button id="hide-inactive-strat-btn" class="btn btn-xs p-2 btn-default" onClick="$('#show-inactive-strat-btn').show(); $('#inactive-strategy-info-tbody').hide(); $(this).hide();" style="display: none;">
+                                    Hide Inactive strategies
                                 </button>
                             </th>
                         </tr>
@@ -98,7 +106,8 @@
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+      
         <!-- Autocomplete Library -->
         <script src="js/jquery.easy-autocomplete.min.js"></script> 
 
