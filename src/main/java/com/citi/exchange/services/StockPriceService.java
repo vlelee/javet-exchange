@@ -28,6 +28,9 @@ public class StockPriceService {
         return repo.findById(id).get();
     }
 
+    public String getLastStockPriceByTicker(String ticker) {
+        return  repo.findLastByTicker(ticker);
+    }
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addNewStockPrice(StockPrice aStockPrice){
 
@@ -41,4 +44,5 @@ public class StockPriceService {
         }
         return list;
     }
+
 }

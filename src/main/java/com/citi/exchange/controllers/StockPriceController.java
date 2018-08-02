@@ -1,5 +1,6 @@
 package com.citi.exchange.controllers;
 
+import com.citi.exchange.entities.Stock;
 import com.citi.exchange.entities.StockPrice;
 import com.citi.exchange.services.StockPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class StockPriceController {
     Iterable<StockPrice> findAll() {
         return service.getStockPrices();
     }
+
+    @RequestMapping(method = RequestMethod.GET, value="/last/{ticker}")
+    String getLastStockPriceByTicker(@PathVariable("ticker") String ticker){ return service.getLastStockPriceByTicker(ticker);}
 
     @RequestMapping(method = RequestMethod.GET, value="/{id}")
     StockPrice getStockPriceById(@PathVariable("id") int id) {
