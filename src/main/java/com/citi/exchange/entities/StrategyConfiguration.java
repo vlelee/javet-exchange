@@ -7,7 +7,9 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -224,10 +226,7 @@ public class StrategyConfiguration implements Serializable {
             currentCash += (trade.isBuying() ? -1 : 1) * currentTrade;
 
             if(trade.isBuying() != isBuying()){
-                if(trade.isBuying())
-                    investmentValue += (currentCash - initialCash);
-                else
-                    investmentValue += (lastTrade - currentTrade);
+                investmentValue += (trade.isBuying()) ? (currentCash - initialCash) : (lastTrade - currentTrade);
             } else {
                 lastTrade = trade.getTradePrice() * trade.getNumShares();
             }
@@ -235,28 +234,37 @@ public class StrategyConfiguration implements Serializable {
         return investmentValue;
     }
 
-    public double currentPnL() {
-/*
+    public List<Double> getPostTradeInvestVals() {
+        List<Double> trade_values = new ArrayList<Double>();
         double investmentValue = getNumShares() * getInitiationPrice();
         double initialCash = (isBuying()) ? investmentValue : 0;
         double currentCash = initialCash;
         double lastTrade = 0;
+        trade_values.add(investmentValue);
 
         for(Trade trade : getTrades()) {
             double currentTrade = trade.getTradePrice() * trade.getNumShares();
             currentCash += (trade.isBuying() ? -1 : 1) * currentTrade;
 
             if(trade.isBuying() != isBuying()){
-                if(trade.isBuying())
-                    investmentValue += (currentCash - initialCash);
-                else
-                    investmentValue += (lastTrade - currentTrade);
+                investmentValue += (trade.isBuying()) ? (currentCash - initialCash) : (lastTrade - currentTrade);
             } else {
                 lastTrade = trade.getTradePrice() * trade.getNumShares();
             }
+            trade_values.add(investmentValue);
         }
-        return investmentValue; */
+        return trade_values;
+    }
+
+
+    public double currentPnL() {
         return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
     }
 
+    //Compute
+    public double getGainOrLossFromPNL(double currentPnL, double currentInvVal){
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.CEILING);
+        return Double.parseDouble(df.format((currentPnL / currentInvVal) * 100));
+    }
 }
