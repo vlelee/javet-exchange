@@ -103,51 +103,41 @@ function openCreateNewStrategyModal() {
         $("#global-modal-title").text("Create New Strategy")
         $('#global-modal-body').html(rendered);
         
-        
-        $.get("http://localhost:8082/api/stocks", function(stocks) {
-            $.each(stocks, function(index, stock) {
-                
-                let get_stock_price_url = "https://api.iextrading.com/1.0/stock/" + stock.ticker.trim() + "/ohlc";
-                $.get(get_stock_price_url, function(response) {
-                    stock_avg = ((response["high"] + response["low"]) / 2).toFixed(2)
-                    $("#strategy-share-select").append(`<option value="${stock.ticker}">${stock.stockName} (\$${stock_avg})</option>`)
-                });
-            });
-            $("#strategy-quantity-input").change(updateInvestmentValue);    
-            $("#strategy-share-select").change(updateInvestmentValue);
-            $("#strategy-share-select").val($("#strategy-share-select option:first").val());
-            
-            
-            // TODO: remove extraneous stock-list.json fields and create a combined field for symbol and name to allow searching for name and symbol.
-            var options_fullname = 
-                { 
-                    url: "res/stock-list.json", getValue: "Symbol", 
-                    list: { 
-                        maxNumberOfElements: 10,
-                        match: {enabled: true },
-                        onSelectItemEvent: function() { 
-                            newStrategySelectStock($("#strategy-stock-input").getSelectedItemData().Symbol, $("#strategy-stock-input").getSelectedItemData().Name)
-                        },
-                        onKeyEnterEvent: function() {
-                            newStrategySelectStock($("#strategy-stock-input").getSelectedItemData().Symbol, $("#strategy-stock-input").getSelectedItemData().Name)
-                        }
+
+        $("#strategy-quantity-input").change(updateInvestmentValue);    
+        $("#strategy-share-select").change(updateInvestmentValue);
+        $("#strategy-share-select").val($("#strategy-share-select option:first").val());
+
+
+        // TODO: remove extraneous stock-list.json fields and create a combined field for symbol and name to allow searching for name and symbol.
+        var options_fullname = 
+            { 
+                url: "res/stock-list.json", getValue: "Symbol", 
+                list: { 
+                    maxNumberOfElements: 10,
+                    match: {enabled: true },
+                    onSelectItemEvent: function() { 
+                        newStrategySelectStock($("#strategy-stock-input").getSelectedItemData().Symbol, $("#strategy-stock-input").getSelectedItemData().Name)
                     },
-                    
-                    template: {
-                        type: "description",
-                        fields: {
-                            description: "Name"
-                        }
+                    onKeyEnterEvent: function() {
+                        newStrategySelectStock($("#strategy-stock-input").getSelectedItemData().Symbol, $("#strategy-stock-input").getSelectedItemData().Name)
                     }
-                };
-            $("#new-investment-value").data("stock-base-price", 0)
-            $("#strategy-stock-input").easyAutocomplete(options_fullname).css("min-width","300px");
-            $(".easy-autocomplete-container").css("min-width","300px");
-            $("#strategy-quantity-input").on('input', function() {
-                let stock_base_price = $("#new-investment-value").data("stock-base-price")
-                if(stock_base_price)
-                    $("#new-investment-value").val($("#strategy-quantity-input").val() * stock_base_price.toFixed(2));
-            });
+                },
+
+                template: {
+                    type: "description",
+                    fields: {
+                        description: "Name"
+                    }
+                }
+            };
+        $("#new-investment-value").data("stock-base-price", 0)
+        $("#strategy-stock-input").easyAutocomplete(options_fullname).css("min-width","300px");
+        $(".easy-autocomplete-container").css("min-width","300px");
+        $("#strategy-quantity-input").on('input', function() {
+            let stock_base_price = $("#new-investment-value").data("stock-base-price")
+            if(stock_base_price)
+                $("#new-investment-value").val($("#strategy-quantity-input").val() * stock_base_price.toFixed(2));
         });
         
         $("#global-modal-footer").html(`

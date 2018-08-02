@@ -32,7 +32,8 @@ public class StockPriceService {
     }
 
     public String getLastStockPriceByTicker(String ticker) {
-        if( repo.findLastByTicker(ticker) != null)
+        String lastDBPrice =  repo.findLastByTicker(ticker);
+        if(lastDBPrice != null && lastDBPrice.length() > 0)
             return repo.findLastByTicker(ticker);
         else {
             try {
