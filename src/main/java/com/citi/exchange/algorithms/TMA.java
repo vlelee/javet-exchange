@@ -66,7 +66,8 @@ public class TMA implements Strategy {
                     tradeExecution.send(buyTrade);
 
                     strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
-                    System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL());
+                    System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL() + " GOL: "
+                            + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
                     //strategyConfiguration.setBuying(false);
                 }
             } else {
@@ -78,7 +79,8 @@ public class TMA implements Strategy {
                     tradeExecution.send(sellTrade);
 
                     strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
-                    System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL());
+                    System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL " + strategyConfiguration.currentPnL() + " GOL: "
+                            + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
                     //strategyConfiguration.setBuying(true);
                 }
             }
@@ -90,6 +92,8 @@ public class TMA implements Strategy {
 
     @Override
     public void exit() {
+
+
 
     }
 

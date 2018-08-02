@@ -16,6 +16,7 @@ import java.util.*;
 @Component
 public class StrategyExecution {
     private Map<Integer, TMA> activeTMAStrategies = new HashMap<>();
+    private boolean printedOnce = false;
 
     @Autowired
     private StockPriceWebService stockPriceWebService;
@@ -30,14 +31,35 @@ public class StrategyExecution {
     public void execute(){
         Map<String, Double> marketPrice = stockPriceWebService.getMarketPrice();
         searchForConfigurations();
-        for(TMA strategy : activeTMAStrategies.values()){
-            String ticker = strategy.getStrategyConfiguration().getStock().getTicker();
-            if(ticker != null && marketPrice.containsKey(ticker)) {
-                double currentPrice = marketPrice.get(ticker);
-                strategy.run(currentPrice);
+//        for(TMA strategy : activeTMAStrategies.values()){
+//            String ticker = strategy.getStrategyConfiguration().getStock().getTicker();
+//            if(ticker != null && marketPrice.containsKey(ticker)) {
+//                double currentPrice = marketPrice.get(ticker);
+//                strategy.run(currentPrice);
+//            }
+//        }
+        Iterator<TMA> iterator = activeTMAStrategies.values().iterator();
+        while(iterator.hasNext()) {
+            TMA strategy = iterator.next();
+            if(strategy.getStrategyConfiguration().isActive()){
+                String ticker = strategy.getStrategyConfiguration().getStock().getTicker();
+                if(ticker != null && marketPrice.containsKey(ticker)) {
+                    double currentPrice = marketPrice.get(ticker);
+                    strategy.run(currentPrice);
+                    isAnActiveStrategy(strategy.getStrategyConfiguration().getId());
+                }
+            }  else {
+                iterator.remove();
             }
         }
+        if(activeTMAStrategies.isEmpty() && !printedOnce){
+            System.out.println("No more active strategies");
+            printedOnce = true;
+        }
+
+
     }
+
 
     public void searchForConfigurations(){
         Collection<StrategyConfiguration> strategies = strategyService.getActiveStrategies();
@@ -53,6 +75,35 @@ public class StrategyExecution {
 
         }
 
+    }
+
+    public boolean isAnActiveStrategy(int strategyId){
+        StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(strategyId);
+        double investmentVal = strategyConfiguration.currentInvestmentValue();
+        double currentPNL = strategyConfiguration.currentPnL();
+        double percentageGoL = strategyConfiguration.getGainOrLossFromPNL(currentPNL, investmentVal);
+
+        if(!strategyConfiguration.isActive()){
+            strategyService.deactivateStrategy(strategyId);
+            return false;
+        }
+
+        if(activeTMAStrategies.containsKey(strategyConfiguration.getId())){
+            if(percentageGoL >= strategyConfiguration.getExitThresholdHigh()){
+                strategyService.deactivateStrategy(strategyId);
+                System.out.println("REMOVED Strategy name" + strategyConfiguration.getStrategyName() + " is higher than the high exit threshold at "
+                        + percentageGoL + " Active: " + strategyConfiguration.isActive());
+                return false;
+            }
+            else if(percentageGoL <= (-1 * strategyConfiguration.getExitThresholdLow())){
+                strategyService.deactivateStrategy(strategyId);
+                System.out.println("REMOVED Strategy name" + strategyConfiguration.getStrategyName() + " is below the low exit threshold at "
+                        + percentageGoL + " Active: " + strategyConfiguration.isActive());
+                return false;
+            }
+        }
+
+        return true;
     }
 
 

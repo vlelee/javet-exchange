@@ -7,7 +7,9 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -259,4 +261,10 @@ public class StrategyConfiguration implements Serializable {
         return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
     }
 
+    //Compute
+    public double getGainOrLossFromPNL(double currentPnL, double currentInvVal){
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.CEILING);
+        return Double.parseDouble(df.format((currentPnL / currentInvVal) * 100));
+    }
 }
