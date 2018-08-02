@@ -5,6 +5,9 @@ import com.citi.exchange.entities.StrategyConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/strategies")
@@ -22,6 +25,17 @@ public class StrategyController {
 	@RequestMapping(method = RequestMethod.GET, value="/active")
 	Iterable<StrategyConfiguration> findAllActive() {
 		return service.getActiveStrategies();
+	}
+
+	// TODO: Implement this.
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/profit")
+	String getStrategyProfit(@PathVariable("id") int id) {
+		return service.getStrategyProfitString(id);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value="/{id}/position")
+	String getStrategyNextPosition(@PathVariable("id") int id) {
+		return service.getStrategyNextPositionString(id);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value="/{id}")

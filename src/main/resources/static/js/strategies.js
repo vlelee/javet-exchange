@@ -18,13 +18,15 @@ function loadStrategies() {
     $.get("http://localhost:8082/api/strategies", function(data) {
         $("#strategy-info-tbody").html("");
         $.each(data, function(index, strategy) {
+            
+            
             $("#strategy-info-tbody").append(`
                         <tr class="m-0">
                             <th scope="row">${strategy.strategyName}</th>
                             <td>${strategy.algo}</td>
                             <td>${strategy.stock.ticker}</td>
-                            <td>TBD</td>
-                            <td>TBD</td>
+                            <td id='strategy${strategy.id}-profit'>-</td>
+                            <td id='strategy${strategy.id}-next-position'>-</td>
                             <td nowrap>
                                 <button class="btn btn-xs m-0 p-0 text-success" onClick="openEditStrategyModal(${strategy.id})" style='background-color:transparent;'>
                                     <i class="material-icons">edit</i>
@@ -35,6 +37,17 @@ function loadStrategies() {
                             </td>                            
                         </tr>
             `);
+            setInterval(function() {
+                $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
+                    let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" : 
+                        ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
+                    $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
+                });
+                $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
+                    $(`#strategy${strategy.id}-next-position`).text(strategy_position)
+                });
+                
+            }, 2000);
         });
     });
 }
