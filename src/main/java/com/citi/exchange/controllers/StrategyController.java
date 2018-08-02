@@ -52,6 +52,8 @@ public class StrategyController {
 	void updateStrategy(@RequestBody StrategyConfiguration strat, @PathVariable("id") int id) {
 		service.updateStrategy(strat, id);
 	}
+
+	@CrossOrigin
 	@RequestMapping(method = RequestMethod.PUT, value="/{id}/deactivate")
 	void deactivateStrategy(@PathVariable("id") int id) {
 		service.deactivateStrategy(id);

@@ -178,7 +178,13 @@ function openEndStrategyModal(strategy_id) {
 }
 
 function endStrategy(strategy_id) {
-    // TODO: Call the REST API once it's created.        
+    $.ajax({
+        url: `http://localhost:8082/api/strategies/${strategy_id}/deactivate`,
+        method: "PUT",
+        success: function() {
+            window.location.reload(true);
+        }
+    });
 }
 
 
@@ -193,11 +199,11 @@ function createStrategy() {
     $("#new-strategy-warnings").hide();
     let strategy_name = $("#strategy-name-input").val();
     let strategy_algo = $("#strategy-type-select").val();
-    let strategy_share_quantity = $("#strategy-name-input").val();
+    let strategy_share_quantity = parseInt($("#strategy-quantity-input").val());
     let strategy_start = new Date().toISOString(); // Taken from https://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetime
         
-    let gain_threshold_exit = $("#gain-exit-threshold-input").val();
-    let loss_threshold_exit = $("#loss-exit-threshold-input").val();
+    let gain_threshold_exit = parseFloat($("#gain-exit-threshold-input").val()).toFixed(2);
+    let loss_threshold_exit = parseFloat($("#loss-exit-threshold-input").val()).toFixed(2);
     
     if(!strategy_name) {
         createStrategyWarning("Missing Name!", "Please enter a name to identify your strategy!")
@@ -216,10 +222,7 @@ function createStrategy() {
     let new_stock = {"ticker": $("#strategy-stock-input").data("Symbol"), "stockName": $("#strategy-stock-input").val()};
     let new_strategy = {"strategyName": strategy_name, "algo": strategy_algo, "buying": ($("#strategy-starting-position-select").val() == "Buying"),
                         "stock": new_stock, "startTime": strategy_start, "initiationPrice": $("#new-investment-value").data("stock-base-price"), 
-                        "numShares": parseInt($("#strategy-quantity-input").val()), 
-                        "exitThresholdHigh": parseFloat(gain_threshold_exit).toFixed(2), 
-                       "exitThresholdLow": parseFloat(loss_threshold_exit).toFixed(2),
-                       "active": true};
+                        "numShares": strategy_share_quantity, "exitThresholdHigh": gain_threshold_exit, "exitThresholdLow": loss_threshold_exit, "active": true};
     $.ajax({        
         headers: { 
             'Accept': 'application/json',

@@ -44,6 +44,7 @@ public class StrategyService {
         updated_strategy.setStrategyName(newStrategy.getStrategyName());
         repo.save(updated_strategy);
     }
+
     @Transactional()
     public void deactivateStrategy(int id ){
         StrategyConfiguration strat = getStrategyById(id);
