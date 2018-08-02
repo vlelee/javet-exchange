@@ -1,8 +1,13 @@
 # JaveTrading Platform
 ### Abnob Doss | Vicki Lee | Julie Rosenbaum
 
+
+## Description
+Create automated trading strategies that are informed by live market data. The strategies decide when to execute trades based on algorithmic analysis of the market data.  The platform provides a trader the ability to deactivate and adjust an existing strategy, along with real-time performance statsof each strategy.
+
+
 ## To set environment variables for local machine
-In application.properties the variables look like this:
+In application.properties, the variables look like this:
 ```
 spring.datasource.url=jdbc:mysql://${DBHOST}/${DBNAME}
 spring.datasource.username=${USERNAME}
@@ -24,8 +29,9 @@ Name     | Value
 
 Click `Ok` and then hitting the play button should work the same!
 
-## Description
-Create automated trading strategies that are informed by live market data. The strategies decide when to execute trades based on algorithmic analysis of the market data.  The platform provides a trader the ability to deactivate and adjust an existing strategy, along with real-time performance statsof each strategy.
+
+## Runbook
+ * TODO: what dis
 
 ## Technology and Roles  
 * __User Interface:__ 
@@ -55,7 +61,7 @@ _Maintaining a database containing stock, strategy, trade, and live market data,
 
 ## Architecture
 ### Database Design
-![EER Diagram of Javet Database](./EERDiagram.svg)
+![EER Diagram of Javet Database](./EERDiagram.png)
 
 ### Application Flow
 Components of the application:
@@ -130,7 +136,9 @@ Tech/Development Procedures
     * Behavior Driven Development / Acceptance Testing for the front end
 * More Code Review to avoid duplicating functionality and making workflow more streamlined
 * Add documentation to the code itself to make clear each class/function's purpose and use case
-Features
+
+
+Additional Features
 * Implement the other two strategies: Bollinger Bands and Price Breakout
 * Add Historical Stock Data
 * Searching through strategies
