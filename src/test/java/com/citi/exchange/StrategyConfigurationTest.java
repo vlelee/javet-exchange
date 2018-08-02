@@ -42,11 +42,19 @@ public class StrategyConfigurationTest {
     }
 
     @Test
-    public void getCurrentPNLFromInvestMentValueAndInitialPrice(){
+    public void getPositiveCurrentPNLFromInvestMentValueAndInitialPrice(){
         double investmentValue = 1500;
         double initialPrice = 1450;
 
         assertEquals(50.0, strategy.currentPnL(investmentValue, initialPrice), 0.0);
+    }
+
+    @Test
+    public void getNegativeCurrentPNLFromInvestMentValueAndInitialPrice(){
+        double investmentValue = 1500;
+        double initialPrice = 1550;
+
+        assertEquals(-50.0, strategy.currentPnL(investmentValue, initialPrice), 0.0);
     }
 
 }
