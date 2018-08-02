@@ -66,7 +66,7 @@ public class StrategyConfiguration implements Serializable {
     @JsonProperty("stock")
     private Stock stock;
 
-    @OneToMany(mappedBy = "strategy", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "strategy", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Trade> trades = new ArrayList<Trade>();
 
@@ -261,10 +261,11 @@ public class StrategyConfiguration implements Serializable {
         return currentInvestmentValue() - (getNumShares() * getInitiationPrice());
     }
 
-    //Compute
+    //Compute the percentage of profit or loss from current investment value
     public double getGainOrLossFromPNL(double currentPnL, double currentInvVal){
         DecimalFormat df = new DecimalFormat("#.####");
         df.setRoundingMode(RoundingMode.CEILING);
+
         return Double.parseDouble(df.format((currentPnL / currentInvVal) * 100));
     }
 }

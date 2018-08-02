@@ -5,11 +5,13 @@ import com.citi.exchange.entities.StrategyConfiguration;
 import com.citi.exchange.entities.Trade;
 import com.citi.exchange.repos.StockRepo;
 import com.citi.exchange.repos.TradeRepo;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.jms.Session;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -27,7 +29,7 @@ public class TradeService {
         return repo.findById(id).get();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    //@Transactional(propagation = Propagation.REQUIRES_NEW)
     public Trade addNewTrade(Trade aTrade){
         return repo.save(aTrade);
     }

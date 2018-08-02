@@ -1,6 +1,25 @@
 # JaveTrading Platform
-## Abnob Doss | Vicki Lee | Julie Rosenbaum
+### Abnob Doss | Vicki Lee | Julie Rosenbaum
 
+## To set environment variables for local machine
+Variables:
+```
+* spring.datasource.url=jdbc:mysql://${DBHOST}/${DBNAME}
+* spring.datasource.username=${USERNAME}
+* spring.datasource.password=${PASSWORD}
+* spring.activemq.broker-url=tcp://${ACTIVEMQ}
+```
+
+In Intellij:
+`Edit Run Configurations...` --> `Spring Boot` --> `ExchangeApplication` --> `Environment` --> `Environment Variables` --> Click the plus `+` to add the 5 new variables:
+```
+* DBHOST = localhost:3306
+* DBNAME = javet
+* USERNAME = root
+* PASSWORD = c0nygre
+* ACTIVEMQ = localhost:61616
+```
+Click `Ok` and then hitting the play button should work the same!
 
 ## Description
 Create automated trading strategies that are informed by live market data. The strategies decide when to execute trades based on algorithmic analysis of the market data.  The platform provides a trader the ability to deactivate and adjust an existing strategy, along with real-time performance statsof each strategy.
