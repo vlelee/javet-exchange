@@ -13,7 +13,8 @@ Create automated trading strategies that are informed by live market data. The s
 
  
 * __Core Business Logic:__
-Monitoring live market data
+   
+     Monitoring live market data
 	* Vicki Lee 
 	* Developed in Java using Spring and a "mock" data feed server
 

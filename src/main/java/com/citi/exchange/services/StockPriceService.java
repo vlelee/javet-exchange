@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,6 +20,8 @@ public class StockPriceService {
     @Autowired
     private StockPriceRepo repo;
 
+    @Autowired
+    private StockPriceWebService stockPriceWebService;
 
     public Collection<StockPrice> getStockPrices() {
         return makeCollection(repo.findAll());
@@ -29,7 +32,16 @@ public class StockPriceService {
     }
 
     public String getLastStockPriceByTicker(String ticker) {
-        return  repo.findLastByTicker(ticker);
+        if( repo.findLastByTicker(ticker) != null)
+            return repo.findLastByTicker(ticker);
+        else {
+            try {
+                return Double.toString(stockPriceWebService.getResponseFromURL(ticker));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return "0.00";
+        }
     }
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addNewStockPrice(StockPrice aStockPrice){
