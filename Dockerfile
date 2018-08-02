@@ -1,4 +1,4 @@
-FROM dockerreg.training.com:5000/java
+FROM dockerreg.training.local:5000/java
 
 WORKDIR /javet
 
@@ -7,12 +7,12 @@ COPY . .
 CMD ["java", "-jar", "/javet/target/exchange-0.0.1.jar"]
 
 
-ENV DBHOST=mysql.training.local
-ENV DBNAME=javet_mysql
-ENV USERNAME=root
-ENV PASSWORD=c0nygre
-ENV ACTIVEMQA=tcp://localhost:61616
-ENV PUBFQDNU=
+# ENV DBHOST=mysql.training.local
+# ENV DBNAME=javet_mysql
+# ENV USERNAME=root
+# ENV PASSWORD=c0nygre
+# ENV ACTIVEMQA=tcp://localhost:61616
+# ENV PUBFQDNU=
 
 # spring.datasource.url=jdbc:mysql://localhost:3306/javet
 # spring.datasource.username=root
