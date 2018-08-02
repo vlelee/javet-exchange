@@ -26,7 +26,7 @@ public class StrategyExecution {
     @Autowired
     private BeanFactory beanFactory;
 
-    @Scheduled(fixedRate = 30)
+    @Scheduled(fixedRate = 1000)
     public void execute(){
         Map<String, Double> marketPrice = stockPriceWebService.getMarketPrice();
         searchForConfigurations();

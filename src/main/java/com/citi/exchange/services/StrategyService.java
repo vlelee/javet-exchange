@@ -7,8 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static jdk.nashorn.internal.objects.NativeMath.round;
 
 @Service
 @Transactional (propagation = Propagation.REQUIRED)
@@ -47,6 +51,22 @@ public class StrategyService {
         return list;
     }
 
+    public String getStrategyProfitString(int id) {
+        StrategyConfiguration strategy = getStrategyById(id);
+        double profit = strategy.currentPnL();
+        double investmentValue = strategy.currentInvestmentValue();
+        double profitPerc = (profit / investmentValue * 100);
+        return ((profitPerc > 0) ? "+" : "") + ((double) Math.round(profitPerc * 100) / 100) + "% ($" + ((double) Math.round(profit * 100) / 100) + ")";
+    }
 
 
+    public String getStrategyNextPositionString(int id) {
+        StrategyConfiguration strategy = getStrategyById(id);
+        if(strategy.isBuyingAdvanced()) {
+            int approximate_share_count = (int) Math.floor(strategy.currentInvestmentValue() / strategy.getInitiationPrice());
+            return "Buying ~" + approximate_share_count + " shares";
+        } else {
+            return "Selling " + strategy.getStockHeld() + " shares";
+        }
+    }
 }
