@@ -45,13 +45,16 @@ public class StrategyController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	void addStrategy(@RequestBody StrategyConfiguration strat) {
-		//strat.setStock(stockService.getStockByTicker(strat));
 		service.addNewStrategy(strat);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value="/{id}")
-	void addStrategy(@RequestBody StrategyConfiguration strat, @PathVariable("id") int id) {
+	void updateStrategy(@RequestBody StrategyConfiguration strat, @PathVariable("id") int id) {
 		service.updateStrategy(strat, id);
+	}
+	@RequestMapping(method = RequestMethod.PUT, value="/{id}/deactivate")
+	void deactivateStrategy(@PathVariable("id") int id) {
+		service.deactivateStrategy(id);
 	}
 
 }
