@@ -81,13 +81,6 @@ public class TMA implements Strategy {
         }
     }
 
-    @Override
-    public void exit() {
-
-
-
-    }
-
     //Computes the average of a list of prices in windowQueue
     public double getAverage(List<Double> windowQueque, int windowSize) {
 
