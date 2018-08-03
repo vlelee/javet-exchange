@@ -1,7 +1,7 @@
-drop database javet;
+--drop database javet;
 
-CREATE DATABASE IF NOT EXISTS javet;
-use javet;
+--CREATE DATABASE IF NOT EXISTS javet;
+--use javet;
 
 drop table if exists stocks;
 create table stocks (
