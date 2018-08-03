@@ -52,7 +52,7 @@ public class StrategyConfiguration implements Serializable {
 
     @Column(nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private boolean buying;
+    private boolean initiallyBuying;
 
     @Column(nullable = false)
     @Type(type = "org.hibernate.type.NumericBooleanType")
@@ -77,13 +77,13 @@ public class StrategyConfiguration implements Serializable {
     /*
     Constructors
      */
-    public StrategyConfiguration(String strategyName, Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares, boolean buying, boolean active, Double exitThresholdHigh, Double exitThresholdLow, Stock stock) {
+    public StrategyConfiguration(String strategyName, Algo algo, Timestamp startTime, Double initiationPrice, Integer numShares, boolean initiallyBuying, boolean active, Double exitThresholdHigh, Double exitThresholdLow, Stock stock) {
         this.strategyName = strategyName;
         this.algo = algo;
         this.startTime = startTime;
         this.initiationPrice = initiationPrice;
         this.numShares = numShares;
-        this.buying = buying;
+        this.initiallyBuying = initiallyBuying;
         this.active = active;
         this.exitThresholdHigh = exitThresholdHigh;
         this.exitThresholdLow = exitThresholdLow;
@@ -166,11 +166,11 @@ public class StrategyConfiguration implements Serializable {
     }
 
     public boolean isInitiallyBuying() {
-        return buying;
+        return initiallyBuying;
     }
 
     public void setInitiallyBuying(boolean buying) {
-        this.buying = buying;
+        this.initiallyBuying = buying;
     }
 
     public boolean isActive() {
@@ -219,11 +219,11 @@ public class StrategyConfiguration implements Serializable {
 
     /**
      * If the strategy has executed trades, returns whether or not the strategy is in an open (sell next) or closed (buy next) position
-     * @return  True if strategy buying, False if strategy selling
+     * @return  True if strategy initiallyBuying, False if strategy selling
      */
     public boolean isCurrentlyBuying() {
         if (getTrades().size() == 0) {
-            return buying;
+            return initiallyBuying;
         } else {
             return (getSharesCurrentlyHeld() == 0);
         }

@@ -153,7 +153,7 @@ function loadTradeHistory(strategy_id) {
                 } else {
                     for(i = currentTradeCount; i < tradeVals.length; i++) {
                         tradeHistoryGraph.data.labels.push(i);
-                        dataset = [tradeVals.get(i)];
+                        dataset = [tradeVals[tradeVals.length-i]];
                         tradeHistoryGraph.data.datasets.forEach((dataset) => { dataset.data.push(data); });
                         tradeHistoryGraph.update();                        
                     }
@@ -354,7 +354,7 @@ function createStrategy() {
     // TODO: Fixed threshold rounding issue
     // TODO: Fix initiation price
     let new_stock = {"ticker": $("#strategy-stock-input").data("Symbol"), "stockName": $("#strategy-stock-input").val()};
-    let new_strategy = {"strategyName": strategy_name, "algo": strategy_algo, "buying": ($("#strategy-starting-position-select").val() == "Buying"),
+    let new_strategy = {"strategyName": strategy_name, "algo": strategy_algo, "initiallyBuying": ($("#strategy-starting-position-select").val() == "Buying"),
                         "stock": new_stock, "startTime": strategy_start, "initiationPrice": $("#new-investment-value").data("stock-base-price"), 
                         "numShares": strategy_share_quantity, "exitThresholdHigh": gain_threshold_exit, "exitThresholdLow": loss_threshold_exit, "active": true};
     $.ajax({        
@@ -365,8 +365,10 @@ function createStrategy() {
         url: "/api/strategies",
         method: "POST",
         data: JSON.stringify(new_strategy), 
-        success: function() {
-            window.location.reload(true);
+        success: function(obj) {
+            console.log(new_strategy)
+            console.log(obj)
+            //window.location.reload(true);
         }
     });
 }

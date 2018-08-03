@@ -1,7 +1,7 @@
---  drop database javet;
---
--- CREATE DATABASE IF NOT EXISTS javet;
--- use javet;
+drop database javet;
+
+CREATE DATABASE IF NOT EXISTS javet;
+use javet;
 
 drop table if exists stocks;
 create table stocks (
@@ -20,7 +20,7 @@ end_time timestamp(6) null default null ,
 initiation_price double not null,
 exit_price double,
 num_shares int not null,
-buying boolean not null,
+initially_buying boolean not null,
 active boolean not null,
 exit_threshold_high double not null,
 exit_threshold_low double not null,
