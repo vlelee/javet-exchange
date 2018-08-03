@@ -20,7 +20,7 @@ import java.util.Scanner;
 @Component
 public class StockPriceWebService {
     private double price;
-    private String marketFeedUrl;
+    private String marketFeedUrl = "http://feed.conygre.com:8080/MockYahoo/quotes.csv";
     private String ticker;
 
     @Autowired
@@ -29,10 +29,6 @@ public class StockPriceWebService {
     @Autowired
     private StockPriceService stockPriceService;
 
-    @Autowired
-    public StockPriceWebService(@Value("${market.feed.url}") String marketFeedUrl){
-        this.marketFeedUrl = marketFeedUrl;
-    }
 
     public StockPriceWebService() {}
 
