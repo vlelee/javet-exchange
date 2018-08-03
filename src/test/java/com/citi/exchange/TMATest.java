@@ -1,6 +1,7 @@
 package com.citi.exchange;
 
 import com.citi.exchange.algorithms.TMA;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,4 +50,5 @@ public class TMATest {
 
         assertEquals(0.0, tma.getAverage(priceList, windowSize), 0.005);
     }
+
 }

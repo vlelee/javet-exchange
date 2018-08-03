@@ -45,7 +45,6 @@ public class StrategyService {
         return repo.findById(id).get();
     }
 
-    //@Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addNewStrategy(StrategyConfiguration strat) {
         String stockTicker = strat.getStock().getTicker();
         if (stockService.isTickerPresent(stockTicker)) {
