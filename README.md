@@ -93,7 +93,8 @@ Components of the application:
          └── /id   
 ```
 * UI
-    * TODO: abnob explain what goes on here
+    * Calls the REST API and displays all strategies and corresponding stocks to the user while hiding inactive strategies by default.
+    * Enables users to edit, deactivate, and track strategies through requests to the REST API.
 * MockFeed and MockFeed parser
     * Creates a scheduler to continually make GET requests to the Conygre feed
     * Inputs them to the stock_prices table
