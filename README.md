@@ -130,20 +130,54 @@ Components of the application:
  13. Retroactively create and run tests
  14. Complete stretch goals ...
  
+ 
+Additional features for next sprint
+[ ] Implement the other two strategies: Bollinger Bands and Price Breakout
+[ ] Add Historical Stock Data
+[ ] Searching through strategies
+[ ] Ability to re-activate a strategy with the same configurations
+[ ] Handling partial fills and rejections from the OrderBroker
 
-## Improvements
-Tech/Development Procedures
-* Testing
-    * Do Test Driven Development! We attempted to start with this, but it was time consuming so we shelved the process in the interest of time and completing a fully functional minimum viable product
-    * Behavior Driven Development / Acceptance Testing for the front end
+
+## Retrospective
+What Went Well 
+* Teamwork and communication: convened several times during the day for progress updates
+* Accomplishing set goals in a timely manner
+* Separation of work - compartmentalizing tasks/duties
+* Merging those separated components
+* Structured our process well by ordering most important tasks first
+    * Successful first day of planning to set foundation
+* Continuous Integration as we merged components  
+* Good interactions with Production Support and other teams to focus our issues     
+
+What Went Wrong
+* Testing not done      
+      * Test Driven Development: We shelved in the interest of time to complete a fully functional minimum viable product, but its value was obvious as we progressed
+      * Behavior Driven Development / Acceptance Testing for the front end and client needs
 * More Code Review to avoid duplicating functionality and making workflow more streamlined
-* Add documentation to the code itself to make clear each class/function's purpose and use case
+* Add documentation to the code to make clear each class/function's purpose and use case
+* Lack of business knowledge - spent a long time on the strategy
+* Lack of understanding of certain development tools
+    * Peer programming was excessive when trying to debug
+    * JPA mappings with Spring
+    * Separating out the different modules of the project: UI from API from Algorithm Engine
+    * Docker - our own lack of understanding along with Prod Supports own issues                                                                                           
+* Timing! Not enough time in a week that would have allowed us to solve these issues
+    
+What To Improve If Repeated
+* Test Driven Development and Behavior Driven Development
+* Architecture planning in the beginning
+* Studying the technology tools more in depth
+* Using git more effectively (for our purposes we did not need as many features)
+* Task management tools 
+* Using business analysts/experts for the core business logic
 
 
-Additional Features
-* Implement the other two strategies: Bollinger Bands and Price Breakout
-* Add Historical Stock Data
-* Searching through strategies
-* Ability to re-activate a strategy with the same configurations
-
+Lessons Learned
+* Anything is possible if you just _believe_
+    * Started feeling very insecure in our skillset and business knowledge, but it all came together quickly when we focused our efforts and had daily goals
+* Value of teamwork: trusting in your team members' contributions without babysitting
+* Better to have error messages than to not
+* Ask for help from other teams, supervisors and of course teammates
+* Huge improvements in understanding the tools we studied (not perfect, but great from where we started)
 
