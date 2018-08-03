@@ -1,5 +1,9 @@
 var refreshStockPrice;
 var tradeHistoryInterval;
+var tradeHistoryGraph = null;
+var currentTradeCount = 0;
+
+
 $(document).ready(function() {
     loadStrategies();
 });
@@ -96,11 +100,11 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
     $("#global-modal").modal();   */
     $("#stocks-pane").slideUp('slow');
     $("#strategy-detail-pane").html(`
-                <button type="button" class="close" aria-label="Close" onClick='$("#strategy-detail-pane").slideUp();$("#stocks-pane").slideDown();clearInterval(tradeHistoryInterval)'>
+                <button type="button" class="close" aria-label="Close" onClick='$("#strategy-detail-pane").slideUp();$("#stocks-pane").slideDown();clearInterval(tradeHistoryInterval);tradeHistoryGraph=null;'>
                   <span aria-hidden="true">&times;</span>
                 </button>
                 <h2 id="strategy-detail-header">${strategy_name} History</h2>
-                <canvas id="strategy-trade-history-graph" width="400" height="400"></canvas>
+                <canvas id="strategy-trade-history-graph" width="400" height="200"></canvas>
 
                 <table class="table m-1">
                     <thead>
@@ -130,21 +134,30 @@ function loadTradeHistory(strategy_id) {
             $("#strategy-trade-history-graph").hide();
         } else {
             $.get(`/api/strategies/${strategy_id}/trade_evals`, function(tradeVals) {
-                let tradeIndices = Array.apply(null, {length: tradeVals.length}).map(Number.call, Number)
-                var ctx = document.getElementById("strategy-trade-history-graph").getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: tradeIndices,
-                        datasets: [{
-                            label: 'Time',
-                            data: tradeVals,
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
+                if(!tradeHistoryGraph) {
+                    currentTradeCount = tradeVals.length;
+                    let tradeIndices = Array.apply(null, {length: currentTradeCount}).map(Number.call, Number)
+                    var ctx = document.getElementById("strategy-trade-history-graph").getContext('2d');
+                    tradeHistoryGraph = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: tradeIndices,
+                            datasets: [{
+                                data: tradeVals,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        }
+                    });
+                } else {
+                    for(i = currentTradeCount; i < tradeVals.length; i++) {
+                        tradeHistoryGraph.data.labels.push(i);
+                        dataset = [tradeVals.get(i)];
+                        tradeHistoryGraph.data.datasets.forEach((dataset) => { dataset.data.push(data); });
+                        tradeHistoryGraph.update();                        
                     }
-                });
+                }
                 
             });
             

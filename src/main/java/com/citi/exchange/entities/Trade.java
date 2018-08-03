@@ -40,6 +40,9 @@ public class Trade implements Serializable {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private StrategyConfiguration strategy;
 
+    /*
+    Constructors
+     */
     public Trade() {
     }
 
@@ -51,6 +54,9 @@ public class Trade implements Serializable {
         this.strategy = strategy;
     }
 
+    /*
+    Getters and Setters
+     */
     public int getId() {
         return id;
     }

@@ -13,13 +13,11 @@ import java.util.List;
 @Table(name = "stocks")
 public class Stock implements Serializable {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticker", columnDefinition = "VARCHAR(10)", nullable = false, unique = true)
     private String ticker;
 
     @Column(name = "stock_name")
     private String stockName;
-
 
     @OneToMany(mappedBy = "stock", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JsonIgnore
@@ -33,7 +31,9 @@ public class Stock implements Serializable {
     @JsonIgnore
     private List<Trade> trades = new ArrayList<Trade>();
 
-
+    /*
+    Constructors
+     */
     public Stock() {
     }
 
@@ -42,6 +42,9 @@ public class Stock implements Serializable {
         this.stockName = stockName;
     }
 
+    /*
+    Getters and Setters
+     */
     public String getTicker() {
         return ticker;
     }
@@ -57,7 +60,6 @@ public class Stock implements Serializable {
     public void setStockName(String stockName) {
         this.stockName = stockName;
     }
-
 
     public List<StrategyConfiguration> getStrategies() {
         return strategies;

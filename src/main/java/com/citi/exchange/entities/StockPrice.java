@@ -1,12 +1,6 @@
 package com.citi.exchange.entities;
-
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Array;
 import java.sql.Timestamp;
 
 
@@ -26,6 +20,9 @@ public class StockPrice implements Serializable {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private Stock stock;
 
+    /*
+    Constructors
+     */
     public StockPrice(Timestamp timestamp, Stock stock, Double price) {
         this.timestamp = timestamp;
         this.stock = stock;
@@ -35,6 +32,9 @@ public class StockPrice implements Serializable {
     public StockPrice() {
     }
 
+    /*
+    Getters and setters
+     */
     public int getId() {
         return id;
     }
@@ -50,7 +50,6 @@ public class StockPrice implements Serializable {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
-
 
     public Double getPrice() {
         return price;

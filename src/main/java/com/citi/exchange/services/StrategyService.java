@@ -57,7 +57,7 @@ public class StrategyService {
         Stock stock = stockService.getStockByTicker(stockTicker);
         Trade newTrade = tradeService.addNewTrade(
                 new Trade(
-                        strat.isBuying(),
+                        strat.isInitiallyBuying(),
                         strat.getNumShares(),
                         strat.getInitiationPrice(),
                         stock, strat));
@@ -92,11 +92,11 @@ public class StrategyService {
 
     public String getStrategyNextPositionString(int id) {
         StrategyConfiguration strategy = getStrategyById(id);
-        if (strategy.isBuyingAdvanced()) {
+        if (strategy.isCurrentlyBuying()) {
             int approximate_share_count = (int) Math.floor(strategy.currentInvestmentValue() / strategy.getInitiationPrice());
             return "Buying ~" + approximate_share_count + " shares";
         } else {
-            return "Selling " + strategy.getStockHeld() + " shares";
+            return "Selling " + strategy.getSharesCurrentlyHeld() + " shares";
         }
     }
 }
