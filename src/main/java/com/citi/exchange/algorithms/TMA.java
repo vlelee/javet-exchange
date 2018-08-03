@@ -46,12 +46,12 @@ public class TMA implements Strategy {
 
             strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
 
-            boolean buying = strategyConfiguration.isBuyingAdvanced();
+            boolean buying = strategyConfiguration.isCurrentlyBuying();
             int stockQuantity = (int) Math.floor(strategyConfiguration.currentInvestmentValue() / newPrice);
             if(buying){
                 // If we're buying and the last SA > last LA and current SA < current LA -> buy
                 if(previousSAExceedsLA && newShortAverage < newLongAverage) {
-                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Buying " + stockQuantity +  " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isBuyingAdvanced());
+                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Buying " + stockQuantity +  " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isCurrentlyBuying());
 
                     Trade buyTrade = tradeService.addNewTrade(new Trade(true, stockQuantity, newPrice, strategyConfiguration.getStock(), strategyConfiguration));
                     tradeExecution.send(buyTrade);
@@ -64,9 +64,9 @@ public class TMA implements Strategy {
             } else {
                 // If we're selling and the last SA < last LA and current SA > current LA -> buy
                 if(!previousSAExceedsLA && newShortAverage > newLongAverage) {
-                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Selling " + stockQuantity + " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isBuyingAdvanced());
+                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Selling " + stockQuantity + " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isCurrentlyBuying());
 
-                    Trade sellTrade = tradeService.addNewTrade(new Trade(false, strategyConfiguration.getStockHeld(), newPrice, strategyConfiguration.getStock(), strategyConfiguration));
+                    Trade sellTrade = tradeService.addNewTrade(new Trade(false, strategyConfiguration.getSharesCurrentlyHeld(), newPrice, strategyConfiguration.getStock(), strategyConfiguration));
                     tradeExecution.send(sellTrade);
 
                     strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());

@@ -31,7 +31,11 @@ Click `Ok` and then hitting the play button should work the same!
 
 
 ## Runbook
- * TODO: what dis
+
+1. Set the Environment Variables in the Run Configurations
+2. Launch the Database container
+3. Launch the OrderBroker/ActiveMQ instance container
+4. Launch the Javet App -                                                   
 
 ## Technology and Roles  
 * __User Interface:__ 
@@ -71,27 +75,28 @@ Components of the application:
     * strategy_configurations
     * trades
 * REST API
-    * Creates entites, repositories, services and controllers to represent the database mappings
+    * Creates entities, repositories, services and controllers to represent the database mappings
     * Allows access to add, update and retrieve elements in the database via GET, POST and PUT requests
-```
-     /api
-     ├── /stocks
-     │   └── /ticker
-     ├── /strategies
-     │   ├── /active
-     │   └── /id
-     │       ├── /profit 
-     │       ├── /deactivate 
-     │       ├── /position 
-     │       ├── /trade_evals
-     │       └── /trades
-     ├── /stockprices
-     │   ├── /id
-     │   └── /ticker
-     │       └── /latest
-     └── /trades
-         └── /id   
-```
+    ```
+     /                     (index.html - eTrading Dashboard)
+     └── /api
+         ├── /stocks        (displays all stocks)
+         │   └── /ticker    (displays a given stock)
+         ├── /strategies    (displays all stocks)
+         │   ├── /active
+         │   └── /id
+         │       ├── /profit 
+         │       ├── /deactivate 
+         │       ├── /position 
+         │       ├── /trade_evals
+         │       └── /trades
+         ├── /stockprices
+         │   ├── /id
+         │   └── /ticker
+         │       └── /latest
+         └── /trades
+             └── /id   
+    ```
 * UI
     * Calls the REST API and displays all strategies and corresponding stocks to the user while hiding inactive strategies by default.
     * Enables users to edit, deactivate, and track strategies through requests to the REST API.
@@ -114,10 +119,11 @@ Components of the application:
     
 
 ## Approach
+### Order of Tasks
  1. Design database (ongoing as project progresses)
  2. Build REST API / persistence mappings using Spring Data 
  3. Build a service to retrieve live stock prices from MockYahoo market data feed
- 4. Build a web interface (ongoing process as more components are developed)
+ 4. Build a web interface (ongoing as more components are developed)
  5. Obtain approval from client on layout and functionality
  6. Build messaging system to contact OrderBroker and execute trades
  7. Build engine to start a Strategy scheduler
@@ -125,34 +131,34 @@ Components of the application:
  9. Implement algorithm with trade execution 
  10. Improve UI to populate with live information
  11. Debug and add missing features to achieve minimum viable product
- 12. Push Docker image to production (ongoing communication with Production Support team)
+ 12. Push Docker image to production (ongoing Docker image creation and communication with Production Support team)
  13. Retroactively create and run tests
  14. Complete stretch goals ...
  
  
-Additional features for next sprint
-[ ] Implement the other two strategies: Bollinger Bands and Price Breakout
-[ ] Add Historical Stock Data
-[ ] Searching through strategies
-[ ] Ability to re-activate a strategy with the same configurations
-[ ] Handling partial fills and rejections from the OrderBroker
+### Incomplete Stetch Goals
+- [ ] Implement the other two strategies: Bollinger Bands and Price Breakout
+- [ ] Add Historical Stock Data
+- [ ] Searching through strategies
+- [ ] Ability to re-activate a strategy with the same configurations
+- [ ] Handling partial fills and rejections from the OrderBroker
 
 
 ## Retrospective
-What Went Well 
+### What Went Well 
 * Teamwork and communication: convened several times during the day for progress updates
 * Accomplishing set goals in a timely manner
-* Separation of work - compartmentalizing tasks/duties
 * Merging those separated components
 * Structured our process well by ordering most important tasks first
     * Successful first day of planning to set foundation
+    * Separation of work was efficient - rarely multiple people working on the same task, with the exception of the strategy logic
 * Continuous Integration as we merged components  
 * Good interactions with Production Support and other teams to focus our issues     
 
-What Went Wrong
-* Testing not done      
-      * Test Driven Development: We shelved in the interest of time to complete a fully functional minimum viable product, but its value was obvious as we progressed
-      * Behavior Driven Development / Acceptance Testing for the front end and client needs
+### What Went Wrong
+* Testing not done   
+    * Test Driven Development: We shelved in the interest of time to complete a fully functional minimum viable product, but its value was obvious as we progressed
+    * Behavior Driven Development / Acceptance Testing for the front end and client needs
 * More Code Review to avoid duplicating functionality and making workflow more streamlined
 * Add documentation to the code to make clear each class/function's purpose and use case
 * Lack of business knowledge - spent a long time on the strategy
@@ -163,7 +169,7 @@ What Went Wrong
     * Docker - our own lack of understanding along with Prod Supports own issues                                                                                           
 * Timing! Not enough time in a week that would have allowed us to solve these issues
     
-What To Improve If Repeated
+### What To Improve If Repeated
 * Test Driven Development and Behavior Driven Development
 * Architecture planning in the beginning
 * Studying the technology tools more in depth
@@ -172,9 +178,9 @@ What To Improve If Repeated
 * Using business analysts/experts for the core business logic
 
 
-Lessons Learned
+### Lessons Learned
 * Anything is possible if you just _believe_
-    * Started feeling very insecure in our skillset and business knowledge, but it all came together quickly when we focused our efforts and had daily goals
+    * Started feeling insecure in our skillset and business knowledge, but it all came together quickly when we focused our efforts and had daily goals
 * Value of teamwork: trusting in your team members' contributions without babysitting
 * Better to have error messages than to not
 * Ask for help from other teams, supervisors and of course teammates
