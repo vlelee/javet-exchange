@@ -10,3 +10,5 @@ ENTRYPOINT ["java", "-jar", "/javet/target/exchange-0.0.1.jar"]
 
 EXPOSE 8085
 
+ENTRYPOINT java ${JAVAOPT} -jar target/exchange-0.0.1.jar
+
