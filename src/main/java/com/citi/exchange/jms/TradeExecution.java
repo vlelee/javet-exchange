@@ -21,6 +21,10 @@ public class TradeExecution {
     @Autowired
     private JmsTemplate jmsTemplate;
 
+    /**
+     * Creates a JMS formatted message to send to the OrderBroker and places the message in the queue
+     * @param trade a Trade object that contains the stock and price to trade
+     */
     public void send(Trade trade) {
        String msg = "<trade>\n" +
                 "<buy>" + trade.isBuying() + "</buy>\n" +
@@ -48,11 +52,15 @@ public class TradeExecution {
     @Autowired
     private com.citi.exchange.services.TradeService tradeService;
 
+    /**
+     * Receives and parses a message from OrderBroerk and saves the message to the trade
+     * @param message the JMS message that the Order Broker returns from the responding queu
+     * @throws JMSException
+     */
     @JmsListener(destination = "OrderBroker_Reply", containerFactory = "myJmsContainerFactory")
     public void receiveMessage(javax.jms.Message message) throws JMSException {
         String responseMessage = ((TextMessage) message).getText();
         int tradeId = Integer.parseInt(message.getJMSCorrelationID().split("JAVET")[1]);
-//        System.out.println(responseMessage +"   "+tradeId);
         tradeService.updateTradeResponse(responseMessage, tradeId);
         FileSystemUtils.deleteRecursively(new File("activemq-data"));
     }
