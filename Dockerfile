@@ -8,3 +8,5 @@ CMD ["/opt/itrs/netprobe/netprobe.linux_64", "$APPNAME", "-port", "7036", "-nopa
 
 ENTRYPOINT ["java", "-jar", "/javet/target/exchange-0.0.1.jar"]
 
+EXPOSE 8085
+
