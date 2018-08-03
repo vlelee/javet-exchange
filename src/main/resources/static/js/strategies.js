@@ -96,10 +96,12 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
     $("#global-modal").modal();   */
     $("#stocks-pane").slideUp('slow');
     $("#strategy-detail-pane").html(`
-                <button type="button" class="close" aria-label="Close" onClick='$("#strategy-detail-pane").slideUp();$("#stocks-pane").slideDown();clearHistory(tradeHistoryInterval)'>
+                <button type="button" class="close" aria-label="Close" onClick='$("#strategy-detail-pane").slideUp();$("#stocks-pane").slideDown();clearInterval(tradeHistoryInterval)'>
                   <span aria-hidden="true">&times;</span>
                 </button>
                 <h2 id="strategy-detail-header">${strategy_name} History</h2>
+                <canvas id="strategy-trade-history-graph" width="400" height="400"></canvas>
+
                 <table class="table m-1">
                     <thead>
                         <tr>
@@ -123,14 +125,50 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
 function loadTradeHistory(strategy_id) {
     $("#trades-tbody").html("");
     $.get(`/api/strategies/${strategy_id}/trades`, function(trades) {
-        $.each(trades, function(index, trade) { 
-            $("#trades-tbody").prepend(`
-                <tr>
-                    <td scope="row">${index + 1}</td>
-                    <td>${trade.timeTraded}</td>
-                    <td>${trade.buying ? 'Buying' : 'Selling'} ${trade.numShares} shares at ${trade.tradePrice.toFixed(2)} for a grand total of \$${(trade.numShares * trade.tradePrice).toFixed(2)}</td>
-            </tr>`);
-        });
+        if(trades.length == 0) {
+            $("#trades-tbody").html("<tr><td colspan='3'>This strategy has no trades to display.</td></tr>")
+            $("#strategy-trade-history-graph").hide();
+        } else {
+            $.get(`/api/strategies/${strategy_id}/trade_evals`, function(tradeVals) {
+                let tradeIndices = Array.apply(null, {length: tradeVals.length}).map(Number.call, Number)
+                var ctx = document.getElementById("strategy-trade-history-graph").getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: tradeIndices,
+                        datasets: [{
+                            label: 'Time',
+                            data: tradeVals,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    }
+                });
+                
+            });
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            $("#strategy-trade-history-graph").show();
+            $.each(trades, function(index, trade) { 
+                $("#trades-tbody").prepend(`
+                    <tr>
+                        <td scope="row">${index + 1}</td>
+                        <td>${trade.timeTraded}</td>
+                        <td>${trade.buying ? 'Buying' : 'Selling'} ${trade.numShares} shares at ${trade.tradePrice.toFixed(2)} for a grand total of \$${(trade.numShares * trade.tradePrice).toFixed(2)}</td>
+                </tr>`);
+            });            
+        }        
     });
     
 }

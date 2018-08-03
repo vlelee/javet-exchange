@@ -44,6 +44,7 @@ function loadStocksWithPrices() {
 
 function loadStockPriceData(tickerPrices) {
     tickerPrices.sort(compare_stocks);
+    console.log(tickerPrices)
 
     $.each(tickerPrices, function(index, tickerPrice) {
         let stock_row = $(`#stock-row-${tickerPrice.ticker.trim()}-price`);
