@@ -98,8 +98,9 @@ Components of the application:
              └── /id   
     ```
 * UI
-    * Calls the REST API and displays all strategies and corresponding stocks to the user while hiding inactive strategies by default.
-    * Enables users to edit, deactivate, and track strategies through requests to the REST API.
+    * Calls the /strategy, /stocks, and /stockprices APIs via JQuery GET requests and displays this live, as well as historic, stock and strategy data. JQuery is then used to intervally refresh these fields so that the user is always seeing the most up-to-date and live data.
+    * Uses the Mustache.JS library to enable our large and dynamic layouts to be cached and rendered for increased performance.
+    * Uses JQuery POST and PUT requests to the /strategy API to allow users to edit and disable live strategies.
 * MockFeed and MockFeed parser
     * Creates a scheduler to continually make GET requests to the Conygre feed
     * Inputs them to the stock_prices table

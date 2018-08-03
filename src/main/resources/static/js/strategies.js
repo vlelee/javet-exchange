@@ -17,7 +17,7 @@ function updateInvestmentValue() {
 }
 
 function loadStrategies() {
-    $.get("http://localhost:8082/api/strategies", function(data) {
+    $.get("/api/strategies", function(data) {
         $("#strategy-info-tbody").html("");
         $.each(data, function(index, strategy) {
             strategy_location = (strategy.active) ? "#active-strategy-info-tbody" : "#inactive-strategy-info-tbody"
@@ -45,25 +45,25 @@ function loadStrategies() {
                                     <i class="material-icons">remove_circle_outline</i>
                                 </button>`);
             }
-            $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
+            $.get(`/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
                 let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" :
                     ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
                 $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
             });
-            $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
+            $.get(`/api/strategies/${strategy.id}/position`, function(strategy_position) {
                 $(`#strategy${strategy.id}-next-position`).text(strategy.active ? strategy_position : "Inactive")
             });
             if(strategy.active) {
                 setInterval(function() {
-                    $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
+                    $.get(`/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
                         let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" : 
                             ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
                         $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
                     });
-                    $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
+                    $.get(`/api/strategies/${strategy.id}/position`, function(strategy_position) {
                         $(`#strategy${strategy.id}-next-position`).text(strategy_position)
                     });
-                    $.get(`http://localhost:8082/api/strategies/${strategy.id}`, function(strategy) {
+                    $.get(`/api/strategies/${strategy.id}`, function(strategy) {
                         if(!strategy.active)
                             window.location.reload(true);
                     });
@@ -93,15 +93,15 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
         <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="clearInterval(tradeHistoryInterval)">Dismiss</button>
     `);
     
-    loadTradeHistoryInModal(strategy_id)
-    
-    if(active) {
-        tradeHistoryInterval = setInterval( function() {tradeHistoryInModal(strategy_id)}, 5000);
-    }
     $("#global-modal").modal();   */
     $("#stocks-pane").slideUp('slow');
     $("#strategy-detail-pane").html(`
-                    <h2 id="strategy-detail-header">${strategy_name} History</h2>
+                <button type="button" class="close" aria-label="Close" onClick='$("#strategy-detail-pane").slideUp();$("#stocks-pane").slideDown();clearInterval(tradeHistoryInterval)'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h2 id="strategy-detail-header">${strategy_name} History</h2>
+                <canvas id="strategy-trade-history-graph" width="400" height="400"></canvas>
+
                 <table class="table m-1">
                     <thead>
                         <tr>
@@ -113,29 +113,62 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
                     <tbody id="trades-tbody">
                     </tbody>
                 </table>`).slideDown('slow');
-    $.get(`http://localhost:8082/api/strategies/${strategy_id}/trades`, function(trades) {
-        $.each(trades, function(index, trade) { 
-            $("#trades-tbody").prepend(`
-                <tr>
-                    <td scope="row">${index + 1}</td>
-                    <td>${trade.timeTraded}</td>
-                    <td>${trade.buying ? 'Buying' : 'Selling'} ${trade.numShares} shares at ${trade.tradePrice.toFixed(2)} for a grand total of \$${(trade.numShares * trade.tradePrice).toFixed(2)}</td>
-            </tr>`);
-        });
-    });
+    
+    
+    loadTradeHistory(strategy_id)
+    
+    if(active) {
+        tradeHistoryInterval = setInterval( function() {loadTradeHistory(strategy_id)}, 5000);
+    }
 }
 
-function loadTradeHistoryInModal(strategy_id) {
+function loadTradeHistory(strategy_id) {
     $("#trades-tbody").html("");
-    $.get(`http://localhost:8082/api/strategies/${strategy_id}/trades`, function(trades) {
-        $.each(trades, function(index, trade) { 
-            $("#trades-tbody").prepend(`
-                <tr>
-                    <td scope="row">${(index + 1)}</td>
-                    <td>${trade.timeTraded}</td>
-                    <td>${trade.buying ? 'Buying' : 'Selling'} ${trade.numShares} shares at ${trade.tradePrice.toFixed(2)} for a grand total of \$${(trade.numShares * trade.tradePrice).toFixed(2)}</td>
-            </tr>`);
-        });
+    $.get(`/api/strategies/${strategy_id}/trades`, function(trades) {
+        if(trades.length == 0) {
+            $("#trades-tbody").html("<tr><td colspan='3'>This strategy has no trades to display.</td></tr>")
+            $("#strategy-trade-history-graph").hide();
+        } else {
+            $.get(`/api/strategies/${strategy_id}/trade_evals`, function(tradeVals) {
+                let tradeIndices = Array.apply(null, {length: tradeVals.length}).map(Number.call, Number)
+                var ctx = document.getElementById("strategy-trade-history-graph").getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: tradeIndices,
+                        datasets: [{
+                            label: 'Time',
+                            data: tradeVals,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    }
+                });
+                
+            });
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            $("#strategy-trade-history-graph").show();
+            $.each(trades, function(index, trade) { 
+                $("#trades-tbody").prepend(`
+                    <tr>
+                        <td scope="row">${index + 1}</td>
+                        <td>${trade.timeTraded}</td>
+                        <td>${trade.buying ? 'Buying' : 'Selling'} ${trade.numShares} shares at ${trade.tradePrice.toFixed(2)} for a grand total of \$${(trade.numShares * trade.tradePrice).toFixed(2)}</td>
+                </tr>`);
+            });            
+        }        
     });
     
 }
@@ -201,7 +234,7 @@ function newStrategySelectStock(ticker, name) {
     $("#strategy-stock-input").data("Symbol", ticker); 
     $("#strategy-stock-input").val(name); 
     refreshStockPrice = setInterval(function() {
-        $.get(`http://localhost:8082/api/stockprices/${ticker}/latest`, function(price) {
+        $.get(`/api/stockprices/${ticker}/latest`, function(price) {
             $("#new-investment-value").data("stock-base-price", parseFloat(price));
             $("#new-investment-value").val($("#strategy-quantity-input").val() * parseFloat(price).toFixed(2));
         });
@@ -216,7 +249,7 @@ function openEditStrategyModal(strategy_id) {
         Mustache.parse(template);   // optional, speeds up future uses
         clearGlobalModal();
         $("#global-modal-title").text("Edit Active Strategy")
-        $.get("http://localhost:8082/api/strategies/" + strategy_id, function(strategy) {
+        $.get("/api/strategies/" + strategy_id, function(strategy) {
             var strategy_algo_dict = {"TMA": "Two-Moving Averages", "PB": "Price Breakout", "BB": "Bollinger Bands"}           
             
             var rendered = Mustache.render(template, {
@@ -235,9 +268,23 @@ function openEditStrategyModal(strategy_id) {
     });    
 }
 
-function editStrategy(strategy_id) {
-    // TODO: Create an edit strategy modal.
-    // TODO: Call the REST API once it's created.        
+function updateStrategy(strategy_id) {
+    let strategy_name = $("#strategy-name-input").val();
+    let gain_threshold_exit = parseFloat($("#gain-exit-threshold-input").val()).toFixed(2);
+    let loss_threshold_exit = parseFloat($("#loss-exit-threshold-input").val()).toFixed(2);
+    let updated_strategy = {"strategyName": strategy_name, "exitThresholdHigh": gain_threshold_exit, "exitThresholdLow": loss_threshold_exit};
+    $.ajax({        
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        url: `/api/strategies/${strategy_id}`,
+        method: "PUT",
+        data: JSON.stringify(updated_strategy), 
+        success: function() {
+            window.location.reload(true);
+        }
+    });    
 }
 
 function openEndStrategyModal(strategy_id) {
@@ -253,7 +300,7 @@ function openEndStrategyModal(strategy_id) {
 
 function endStrategy(strategy_id) {
     $.ajax({
-        url: `http://localhost:8082/api/strategies/${strategy_id}/deactivate`,
+        url: `/api/strategies/${strategy_id}/deactivate`,
         method: "PUT",
         success: function() {
             window.location.reload(true);
@@ -302,7 +349,7 @@ function createStrategy() {
             'Accept': 'application/json',
             'Content-Type': 'application/json' 
         },
-        url: "http://localhost:8082/api/strategies",
+        url: "/api/strategies",
         method: "POST",
         data: JSON.stringify(new_strategy), 
         success: function() {

@@ -20,12 +20,7 @@ function loadStocksWithPricesLoop() {
 }
 
 function compare_stocks(a,b) {
-    //return (a.ticker < b.ticker) ? -1 : (a.ticker > b.ticker) ? 1 : 0
-  if (a.ticker < b.ticker)
-    return -1;
-  if (a.ticker > b.ticker)
-    return 1;
-  return 0;
+    return (a.ticker < b.ticker) ? -1 : (a.ticker > b.ticker) ? 1 : 0
 }
 
 
@@ -33,26 +28,37 @@ function compare_stocks(a,b) {
 // created or used a strategy on. This data is populated into the right/bottom pane of the page.
 // Dependencies: JAVET REST Services
 function loadStocksWithPrices() {
-        $.get("http://localhost:8082/api/stocks", function(stocks) {
-            console.log(stocks)
-            stocks.sort(compare_stocks);
-            console.log(stocks)
-            stocks.forEach(function(stock) {
-                let stock_row = $(`#stock-row-${stock.ticker.trim()}-price`);
-                $.get(`http://localhost:8082/api/stockprices/${stock.ticker.trim()}/latest`, function(price) {
-                    if(stock_row.length === 0) {
-                        $("#stock-info-tbody").append(`
-                            <tr>
-                                <th scope="row">${stock.ticker.toUpperCase()}</th>
-                                <td id="stock-row-${stock.ticker.trim()}-price">${price}</td>
-                            </tr>
-                        `);
-                    } else {
-                        stock_row.text(price);
-                    }
-                });
+    $.get("/api/stocks", function(stocks) {
+        tickerPrices = [];
+        $.each(stocks, function(index, stock) {
+            $.get(`/api/stockprices/${stock.ticker.trim()}/latest`, function(price) {
+                let new_ticker_price = {ticker: stock.ticker, price: price};
+                tickerPrices.push(new_ticker_price)
+                
+                if(tickerPrices.length == stocks.length) loadStockPriceData(tickerPrices);
             });
+
         });
+    });
+}
+
+function loadStockPriceData(tickerPrices) {
+    tickerPrices.sort(compare_stocks);
+    console.log(tickerPrices)
+
+    $.each(tickerPrices, function(index, tickerPrice) {
+        let stock_row = $(`#stock-row-${tickerPrice.ticker.trim()}-price`);
+        if(stock_row.length === 0) {
+            $("#stock-info-tbody").append(`
+                <tr>
+                    <th scope="row">${tickerPrice.ticker.toUpperCase()}</th>
+                    <td id="stock-row-${tickerPrice.ticker.trim()}-price">${tickerPrice.price}</td>
+                </tr>
+            `);
+        } else {
+            stock_row.text(tickerPrice.price);
+        }
+    });
 }
 
 
@@ -89,7 +95,7 @@ function startTrackingStock() {
             'Accept': 'application/json',
             'Content-Type': 'application/json' 
         },
-        url: "http://localhost:8082/api/stocks",
+        url: "/api/stocks",
         method: "POST",
         data: JSON.stringify(new_stock_to_track), 
         success: function() {
