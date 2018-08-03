@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class StockPriceServiceTest {
@@ -40,5 +41,20 @@ public class StockPriceServiceTest {
         assertTrue(service.isValidTicker("Goog"));
     }
 
+    @Test
+    public void isLowercaseCAValidTicker(){
+        assertTrue(service.isValidTicker("c"));
+    }
+
+    @Test
+    public void isNoStringAValidTicker(){
+        assertFalse(service.isValidTicker(""));
+    }
+
+    @Test
+    public void isEmptySpaceAValidTicker()
+    {
+        assertFalse(service.isValidTicker(" "));
+    }
 
 }

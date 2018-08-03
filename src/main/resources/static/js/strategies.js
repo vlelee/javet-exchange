@@ -30,7 +30,7 @@ function loadStrategies() {
                             <td id='strategy${strategy.id}-profit'>-</td>
                             <td id='strategy${strategy.id}-next-position'>-</td>
                             <td id='strategy${strategy.id}-options' nowrap>
-                                <button class="btn btn-xs m-0 p-0 text-primary" onClick="openStrategyHistoryModal(${strategy.id})" style='background-color:transparent;'>
+                                <button class="btn btn-xs m-0 p-0 text-primary" onClick="openStrategyHistoryModal(${strategy.id}, ${strategy.active})" style='background-color:transparent;'>
                                     <i class="material-icons">history</i>
                                 </button>
                             </td>                            
@@ -73,18 +73,16 @@ function loadStrategies() {
     });
 }
 
-function openStrategyHistoryModal(strategy_id) {
+function openStrategyHistoryModal(strategy_id, active=false) {
     clearGlobalModal();
     $("#global-modal-title").text("End Active Strategy")
     $('#global-modal-body').html(`
                 <table class="table m-1">
                     <thead>
                         <tr>
+                            <th scope="col">Trade No.</th>
                             <th scope="col">Trade Timestamp</th>
-                            <th scope="col">Buy/Sell?</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Stock Price</th>
-                            <th scope="col">Trade Value</th>
+                            <th scope="col">Trade Summary</th>
                         </tr>
                     </thead>
                     <tbody id="trades-tbody">
@@ -94,15 +92,27 @@ function openStrategyHistoryModal(strategy_id) {
         <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="clearInterval(tradeHistoryInterval)">Dismiss</button>
     `);
     
-    tradeHistoryInterval = setInterval(function() {
-        $("#trades-tbody").html("");
-        $.get(`http://localhost:8082/api/strategies/${strategy_id}/trades`, function(trades) {
-            $.each(trades, function(index, trade) { 
-                $("#trades-tbody").append(`<tr><td>${trade.timeTraded}</td><td>${trade.buying ? 'Buy' : 'Sell'}</td><td>${trade.numShares}</td><td>${trade.tradePrice}</td><td>${trade.numShares * trade.tradePrice}</td></tr>`)
-            });
-        });
-    }, 5000);
+    loadTradeHistoryInModal(strategy_id)
+    
+    if(active) {
+        tradeHistoryInterval = setInterval( function() {tradeHistoryInModal(strategy_id)}, 5000);
+    }
     $("#global-modal").modal();   
+}
+
+function loadTradeHistoryInModal(strategy_id) {
+    $("#trades-tbody").html("");
+    $.get(`http://localhost:8082/api/strategies/${strategy_id}/trades`, function(trades) {
+        $.each(trades, function(index, trade) { 
+            $("#trades-tbody").prepend(`
+                <tr>
+                    <td scope="row">${index}</td>
+                    <td>${trade.timeTraded}</td>
+                    <td>${trade.buying ? 'Buying' : 'Selling'} ${trade.numShares} shares at ${trade.tradePrice.toFixed(2)} for a grand total of \$${(trade.numShares * trade.tradePrice).toFixed(2)}</td>
+            </tr>`);
+        });
+    });
+    
 }
 
 function openCreateNewStrategyModal() {

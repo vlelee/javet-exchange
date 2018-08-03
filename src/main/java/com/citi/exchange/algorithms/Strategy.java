@@ -7,6 +7,5 @@ public interface Strategy {
 
     public void run(double newPrice);
 
-    public void exit();
 
 }

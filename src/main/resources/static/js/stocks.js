@@ -1,7 +1,7 @@
 var add_new_stock_template;
 
 $(document).ready(function() {
-    loadStocksWithPrices();
+    loadStocksWithPricesLoop();
     
     $.get("templates/track-stock-modal.mustache", function(template) {
         Mustache.parse(template);   // optional, speeds up future uses
@@ -11,28 +11,35 @@ $(document).ready(function() {
 });
 
 
-// This function is called on page initialization and calls the JAVET REST API to fetch all of the stocks in the DB which are all the stocks that the user has ever 
+// This function is called on page initialization and calls loadStocksWithPrices() in a loop to constantly update stock prices on the right-hand/bottom of the page.
+// Dependencies: loadStocksWithPrices(), JAVET REST Services
+function loadStocksWithPricesLoop() {
+    loadStocksWithPrices();
+    setInterval(loadStocksWithPrices
+    , 5000);
+}
+
+// This function is called on page initialization by loadStocksWithPricesLoop() and calls the JAVET REST API to fetch all of the stocks in the DB which are all the stocks that the user has ever 
 // created or used a strategy on. This data is populated into the right/bottom pane of the page.
 // Dependencies: JAVET REST Services
-function loadStocksWithPrices() {/*
-    $.get("http://localhost:8082/api/stocks", function(data) {
-        $.each(data, function(index, stock) {
-            let get_stock_price_url = "https://api.iextrading.com/1.0/stock/" + stock.ticker.trim() + "/ohlc";
-            $.get(get_stock_price_url, function(response) {
-                open = response["open"];
-                close = response["close"]
-                $("#stock-info-tbody").append(`
-                    <tr>
-                        <th scope="row">${stock.ticker.toUpperCase()}</th>
-                        <td>${response.open.price}</td>
-                        <td>${response.close.price}</td>
-                        <td>${response.high}</td>
-                        <td>${response.low}</td>
-                    </tr>
-                `);
+function loadStocksWithPrices() {
+        $.get("http://localhost:8082/api/stocks", function(stocks) {
+            stocks.sort(function(a,b) { return ('' + a.attr).localeCompare(b.attr); });
+            $.each(stocks, function(index, stock) {
+                $.get(`http://localhost:8082/api/stockprices/${stock.ticker.trim()}/latest`, function(price) {
+                    if($(`#stock-row-${stock.ticker.trim()}-price`).length == 0) {
+                        $("#stock-info-tbody").append(`
+                            <tr>
+                                <th scope="row">${stock.ticker.toUpperCase()}</th>
+                                <td id="stock-row-${stock.ticker.trim()}-price">${price}</td>
+                            </tr>
+                        `);
+                    } else {
+                        $(`#stock-row-${stock.ticker.trim()}-price`).text(price);
+                    }
+                });
             });
         });
-    }); */
 }
 
 

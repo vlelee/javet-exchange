@@ -83,10 +83,12 @@ public class StrategyExecution {
             if(activeTMAStrategies.containsKey(strategyConfiguration.getId())){
                 if(percentageGoL >= strategyConfiguration.getExitThresholdHigh()){
                     strategyService.deactivateStrategy(strategyId);
+                    System.out.println("REMOVED: " + strategyConfiguration.getStrategyName() + " hit the high exit threshold at " + percentageGoL + "%");
                 }
                 else{
                     if(percentageGoL <= (-1 * strategyConfiguration.getExitThresholdLow())){
                         strategyService.deactivateStrategy(strategyId);
+                        System.out.println("REMOVED: " + strategyConfiguration.getStrategyName() + " hit the low exit threshold at " + percentageGoL + "%");
                     }
                 }
             }
