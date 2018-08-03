@@ -2,6 +2,7 @@ package com.citi.exchange;
 
 
 import com.citi.exchange.services.StockPriceWebService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,14 @@ import java.io.IOException;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
 public class StockPriceServiceTest {
 
-    @Autowired
     StockPriceWebService service;
+
+    @Before
+    public void setUp(){
+        service = new StockPriceWebService();
+    }
 
     @Test
     public void getGoogleMarketPriceFromStockPriceGetterServiceWithGoogleTicker(){
