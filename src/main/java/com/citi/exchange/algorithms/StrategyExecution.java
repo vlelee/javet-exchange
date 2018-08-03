@@ -41,7 +41,9 @@ public class StrategyExecution {
                 if(ticker != null && marketPrice.containsKey(ticker)) {
                     double currentPrice = marketPrice.get(ticker);
                     strategy.run(currentPrice);
-                    isAnActiveStrategy(strategy.getStrategyConfiguration().getId());
+
+                    isAnActiveStrategy(strategy.getStrategyConfiguration(),
+                            strategy.getStrategyConfiguration().currentInvestmentValue());
                 }
             }  else {
                 iterator.remove();
@@ -69,30 +71,39 @@ public class StrategyExecution {
     }
 
     //Deactivate current strategies that passes the exit threshold set by user
-    public void isAnActiveStrategy(int strategyId){
-        StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(strategyId);
-        double investmentVal = strategyConfiguration.currentInvestmentValue();
+    public boolean isAnActiveStrategy(StrategyConfiguration strategyConfiguration, double investmentVal){
+        //StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(strategyConfig.getId());
         double initialPrice = strategyConfiguration.getNumShares() * strategyConfiguration.getInitiationPrice();
         double currentPNL = strategyConfiguration.currentPnL(investmentVal, initialPrice);
         double percentageGoL = strategyConfiguration.getGainOrLossFromPNL(currentPNL, investmentVal); //determines the percentage of gain or loss on an investment
+        //System.out.println("initial price: " + initialPrice + " PNL: " + currentPNL + " GoL: " + percentageGoL);
 
         if(!strategyConfiguration.isActive()){
-            strategyService.deactivateStrategy(strategyId);
+            strategyService.deactivateStrategy(strategyConfiguration.getId());
+            return false;
         }
         else {
             if(activeTMAStrategies.containsKey(strategyConfiguration.getId())){
                 if(percentageGoL >= strategyConfiguration.getExitThresholdHigh()){
-                    strategyService.deactivateStrategy(strategyId);
+                    strategyService.deactivateStrategy(strategyConfiguration.getId());
                     System.out.println("REMOVED: " + strategyConfiguration.getStrategyName() + " hit the high exit threshold at " + percentageGoL + "%");
+                    return false;
                 }
                 else{
                     if(percentageGoL <= (-1 * strategyConfiguration.getExitThresholdLow())){
-                        strategyService.deactivateStrategy(strategyId);
+                        strategyService.deactivateStrategy(strategyConfiguration.getId());
                         System.out.println("REMOVED: " + strategyConfiguration.getStrategyName() + " hit the low exit threshold at " + percentageGoL + "%");
+                        return false;
                     }
                 }
             }
         }
+
+        return true;
+    }
+
+    public Map<Integer, TMA> getActiveTMAStrategies() {
+        return activeTMAStrategies;
     }
 
 
