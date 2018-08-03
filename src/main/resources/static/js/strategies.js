@@ -17,7 +17,7 @@ function updateInvestmentValue() {
 }
 
 function loadStrategies() {
-    $.get("http://localhost:8082/api/strategies", function(data) {
+    $.get("/api/strategies", function(data) {
         $("#strategy-info-tbody").html("");
         $.each(data, function(index, strategy) {
             strategy_location = (strategy.active) ? "#active-strategy-info-tbody" : "#inactive-strategy-info-tbody"
@@ -45,25 +45,25 @@ function loadStrategies() {
                                     <i class="material-icons">remove_circle_outline</i>
                                 </button>`);
             }
-            $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
+            $.get(`/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
                 let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" :
                     ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
                 $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
             });
-            $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
+            $.get(`/api/strategies/${strategy.id}/position`, function(strategy_position) {
                 $(`#strategy${strategy.id}-next-position`).text(strategy.active ? strategy_position : "Inactive")
             });
             if(strategy.active) {
                 setInterval(function() {
-                    $.get(`http://localhost:8082/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
+                    $.get(`/api/strategies/${strategy.id}/profit`, function(strategy_profit) {
                         let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" : 
                             ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
                         $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
                     });
-                    $.get(`http://localhost:8082/api/strategies/${strategy.id}/position`, function(strategy_position) {
+                    $.get(`/api/strategies/${strategy.id}/position`, function(strategy_position) {
                         $(`#strategy${strategy.id}-next-position`).text(strategy_position)
                     });
-                    $.get(`http://localhost:8082/api/strategies/${strategy.id}`, function(strategy) {
+                    $.get(`/api/strategies/${strategy.id}`, function(strategy) {
                         if(!strategy.active)
                             window.location.reload(true);
                     });
@@ -113,7 +113,7 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
                     <tbody id="trades-tbody">
                     </tbody>
                 </table>`).slideDown('slow');
-    $.get(`http://localhost:8082/api/strategies/${strategy_id}/trades`, function(trades) {
+    $.get(`/api/strategies/${strategy_id}/trades`, function(trades) {
         $.each(trades, function(index, trade) { 
             $("#trades-tbody").prepend(`
                 <tr>
@@ -127,7 +127,7 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
 
 function loadTradeHistoryInModal(strategy_id) {
     $("#trades-tbody").html("");
-    $.get(`http://localhost:8082/api/strategies/${strategy_id}/trades`, function(trades) {
+    $.get(`/api/strategies/${strategy_id}/trades`, function(trades) {
         $.each(trades, function(index, trade) { 
             $("#trades-tbody").prepend(`
                 <tr>
@@ -201,7 +201,7 @@ function newStrategySelectStock(ticker, name) {
     $("#strategy-stock-input").data("Symbol", ticker); 
     $("#strategy-stock-input").val(name); 
     refreshStockPrice = setInterval(function() {
-        $.get(`http://localhost:8082/api/stockprices/${ticker}/latest`, function(price) {
+        $.get(`/api/stockprices/${ticker}/latest`, function(price) {
             $("#new-investment-value").data("stock-base-price", parseFloat(price));
             $("#new-investment-value").val($("#strategy-quantity-input").val() * parseFloat(price).toFixed(2));
         });
@@ -216,7 +216,7 @@ function openEditStrategyModal(strategy_id) {
         Mustache.parse(template);   // optional, speeds up future uses
         clearGlobalModal();
         $("#global-modal-title").text("Edit Active Strategy")
-        $.get("http://localhost:8082/api/strategies/" + strategy_id, function(strategy) {
+        $.get("/api/strategies/" + strategy_id, function(strategy) {
             var strategy_algo_dict = {"TMA": "Two-Moving Averages", "PB": "Price Breakout", "BB": "Bollinger Bands"}           
             
             var rendered = Mustache.render(template, {
@@ -253,7 +253,7 @@ function openEndStrategyModal(strategy_id) {
 
 function endStrategy(strategy_id) {
     $.ajax({
-        url: `http://localhost:8082/api/strategies/${strategy_id}/deactivate`,
+        url: `/api/strategies/${strategy_id}/deactivate`,
         method: "PUT",
         success: function() {
             window.location.reload(true);
@@ -302,7 +302,7 @@ function createStrategy() {
             'Accept': 'application/json',
             'Content-Type': 'application/json' 
         },
-        url: "http://localhost:8082/api/strategies",
+        url: "/api/strategies",
         method: "POST",
         data: JSON.stringify(new_strategy), 
         success: function() {

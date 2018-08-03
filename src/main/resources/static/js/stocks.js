@@ -33,13 +33,14 @@ function compare_stocks(a,b) {
 // created or used a strategy on. This data is populated into the right/bottom pane of the page.
 // Dependencies: JAVET REST Services
 function loadStocksWithPrices() {
-        $.get("http://localhost:8082/api/stocks", function(stocks) {
+        $.get("/api/stocks", function(stocks) {
             console.log(stocks)
             stocks.sort(compare_stocks);
             console.log(stocks)
-            stocks.forEach(function(stock) {
+            for(i = 0; i < stocks.length; i++) {
+                let stock = stocks[i];
                 let stock_row = $(`#stock-row-${stock.ticker.trim()}-price`);
-                $.get(`http://localhost:8082/api/stockprices/${stock.ticker.trim()}/latest`, function(price) {
+                $.get(`/api/stockprices/${stock.ticker.trim()}/latest`, function(price) {
                     if(stock_row.length === 0) {
                         $("#stock-info-tbody").append(`
                             <tr>
@@ -51,7 +52,8 @@ function loadStocksWithPrices() {
                         stock_row.text(price);
                     }
                 });
-            });
+                
+            }
         });
 }
 
@@ -89,7 +91,7 @@ function startTrackingStock() {
             'Accept': 'application/json',
             'Content-Type': 'application/json' 
         },
-        url: "http://localhost:8082/api/stocks",
+        url: "/api/stocks",
         method: "POST",
         data: JSON.stringify(new_stock_to_track), 
         success: function() {
