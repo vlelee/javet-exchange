@@ -68,6 +68,8 @@ public class StrategyService {
     public void updateStrategy(StrategyConfiguration newStrategy, int id) {
         StrategyConfiguration updated_strategy = getStrategyById(id);
         updated_strategy.setStrategyName(newStrategy.getStrategyName());
+        updated_strategy.setExitThresholdLow(newStrategy.getExitThresholdLow());
+        updated_strategy.setExitThresholdHigh(newStrategy.getExitThresholdHigh());
         repo.save(updated_strategy);
     }
 

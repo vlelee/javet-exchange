@@ -93,15 +93,13 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
         <button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="clearInterval(tradeHistoryInterval)">Dismiss</button>
     `);
     
-    loadTradeHistoryInModal(strategy_id)
-    
-    if(active) {
-        tradeHistoryInterval = setInterval( function() {tradeHistoryInModal(strategy_id)}, 5000);
-    }
     $("#global-modal").modal();   */
     $("#stocks-pane").slideUp('slow');
     $("#strategy-detail-pane").html(`
-                    <h2 id="strategy-detail-header">${strategy_name} History</h2>
+                <button type="button" class="close" aria-label="Close" onClick='$("#strategy-detail-pane").slideUp();$("#stocks-pane").slideDown();clearHistory(tradeHistoryInterval)'>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h2 id="strategy-detail-header">${strategy_name} History</h2>
                 <table class="table m-1">
                     <thead>
                         <tr>
@@ -113,25 +111,22 @@ function openStrategyHistoryModal(strategy_id, strategy_name, active=false) {
                     <tbody id="trades-tbody">
                     </tbody>
                 </table>`).slideDown('slow');
-    $.get(`/api/strategies/${strategy_id}/trades`, function(trades) {
-        $.each(trades, function(index, trade) { 
-            $("#trades-tbody").prepend(`
-                <tr>
-                    <td scope="row">${index + 1}</td>
-                    <td>${trade.timeTraded}</td>
-                    <td>${trade.buying ? 'Buying' : 'Selling'} ${trade.numShares} shares at ${trade.tradePrice.toFixed(2)} for a grand total of \$${(trade.numShares * trade.tradePrice).toFixed(2)}</td>
-            </tr>`);
-        });
-    });
+    
+    
+    loadTradeHistory(strategy_id)
+    
+    if(active) {
+        tradeHistoryInterval = setInterval( function() {loadTradeHistory(strategy_id)}, 5000);
+    }
 }
 
-function loadTradeHistoryInModal(strategy_id) {
+function loadTradeHistory(strategy_id) {
     $("#trades-tbody").html("");
     $.get(`/api/strategies/${strategy_id}/trades`, function(trades) {
         $.each(trades, function(index, trade) { 
             $("#trades-tbody").prepend(`
                 <tr>
-                    <td scope="row">${(index + 1)}</td>
+                    <td scope="row">${index + 1}</td>
                     <td>${trade.timeTraded}</td>
                     <td>${trade.buying ? 'Buying' : 'Selling'} ${trade.numShares} shares at ${trade.tradePrice.toFixed(2)} for a grand total of \$${(trade.numShares * trade.tradePrice).toFixed(2)}</td>
             </tr>`);
@@ -235,9 +230,23 @@ function openEditStrategyModal(strategy_id) {
     });    
 }
 
-function editStrategy(strategy_id) {
-    // TODO: Create an edit strategy modal.
-    // TODO: Call the REST API once it's created.        
+function updateStrategy(strategy_id) {
+    let strategy_name = $("#strategy-name-input").val();
+    let gain_threshold_exit = parseFloat($("#gain-exit-threshold-input").val()).toFixed(2);
+    let loss_threshold_exit = parseFloat($("#loss-exit-threshold-input").val()).toFixed(2);
+    let updated_strategy = {"strategyName": strategy_name, "exitThresholdHigh": gain_threshold_exit, "exitThresholdLow": loss_threshold_exit};
+    $.ajax({        
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        url: `/api/strategies/${strategy_id}`,
+        method: "PUT",
+        data: JSON.stringify(updated_strategy), 
+        success: function() {
+            window.location.reload(true);
+        }
+    });    
 }
 
 function openEndStrategyModal(strategy_id) {
