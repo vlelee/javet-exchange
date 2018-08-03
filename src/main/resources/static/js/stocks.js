@@ -19,15 +19,28 @@ function loadStocksWithPricesLoop() {
     , 5000);
 }
 
+function compare_stocks(a,b) {
+    //return (a.ticker < b.ticker) ? -1 : (a.ticker > b.ticker) ? 1 : 0
+  if (a.ticker < b.ticker)
+    return -1;
+  if (a.ticker > b.ticker)
+    return 1;
+  return 0;
+}
+
+
 // This function is called on page initialization by loadStocksWithPricesLoop() and calls the JAVET REST API to fetch all of the stocks in the DB which are all the stocks that the user has ever 
 // created or used a strategy on. This data is populated into the right/bottom pane of the page.
 // Dependencies: JAVET REST Services
 function loadStocksWithPrices() {
         $.get("http://localhost:8082/api/stocks", function(stocks) {
-            stocks.sort(function(a,b) { return ('' + a.attr).localeCompare(b.attr); });
-            $.each(stocks, function(index, stock) {
+            console.log(stocks)
+            stocks.sort(compare_stocks);
+            console.log(stocks)
+            stocks.forEach(function(stock) {
+                let stock_row = $(`#stock-row-${stock.ticker.trim()}-price`);
                 $.get(`http://localhost:8082/api/stockprices/${stock.ticker.trim()}/latest`, function(price) {
-                    if($(`#stock-row-${stock.ticker.trim()}-price`).length == 0) {
+                    if(stock_row.length === 0) {
                         $("#stock-info-tbody").append(`
                             <tr>
                                 <th scope="row">${stock.ticker.toUpperCase()}</th>
@@ -35,7 +48,7 @@ function loadStocksWithPrices() {
                             </tr>
                         `);
                     } else {
-                        $(`#stock-row-${stock.ticker.trim()}-price`).text(price);
+                        stock_row.text(price);
                     }
                 });
             });

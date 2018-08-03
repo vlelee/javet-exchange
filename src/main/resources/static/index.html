@@ -1,33 +1,30 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- CSS for Autocomplete Library -->
-    <link rel="stylesheet" href="css/easy-autocomplete.min.css"> 
-    <link rel="stylesheet" href="css/easy-autocomplete.themes.min.css"> 
-      
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <!-- CSS for Autocomplete Library -->
+        <link rel="stylesheet" href="css/easy-autocomplete.min.css"> 
+        <link rel="stylesheet" href="css/easy-autocomplete.themes.min.css"> 
 
-    <!-- Material IO Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-  rel="stylesheet">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+        <!-- Material IO Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <title>JAVeTrading Platform</title>
-  </head>
-  <body>
-    <div class="container-fluid text-center">
-        <div class="row">
+        <title>JAVeTrading Platform</title>
+    </head>
+    <body class="container-fluid text-center m-2">
+        <header class="row m-2">
             <div class="col-12">
                 <h1>JAVeTrading Platform</h1>
             </div>
-        </div>
+        </header>
         <div class="row">
-            <div class="col-lg-10">
+            <div class="col-lg-8">
                 <h2>Your Strategies</h2>
                 <table class="table m-1">
                     <thead>
@@ -62,22 +59,24 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="col-lg-2">
-                <h2>Your Stocks</h2>
-                <table class="table m-1">
-                    <thead>
-                        <tr>
-                            <th scope="col">Stock</th>
-                            <th scope="col">Current Price</th>                   
-                        </tr>
-                        
-                    </thead>
-                    <tbody id="stock-info-tbody"></tbody>
-                </table>
+            <div class="col-lg-4">
+                <div id="stocks-pane">
+                    <h2>Your Stocks</h2>
+                    <table class="table m-1">
+                        <thead>
+                            <tr>
+                                <th scope="col">Stock</th>
+                                <th scope="col">Current Price</th>                   
+                            </tr>
+
+                        </thead>
+                        <tbody id="stock-info-tbody"></tbody>
+                    </table>
+                </div>
+                <div id="strategy-detail-pane" style="display: none;">
+                </div>
             </div>
         </div>
-        
-    </div>
       
         <!-- Modal -->
         <div class="modal fade" id="global-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
