@@ -366,9 +366,7 @@ function createStrategy() {
         method: "POST",
         data: JSON.stringify(new_strategy), 
         success: function(obj) {
-            console.log(new_strategy)
-            console.log(obj)
-            //window.location.reload(true);
+            window.location.reload(true);
         }
     });
 }
