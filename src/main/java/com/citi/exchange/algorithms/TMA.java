@@ -43,7 +43,7 @@ public class TMA implements Strategy {
 
             double newShortAverage = getAverage(windowQueue, shortAveragePeriod);
             double newLongAverage = getAverage(windowQueue, longAveragePeriod);
-
+            System.out.println("Strategy " + strategyConfiguration.getStrategyName() + " Short avg: " + newShortAverage + " Long avg: " + newLongAverage);
             strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
 
             boolean buying = strategyConfiguration.isCurrentlyBuying();

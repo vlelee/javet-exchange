@@ -71,8 +71,8 @@ public class StrategyExecution {
     }
 
     //Deactivate current strategies that passes the exit threshold set by user
-    public boolean isAnActiveStrategy(StrategyConfiguration strategyConfig, double investmentVal){
-        StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(strategyConfig.getId());
+    public boolean isAnActiveStrategy(StrategyConfiguration strategyConfiguration, double investmentVal){
+        //StrategyConfiguration strategyConfiguration = strategyService.getStrategyById(strategyConfig.getId());
         double initialPrice = strategyConfiguration.getNumShares() * strategyConfiguration.getInitiationPrice();
         double currentPNL = strategyConfiguration.currentPnL(investmentVal, initialPrice);
         double percentageGoL = strategyConfiguration.getGainOrLossFromPNL(currentPNL, investmentVal); //determines the percentage of gain or loss on an investment
