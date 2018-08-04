@@ -67,8 +67,10 @@ _Maintaining a database containing stock, strategy, trade, and live market data,
 ### Database Design
 ![EER Diagram of Javet Database](./EERDiagram.png)
 
-### Application Flow
-Components of the application:
+### Application Components
+![Application Components](./components.png)
+
+### Component Description:
 * Database
     * stocks
     * stock_prices
