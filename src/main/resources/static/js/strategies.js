@@ -32,12 +32,16 @@ function loadStrategies() {
                                                       {active_strategies: active_strategies, 
                                                        inactive_strategies: strategies.filter(strategies => strategies.active == false)});
             $("#strategies-list").html(strategies_rendered);    
+            $.each(strategies, function(index, strategy) {
+                let start_char = strategy.strategyProfitString.charAt(0);
+                let text_class = (start_char == "+") ? "text-success" : ((start_char == "-") ? "text-danger" : "text-info");
+                $(`#strategy${strategy.id}-profit`).addClass(text_class)                
+            });
             
             $.each(active_strategies, function(index, strategy) {
                 setInterval(function () {
                     $.get(`/api/strategies/${strategy.id}/profit`, function (strategy_profit) {
-                        let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" :
-                            ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
+                        let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" : ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
                         $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
                     });
                     $.get(`/api/strategies/${strategy.id}/position`, function (strategy_position) {

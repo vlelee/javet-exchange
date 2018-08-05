@@ -292,6 +292,10 @@ public class StrategyConfiguration implements Serializable {
     }
 
 
+    /**
+     * returns a user-friendly string of the current profit for this string
+     * @return the percentage of profit or loss from current investment value followed by the actual profit or loss.
+     */
     public String getStrategyProfitString() {
         double investmentValue = currentInvestmentValue();
         double initialPrice = getNumShares() * getInitiationPrice();
@@ -301,6 +305,10 @@ public class StrategyConfiguration implements Serializable {
     }
 
 
+    /**
+     * returns a user-friendly string of the next action this strategy will perform.
+     * @return the next action (buying/selling) followed by the # of shares it will do the action on.
+     */
     public String getStrategyNextPositionString() {
         if (isCurrentlyBuying()) {
             int approximate_share_count = (int) Math.floor(currentInvestmentValue() / getInitiationPrice());
