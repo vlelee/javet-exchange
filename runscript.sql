@@ -2,12 +2,10 @@
 
 -- CREATE DATABASE IF NOT EXISTS javet;
 -- use javet;
-
-drop table if exists stocks;
-drop table if exists strategy_configurations;
 drop table if exists stock_prices;
 drop table if exists trades;
-
+drop table if exists strategy_configurations;
+drop table if exists stocks;
 
 create table stocks (
 ticker varchar(10) primary key unique,
