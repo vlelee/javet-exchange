@@ -234,7 +234,7 @@ public class StrategyConfiguration implements Serializable {
      * @return number of shares currently being traded by the strategy
      */
     public int getSharesCurrentlyHeld() {
-        int noSharesHeld = 0;
+        int noSharesHeld = isInitiallyBuying() ? 0 : getNumShares();
         for (Trade trade : trades) {
             noSharesHeld += (trade.isBuying() ? 1 : -1) * trade.getNumShares();
         }
