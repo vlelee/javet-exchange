@@ -95,7 +95,7 @@ Click `Ok`, and then hitting the play button should work the same!
          │       └── /trades      displays all trades executed by a strategy by id
          ├── /stockprices         displays all stock prices retrieved from market feed
          │   └── /{ticker}	  
-	 │       └── /latest      displays latest stock price with given ticket
+         │       └── /latest      displays latest stock price with given ticket
          └── /trades              displays all trades executed
              └── /{id}            displays one trade with given id
     ```
