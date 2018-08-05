@@ -4,12 +4,17 @@
 -- use javet;
 
 drop table if exists stocks;
+drop table if exists strategy_configurations;
+drop table if exists stock_prices;
+drop table if exists trades;
+
+
 create table stocks (
 ticker varchar(10) primary key unique,
 stock_name varchar(50) not null
 );
 
-drop table if exists strategy_configurations;
+
 create table strategy_configurations(
 id int primary key auto_increment,
 stock varchar(10) not null,
@@ -27,7 +32,7 @@ exit_threshold_low double not null,
 FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict
 );
 
-drop table if exists stock_prices;
+
 create table stock_prices(
 id int primary key auto_increment,
 stock varchar(10) not null,
@@ -36,7 +41,6 @@ price double not null,
 FOREIGN KEY (stock) REFERENCES stocks(ticker) on delete restrict
 );
 
-drop table if exists trades;
 create table trades(
 id int primary key auto_increment,
 stock varchar(10) not null,
