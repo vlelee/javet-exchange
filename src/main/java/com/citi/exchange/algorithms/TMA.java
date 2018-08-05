@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @Scope("prototype")
-public class TMA implements Strategy {
+public class TMA {
     boolean previousSAExceedsLA = false; // previous short average exceeds long average
 
     private static final int longAveragePeriod = 24; // Default: 4 hours
@@ -36,7 +36,6 @@ public class TMA implements Strategy {
     private StrategyConfiguration strategyConfiguration;
 
     //Two Moving Averages algorithm
-    @Override
     public void run(double newPrice) {
         windowQueue.add(0, newPrice);
         if(windowQueue.size() >= longAveragePeriod){

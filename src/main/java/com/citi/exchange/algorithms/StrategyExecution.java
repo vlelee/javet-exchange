@@ -1,7 +1,7 @@
 package com.citi.exchange.algorithms;
 
 import com.citi.exchange.entities.StrategyConfiguration;
-import com.citi.exchange.services.StockPriceWebService;
+import com.citi.exchange.marketfeed.MockFeedParser;
 import com.citi.exchange.services.StrategyService;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class StrategyExecution {
     private boolean printedOnce = false;
 
     @Autowired
-    private StockPriceWebService stockPriceWebService;
+    private MockFeedParser mockFeedParser;
 
     @Autowired
     private StrategyService strategyService;
@@ -28,7 +28,7 @@ public class StrategyExecution {
     //Run active strategies and remove inactive strategies at a continuous interval
     @Scheduled(fixedRate = 30)
     public void execute(){
-        Map<String, Double> marketPrice = stockPriceWebService.getMarketPrice();
+        Map<String, Double> marketPrice = mockFeedParser.getMarketPrice();
         searchForConfigurations();
 
         Iterator<TMA> iterator = activeTMAStrategies.values().iterator();

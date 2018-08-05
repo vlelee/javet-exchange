@@ -1,10 +1,8 @@
 package com.citi.exchange.services;
 
-import com.citi.exchange.entities.Stock;
-
 import com.citi.exchange.entities.StockPrice;
+import com.citi.exchange.marketfeed.MockFeedParser;
 import com.citi.exchange.repos.StockPriceRepo;
-import com.citi.exchange.repos.StockRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,7 +19,7 @@ public class StockPriceService {
     private StockPriceRepo repo;
 
     @Autowired
-    private StockPriceWebService stockPriceWebService;
+    private MockFeedParser mockFeedParser;
 
     public Collection<StockPrice> getStockPrices() {
         return makeCollection(repo.findAll());
@@ -37,7 +35,7 @@ public class StockPriceService {
             return repo.findLastByTicker(ticker);
         else {
             try {
-                return Double.toString(stockPriceWebService.getResponseFromURL(ticker));
+                return Double.toString(mockFeedParser.getResponseFromURL(ticker));
             } catch (IOException e) {
                 e.printStackTrace();
             }

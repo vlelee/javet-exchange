@@ -1,13 +1,9 @@
 package com.citi.exchange;
 
 
-import com.citi.exchange.services.StockPriceWebService;
+import com.citi.exchange.marketfeed.MockFeedParser;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
@@ -16,11 +12,11 @@ import static org.junit.Assert.assertTrue;
 
 public class StockPriceServiceTest {
 
-    StockPriceWebService service;
+    MockFeedParser service;
 
     @Before
     public void setUp(){
-        service = new StockPriceWebService();
+        service = new MockFeedParser();
     }
 
     @Test

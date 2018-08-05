@@ -1,11 +1,12 @@
-package com.citi.exchange.services;
+package com.citi.exchange.marketfeed;
 
 
 import com.citi.exchange.entities.Stock;
 
 import com.citi.exchange.entities.StockPrice;
+import com.citi.exchange.services.StockPriceService;
+import com.citi.exchange.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 @Component
-public class StockPriceWebService {
+public class MockFeedParser {
     private double price;
     private String marketFeedUrl = "http://feed.conygre.com:8080/MockYahoo/quotes.csv";
     private String ticker;
@@ -30,9 +31,8 @@ public class StockPriceWebService {
     private StockPriceService stockPriceService;
 
 
-    public StockPriceWebService() {}
+    public MockFeedParser() {}
 
-    //First run MockYahoo server (Tomcat) before running ExchangeApplication
     public Map<String, Double> getMarketPrice(){
         Map<String, Double> prices = new HashMap<>();
 
