@@ -265,32 +265,6 @@ public class StrategyConfiguration implements Serializable {
     }
 
     /**
-     * Using same logic as currentInvestmentValue, returns the value of the original investment plus the profit earned by the strategy after each trade
-     * @return a List of the Investment Values after each trade
-     */
-    public List<Double> getPostTradeInvestVals() {
-        List<Double> trade_values = new ArrayList<Double>();
-        double investmentValue = getNumShares() * getInitiationPrice();
-        double initialCash = (isInitiallyBuying()) ? investmentValue : 0;
-        double currentCash = initialCash;
-        double lastTrade = 0;
-        trade_values.add(investmentValue);
-
-        for (Trade trade : getTrades()) {
-            double currentTrade = trade.getTradePrice() * trade.getNumShares();
-            currentCash += (trade.isBuying() ? -1 : 1) * currentTrade;
-
-            if (trade.isBuying() != isInitiallyBuying()) {
-                investmentValue += (trade.isBuying()) ? (currentCash - initialCash) : (lastTrade - currentTrade);
-            } else {
-                lastTrade = trade.getTradePrice() * trade.getNumShares();
-            }
-            trade_values.add(investmentValue);
-        }
-        return trade_values;
-    }
-
-    /**
      * returns current Investment Value - NumShares * Initial Stock Price;
      * @param currentInvestVal total value of investment = original investment + profit
      * @param initialPrice the price per share when strategy was initiated
@@ -315,5 +289,24 @@ public class StrategyConfiguration implements Serializable {
         df.setRoundingMode(RoundingMode.CEILING);
 
         return Double.parseDouble(df.format((currentPnL / currentInvVal) * 100));
+    }
+
+
+    public String getStrategyProfitString() {
+        double investmentValue = currentInvestmentValue();
+        double initialPrice = getNumShares() * getInitiationPrice();
+        double profit = currentPnL(investmentValue, initialPrice);
+        double profitPerc = (profit / investmentValue * 100);
+        return ((profitPerc > 0) ? "+" : "") + ((double) Math.round(profitPerc * 100) / 100) + "% ($" + ((double) Math.round(profit * 100) / 100) + ")";
+    }
+
+
+    public String getStrategyNextPositionString() {
+        if (isCurrentlyBuying()) {
+            int approximate_share_count = (int) Math.floor(currentInvestmentValue() / getInitiationPrice());
+            return "Buying ~" + approximate_share_count + " shares";
+        } else {
+            return "Selling " + getSharesCurrentlyHeld() + " shares";
+        }
     }
 }

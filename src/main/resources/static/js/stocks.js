@@ -1,8 +1,11 @@
 var add_new_stock_template;
+var stock_price_fetch_lock = false; // This is a lock to disable us from fetching stock prices again until we've received a response.
+var last_stock_price_fetch = 0;
+var MIN_FETCH_INTERVAL = 7.5 * 1000; /* 1 ms * 1000 * 7.5 = 7.5s, we must wait AT LEAST 7.5s between GET requests. */
+
 
 $(document).ready(function() {
-    loadStocksWithPricesLoop();
-    
+    loadStocksWithPricesLoop()
     $.get("templates/track-stock-modal.mustache", function(template) {
         Mustache.parse(template);   // optional, speeds up future uses
         add_new_stock_template = Mustache.render(template);
@@ -14,9 +17,7 @@ $(document).ready(function() {
 // This function is called on page initialization and calls loadStocksWithPrices() in a loop to constantly update stock prices on the right-hand/bottom of the page.
 // Dependencies: loadStocksWithPrices(), JAVET REST Services
 function loadStocksWithPricesLoop() {
-    loadStocksWithPrices();
-    setInterval(loadStocksWithPrices
-    , 5000);
+    setInterval(loadStocksWithPrices, 5000);
 }
 
 function compare_stocks(a,b) {
@@ -28,18 +29,25 @@ function compare_stocks(a,b) {
 // created or used a strategy on. This data is populated into the right/bottom pane of the page.
 // Dependencies: JAVET REST Services
 function loadStocksWithPrices() {
-    $.get("/api/stocks", function(stocks) {
-        tickerPrices = [];
-        $.each(stocks, function(index, stock) {
-            $.get(`/api/stockprices/${stock.ticker.trim()}/latest`, function(price) {
-                let new_ticker_price = {ticker: stock.ticker, price: price};
-                tickerPrices.push(new_ticker_price)
-                
-                if(tickerPrices.length == stocks.length) loadStockPriceData(tickerPrices);
-            });
+    var d = new Date();
+    if(last_stock_price_fetch === 0 || (!stock_price_fetch_lock && d.getTime() - last_stock_price_fetch > MIN_FETCH_INTERVAL)) {
+        stock_price_fetch_lock = true
+        $.get("/api/stocks", function(stocks) {
+            tickerPrices = [];
+            $.each(stocks, function(index, stock) {
+                $.get(`/api/stockprices/${stock.ticker.trim()}/latest`, function(price) {
+                    let new_ticker_price = {ticker: stock.ticker, price: price};
+                    tickerPrices.push(new_ticker_price)
 
+                    if(tickerPrices.length == stocks.length) loadStockPriceData(tickerPrices);
+                });
+
+            });
+            last_stock_price_fetch = new Date().getTime();
+            stock_price_fetch_lock = false
         });
-    });
+        
+    }
 }
 
 function loadStockPriceData(tickerPrices) {

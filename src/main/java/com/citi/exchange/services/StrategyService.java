@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -79,23 +80,30 @@ public class StrategyService {
         repo.saveAndFlush(strat);
     }
 
-    public String getStrategyProfitString(int id) {
-        StrategyConfiguration strategy = getStrategyById(id);
-        double investmentValue = strategy.currentInvestmentValue();
-        double initialPrice = strategy.getNumShares() * strategy.getInitiationPrice();
-        double profit = strategy.currentPnL(investmentValue, initialPrice);
-        double profitPerc = (profit / investmentValue * 100);
-        return ((profitPerc > 0) ? "+" : "") + ((double) Math.round(profitPerc * 100) / 100) + "% ($" + ((double) Math.round(profit * 100) / 100) + ")";
-    }
+    /**
+     * Using same logic as currentInvestmentValue, returns the value of the original investment plus the profit earned by the strategy after each trade
+     * @return a List of the Investment Values after each trade
+     */
+    public List<Double> getPostTradeInvestVals(int id) {
+        StrategyConfiguration strat = getStrategyById(id);
+        List<Double> trade_values = new ArrayList<Double>();
+        double investmentValue = strat.getNumShares() * strat.getInitiationPrice();
+        double initialCash = (strat.isInitiallyBuying()) ? investmentValue : 0;
+        double currentCash = initialCash;
+        double lastTrade = 0;
+        trade_values.add(investmentValue);
 
+        for (Trade trade : strat.getTrades()) {
+            double currentTrade = trade.getTradePrice() * trade.getNumShares();
+            currentCash += (trade.isBuying() ? -1 : 1) * currentTrade;
 
-    public String getStrategyNextPositionString(int id) {
-        StrategyConfiguration strategy = getStrategyById(id);
-        if (strategy.isCurrentlyBuying()) {
-            int approximate_share_count = (int) Math.floor(strategy.currentInvestmentValue() / strategy.getInitiationPrice());
-            return "Buying ~" + approximate_share_count + " shares";
-        } else {
-            return "Selling " + strategy.getSharesCurrentlyHeld() + " shares";
+            if (trade.isBuying() != strat.isInitiallyBuying()) {
+                investmentValue += (trade.isBuying()) ? (currentCash - initialCash) : (lastTrade - currentTrade);
+            } else {
+                lastTrade = trade.getTradePrice() * trade.getNumShares();
+            }
+            trade_values.add(investmentValue);
         }
+        return trade_values;
     }
 }

@@ -30,18 +30,18 @@ public class StrategyController {
 
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/profit")
 	String getStrategyProfit(@PathVariable("id") int id) {
-		return service.getStrategyProfitString(id);
+		return service.getStrategyById(id).getStrategyProfitString();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/position")
 	String getStrategyNextPosition(@PathVariable("id") int id) {
-		return service.getStrategyNextPositionString(id);
+		return service.getStrategyById(id).getStrategyNextPositionString();
 	}
 
 	@CrossOrigin
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/trade_evals")
 	List<Double> getPostTradeEvaluations(@PathVariable("id") int id) {
-		return service.getStrategyById(id).getPostTradeInvestVals();
+		return service.getPostTradeInvestVals(id);
 	}
 
 	@CrossOrigin

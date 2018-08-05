@@ -1,0 +1,29 @@
+<button type="button" class="close" aria-label="Close" onClick='$("#strategy-detail-pane").slideUp();$("#stocks-pane").slideDown();clearInterval(tradeHistoryInterval);tradeHistoryGraph=null;'>
+    <span aria-hidden="true">&times;</span>
+</button>
+<h2 id="strategy-detail-header">{{strategy_name}} Trade History</h2>
+
+<canvas id="strategy-trade-history-graph" width="400" height="200" style="display: none;"></canvas>
+
+<table class="table m-1">
+    <thead>
+        <tr>
+            <th scope="col">Trade No.</th>
+            <th scope="col">Trade Timestamp</th>
+            <th scope="col">Trade Summary</th>
+        </tr>
+    </thead>
+    <tbody id="trades-tbody">
+        {{#trades}}
+        <tr>
+            <td scope="row">{{index}}</td>
+            <td>{{timestamp}}</td>
+            <td>{{buyingString}}: {{numShares}} shares <br>
+                Share Price: ${{tradePrice}} <br>
+                Investment: ${{invValue}}
+            </td>
+        </tr>
+        {{/trades}}
+        {{^trades}}<tr><td colspan='3'>This strategy has no trades to display.</td></tr>({{/trades}}
+    </tbody>
+</table>

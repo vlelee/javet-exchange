@@ -24,41 +24,9 @@
             </div>
         </header>
         <div class="row">
-            <div class="col-lg-8">
-                <h2>Your Strategies</h2>
-                <table class="table m-1">
-                    <thead>
-                        <tr>
-                            <th scope="col">Strategy Name</th>
-                            <th scope="col">Strategy Type</th>
-                            <th scope="col">Stock</th>
-                            <th scope="col">Performance (Investment Value)</th>
-                            <th scope="col">Next Action</th>
-                            <th scope="col">Options</th>                        
-                        </tr>
-                    </thead>
-                    <tbody id="active-strategy-info-tbody">
-                    </tbody>
-                    <tbody id="inactive-strategy-info-tbody" style="display: none;">
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="6" class="text-center">
-                                <button class="btn btn-xs p-2 btn-primary" onClick="openCreateNewStrategyModal();">
-                                    Create New Strategy
-                                </button>
-                                <button id="show-inactive-strat-btn" class="btn btn-xs p-2 btn-warning" onClick="$('#hide-inactive-strat-btn').show(); $('#inactive-strategy-info-tbody').show(); $(this).hide();">
-                                    Show Inactive Strategies
-                                </button>
-                                <button id="hide-inactive-strat-btn" class="btn btn-xs p-2 btn-default" onClick="$('#show-inactive-strat-btn').show(); $('#inactive-strategy-info-tbody').hide(); $(this).hide();" style="display: none;">
-                                    Hide Inactive strategies
-                                </button>
-                            </th>
-                        </tr>
-                    </tfoot>
-                </table>
+            <div id="strategies-list" class="col-lg-7 col-md-12">
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-5 col-md-12">
                 <div id="stocks-pane">
                     <h2>Your Stocks</h2>
                     <table class="table m-1">
@@ -101,14 +69,17 @@
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
       
         <!-- Autocomplete Library -->
         <script src="js/jquery.easy-autocomplete.min.js"></script> 
 
         <!-- Mustache Templating Library -->
         <script src="js/mustache.js"></script>
+        
+        <!-- Chart.JS Library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 
+        <script src="js/util.js"></script>
         <script src="js/stocks.js"></script>
         <script src="js/strategies.js"></script>
       
