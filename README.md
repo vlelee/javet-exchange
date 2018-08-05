@@ -42,7 +42,7 @@ Click `Ok`, and then hitting the play button should work the same!
 ### User Interface:
 * _Visualizing, creating and adding strategies and trades_ 
 	* Abnob Doss
-	* Developed in HTML5 and JQuery with Mustache 
+	* Developed in HTML5, Bootstrap, and JQuery with the Mustache and Charts JS libraries. 
  
 ### Core Business Logic:
 
