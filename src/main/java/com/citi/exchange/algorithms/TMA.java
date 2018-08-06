@@ -42,7 +42,7 @@ public class TMA {
 
             double newShortAverage = getAverage(windowQueue, shortAveragePeriod);
             double newLongAverage = getAverage(windowQueue, longAveragePeriod);
-            System.out.println("Strategy " + strategyConfiguration.getStrategyName() + " Short avg: " + newShortAverage + " Long avg: " + newLongAverage);
+            //System.out.println("Strategy " + strategyConfiguration.getStrategyName() + " Short avg: " + newShortAverage + " Long avg: " + newLongAverage);
             strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
 
             boolean buying = strategyConfiguration.isCurrentlyBuying();
@@ -50,22 +50,19 @@ public class TMA {
             if(buying){
                 // If we're buying and the last SA > last LA and current SA < current LA -> buy
                 if(previousSAExceedsLA && newShortAverage < newLongAverage) {
-                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Buying " + stockQuantity +  " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isCurrentlyBuying());
+                    //System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Buying " + stockQuantity +  " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isCurrentlyBuying());
 
                     Trade buyTrade = tradeService.addNewTrade(new Trade(true, stockQuantity, newPrice, strategyConfiguration.getStock(), strategyConfiguration));
                     tradeExecution.send(buyTrade);
 
                     strategyConfiguration = strategyService.getStrategyById(strategyConfiguration.getId());
-//                    double initialPrice = strategyConfiguration.getNumShares() * strategyConfiguration.getInitiationPrice();
-//                    System.out.println("Investment Value: " + strategyConfiguration.currentInvestmentValue() + ", Strategy PnL "
-//                     + strategyConfiguration.currentPnL(strategyConfiguration.currentInvestmentValue(), initialPrice) + " GOL: "
-//                            + (strategyConfiguration.currentPnL()/strategyConfiguration.currentInvestmentValue())*100 + "%");
+
 
                 }
             } else {
                 // If we're selling and the last SA < last LA and current SA > current LA -> buy
                 if(!previousSAExceedsLA && newShortAverage > newLongAverage) {
-                    System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Selling " + stockQuantity + " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isCurrentlyBuying());
+                    //System.out.println("Strategy name: " + strategyConfiguration.getStrategyName() + " Selling " + stockQuantity + " @ " + newPrice + "Strategy buying: " + strategyConfiguration.isCurrentlyBuying());
 
                     Trade sellTrade = tradeService.addNewTrade(new Trade(false, strategyConfiguration.getSharesCurrentlyHeld(), newPrice, strategyConfiguration.getStock(), strategyConfiguration));
                     tradeExecution.send(sellTrade);

@@ -26,7 +26,7 @@ public class StrategyExecution {
     private BeanFactory beanFactory;
 
     //Run active strategies and remove inactive strategies at a continuous interval
-    @Scheduled(fixedRate = 30)
+    @Scheduled(fixedRate = 100)
     public void execute(){
         Map<String, Double> marketPrice = mockFeedParser.getMarketPrice();
         searchForConfigurations();

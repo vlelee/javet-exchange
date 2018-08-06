@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @Component
 public class MockFeedParser {
@@ -45,6 +42,9 @@ public class MockFeedParser {
                     Double price = getResponseFromURL(ticker);
                     prices.put(ticker, price);
                     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                    stockPriceService.clearPricesForStock(stock);
+
                     StockPrice stockPrice = new StockPrice(timestamp, stock, price);
                     stockPriceService.addNewStockPrice(stockPrice);
                 }
