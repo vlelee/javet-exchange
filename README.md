@@ -76,7 +76,7 @@ Click `Ok`, and then hitting the play button should work the same!
     * Stocks - ticker and name 
     * Stock Prices - market price of a given stock with a timestamp
     * Strategy Configurations - user inputted information for strategy - stock, price, exit threshold, etc.
-    * trades
+    * Trades - information about a market order - # shares, share price, ticker, 
 * REST API
     * Creates entities, repositories, services and controllers to represent the database mappings
     * Allows access to add, update and retrieve elements in the database via GET, POST and PUT requests
@@ -108,7 +108,7 @@ Click `Ok`, and then hitting the play button should work the same!
     * MockFeed provided by Conygre at http://feed.conygre.com:8080/MockYahoo/quotes.csv?s=goog&f=p0
     	* From Conygre: stock price oscillates over a sine wave based on a hard-coded base price for each of a handful of securities (AAPL GOOG BRK-A NSC MSFT). If you request a ticker not known to the service, the base price will be 100.
     * The parser creates a scheduler to continually make GET requests to the Conygre feed
-    * Inputs them to the stock_prices table
+    * Inputs them to the stock_prices table that only holds the current price (deleting all previous)
 * Trade Executor
     * Takes in a trade object with the specifications of the trade
     * Constructs a JMS message to send to an ActiveMQ queue
