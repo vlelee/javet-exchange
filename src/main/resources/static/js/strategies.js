@@ -33,16 +33,24 @@ function loadStrategies() {
                                                        inactive_strategies: strategies.filter(strategies => strategies.active == false)});
             $("#strategies-list").html(strategies_rendered);    
             $.each(strategies, function(index, strategy) {
+                /*
                 let start_char = strategy.strategyProfitString.charAt(0);
                 let text_class = (start_char == "+") ? "text-success" : ((start_char == "-") ? "text-danger" : "text-info");
-                $(`#strategy${strategy.id}-profit`).addClass(text_class)                
+                $(`#strategy${strategy.id}-profit`).addClass(text_class)   */
+                
+                $(`#strategy${strategy.id}-profit`).text(strategy.strategyProfitString)
+                let table_row_class = (strategy.strategyProfitString.charAt(0) == "+") ? "table-success" : ((strategy.strategyProfitString.charAt(0) == "-") ? "table-danger" : "table-info");
+                $(`#strategy${strategy.id}-row`).removeClass("table-danger table-info table-success").addClass(table_row_class)
             });
             
             $.each(active_strategies, function(index, strategy) {
                 setInterval(function () {
                     $.get(`/api/strategies/${strategy.id}/profit`, function (strategy_profit) {
-                        let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" : ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
-                        $(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
+                        //let text_class = (strategy_profit.charAt(0) == "+") ? "text-success" : ((strategy_profit.charAt(0) == "-") ? "text-danger" : "text-info");
+                        //$(`#strategy${strategy.id}-profit`).text(strategy_profit).removeClass("text-danger text-info text-success").addClass(text_class)
+                        $(`#strategy${strategy.id}-profit`).text(strategy_profit)
+                        let table_row_class = (strategy_profit.charAt(0) == "+") ? "table-success" : ((strategy_profit.charAt(0) == "-") ? "table-danger" : "table-info");
+                        $(`#strategy${strategy.id}-row`).removeClass("table-danger table-info table-success").addClass(table_row_class)
                     });
                     $.get(`/api/strategies/${strategy.id}/position`, function (strategy_position) {
                         $(`#strategy${strategy.id}-next-position`).text(strategy_position)

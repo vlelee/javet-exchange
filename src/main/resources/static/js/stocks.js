@@ -1,11 +1,10 @@
 var add_new_stock_template;
 var stock_price_fetch_lock = false; // This is a lock to disable us from fetching stock prices again until we've received a response.
-var last_stock_price_fetch = 0;
-var MIN_FETCH_INTERVAL = 7.5 * 1000; /* 1 ms * 1000 * 7.5 = 7.5s, we must wait AT LEAST 7.5s between GET requests. */
-
 
 $(document).ready(function() {
-    loadStocksWithPricesLoop()
+    // loadStocksWithPrices() is called on page initialization and will refresh stock prices every 5 seconds as long as the last refresh has finished. Update stock prices appear on the right-hand/bottom of the page.
+    // Dependencies: loadStocksWithPrices(), JAVET REST Services
+    setInterval(loadStocksWithPrices, 5000);
     $.get("templates/track-stock-modal.mustache", function(template) {
         Mustache.parse(template);   // optional, speeds up future uses
         add_new_stock_template = Mustache.render(template);
@@ -14,23 +13,17 @@ $(document).ready(function() {
 });
 
 
-// This function is called on page initialization and calls loadStocksWithPrices() in a loop to constantly update stock prices on the right-hand/bottom of the page.
-// Dependencies: loadStocksWithPrices(), JAVET REST Services
-function loadStocksWithPricesLoop() {
-    setInterval(loadStocksWithPrices, 5000);
-}
-
 function compare_stocks(a,b) {
     return (a.ticker < b.ticker) ? -1 : (a.ticker > b.ticker) ? 1 : 0
 }
 
 
-// This function is called on page initialization by loadStocksWithPricesLoop() and calls the JAVET REST API to fetch all of the stocks in the DB which are all the stocks that the user has ever 
+// This function is called on page initialization and calls the JAVET REST API to fetch all of the stocks in the DB which are all the stocks that the user has ever 
 // created or used a strategy on. This data is populated into the right/bottom pane of the page.
 // Dependencies: JAVET REST Services
 function loadStocksWithPrices() {
-    var d = new Date();
-    if(last_stock_price_fetch === 0 || (!stock_price_fetch_lock && d.getTime() - last_stock_price_fetch > MIN_FETCH_INTERVAL)) {
+    // This check ensures we never call the REST API if we still haven't received a successful response.
+    if (!stock_price_fetch_lock) {
         stock_price_fetch_lock = true
         $.get("/api/stocks", function(stocks) {
             tickerPrices = [];
@@ -43,7 +36,6 @@ function loadStocksWithPrices() {
                 });
 
             });
-            last_stock_price_fetch = new Date().getTime();
             stock_price_fetch_lock = false
         });
         
