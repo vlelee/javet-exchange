@@ -1,5 +1,6 @@
 package com.citi.exchange.services;
 
+import com.citi.exchange.entities.Stock;
 import com.citi.exchange.entities.StockPrice;
 import com.citi.exchange.marketfeed.MockFeedParser;
 import com.citi.exchange.repos.StockPriceRepo;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @Transactional (propagation=Propagation.REQUIRED)
@@ -54,6 +56,16 @@ public class StockPriceService {
             list.add(item);
         }
         return list;
+    }
+
+    public void clearPricesForStock(Stock clearStock) {
+        List<StockPrice> prices = (List<StockPrice>) getStockPrices();
+        for(StockPrice price : prices) {
+            if(price.getStock().getTicker().equals(clearStock.getTicker())) {
+                repo.delete(price);
+            }
+        }
+        repo.flush();
     }
 
 }

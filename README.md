@@ -3,7 +3,7 @@
 
 
 ## Description
-Create automated trading strategies that are informed by live market data. The strategies decide when to execute trades based on algorithmic analysis of the market data.  The platform provides a trader the ability to deactivate and adjust an existing strategy, along with real-time performance statsof each strategy.
+Create automated trading strategies that are informed by live market data. The strategies decide when to execute trades based on algorithmic analysis of the market data.  The platform provides a trader the ability to deactivate and adjust an existing strategy, along with real-time performance stats of each strategy.
 
 
 ## To set environment variables for local machine
@@ -76,7 +76,7 @@ Click `Ok`, and then hitting the play button should work the same!
     * Stocks - ticker and name 
     * Stock Prices - market price of a given stock with a timestamp
     * Strategy Configurations - user inputted information for strategy - stock, price, exit threshold, etc.
-    * trades
+    * Trades - information about a market order - # shares, share price, ticker, etc.
 * REST API
     * Creates entities, repositories, services and controllers to represent the database mappings
     * Allows access to add, update and retrieve elements in the database via GET, POST and PUT requests
@@ -108,7 +108,7 @@ Click `Ok`, and then hitting the play button should work the same!
     * MockFeed provided by Conygre at http://feed.conygre.com:8080/MockYahoo/quotes.csv?s=goog&f=p0
     	* From Conygre: stock price oscillates over a sine wave based on a hard-coded base price for each of a handful of securities (AAPL GOOG BRK-A NSC MSFT). If you request a ticker not known to the service, the base price will be 100.
     * The parser creates a scheduler to continually make GET requests to the Conygre feed
-    * Inputs them to the stock_prices table
+    * Inputs them to the stock_prices table that only holds the current price (deleting all previous)
 * Trade Executor
     * Takes in a trade object with the specifications of the trade
     * Constructs a JMS message to send to an ActiveMQ queue
@@ -176,6 +176,7 @@ Click `Ok`, and then hitting the play button should work the same!
     * Separating out the different modules of the project: UI from API from Algorithm Engine
     * Docker was a nightmare for everyone ; due to our own lack of understanding along with Prod Support's own issues                                                                                           
 * Timing! Not enough time in a week that would have allowed us to solve these issues
+* Database issue with stock price retrieval overflow
     
 ### What To Improve If Repeated
 * Test Driven Development and Behavior Driven Development
