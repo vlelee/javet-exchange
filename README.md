@@ -76,7 +76,7 @@ Click `Ok`, and then hitting the play button should work the same!
     * Stocks - ticker and name 
     * Stock Prices - market price of a given stock with a timestamp
     * Strategy Configurations - user inputted information for strategy - stock, price, exit threshold, etc.
-    * Trades - information about a market order - # shares, share price, ticker, 
+    * Trades - information about a market order - # shares, share price, ticker, etc.
 * REST API
     * Creates entities, repositories, services and controllers to represent the database mappings
     * Allows access to add, update and retrieve elements in the database via GET, POST and PUT requests
@@ -176,6 +176,7 @@ Click `Ok`, and then hitting the play button should work the same!
     * Separating out the different modules of the project: UI from API from Algorithm Engine
     * Docker was a nightmare for everyone ; due to our own lack of understanding along with Prod Support's own issues                                                                                           
 * Timing! Not enough time in a week that would have allowed us to solve these issues
+* Database issue with stock price retrieval overflow
     
 ### What To Improve If Repeated
 * Test Driven Development and Behavior Driven Development
