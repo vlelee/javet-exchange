@@ -121,13 +121,13 @@ function loadNewTradeHistoryGraph(strategy_id) {
                             yAxes: [{
                                 scaleLabel: {
                                     display: true,
-                                    labelString: "Share Price"
+                                    labelString: "Investment"
                                 }
                             }],
                             xAxes: [{
                                 scaleLabel: {
                                     display: true,
-                                    labelString: "Trade No,"
+                                    labelString: "Trade No."
                                 }
                             }]
                         }

@@ -6,7 +6,7 @@
                 <th scope="col">Strategy Name</th>
                 <th scope="col">Strategy Type</th>
                 <th scope="col">Stock</th>
-                <th scope="col">Performance (Investment Value)</th>
+                <th scope="col">Performance (Profit)</th>
                 <th scope="col">Next Action</th>
                 <th scope="col">Options</th>                        
             </tr>
@@ -38,7 +38,7 @@
                 <td>{{algo}}</td>
                 <td>{{stock.ticker}}</td>
                 <td id='strategy{{id}}-profit'>{{strategyProfitString}}</td>
-                <td id='strategy{{id}}-next-position'>{{strategyNextPositionString}}</td>
+                <td id='strategy{{id}}-next-position'>N/A</td>
                 <td id='strategy{{id}}-options' nowrap>
                     <button class="btn btn-xs m-0 p-0 text-primary" onClick="displayStrategyHistory({{id}}, '{{strategyName}}', false)" style='background-color:transparent;'>
                         <i class="material-icons">history</i>
